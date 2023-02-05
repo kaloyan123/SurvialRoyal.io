@@ -11,10 +11,10 @@ namespace testserver.hubs
             await Clients.All.SendAsync("drawCharacters", x, y, id);
         }
 
-        public async Task InitiatePlayers(int x, int y)
+        public async Task InitiatePlayers()
         {
             playernumber++;
-            await Clients.All.SendAsync("startCharacters", x, y, playernumber);
+            await Clients.All.SendAsync("startCharacters", playernumber);
             
             
         }
