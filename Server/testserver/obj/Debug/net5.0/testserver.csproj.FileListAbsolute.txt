@@ -1,54 +1,3 @@
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\appsettings.Development.json
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\appsettings.json
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.exe
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.deps.json
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.runtimeconfig.json
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.runtimeconfig.dev.json
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.dll
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\ref\testserver.dll
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.pdb
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.Views.dll
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\bin\Debug\net5.0\testserver.Views.pdb
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.csproj.AssemblyReference.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.GeneratedMSBuildEditorConfig.editorconfig
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.AssemblyInfoInputs.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.AssemblyInfo.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.csproj.CoreCompileInputs.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.MvcApplicationPartsAssemblyInfo.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.RazorAssemblyInfo.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.RazorAssemblyInfo.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\staticwebassets\testserver.StaticWebAssets.Manifest.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\staticwebassets\testserver.StaticWebAssets.xml
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\scopedcss\bundle\testserver.styles.css
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.TagHelpers.input.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.TagHelpers.output.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.RazorCoreGenerate.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\_ViewImports.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\Razor\Views\_ViewStart.cshtml.g.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.RazorTargetAssemblyInfo.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.RazorTargetAssemblyInfo.cs
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.Views.pdb
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.dll
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\ref\testserver.dll
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.pdb
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.genruntimeconfig.cache
-D:\IT\web\Web stranitsa\testgame\testserver\testserver\obj\Debug\net5.0\testserver.csproj.CopyComplete
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\appsettings.Development.json
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\appsettings.json
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.exe
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.deps.json
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.runtimeconfig.json
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.runtimeconfig.dev.json
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.dll
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\ref\testserver.dll
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.pdb
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.Views.dll
-D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.Views.pdb
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.csproj.AssemblyReference.cache
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.GeneratedMSBuildEditorConfig.editorconfig
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.AssemblyInfoInputs.cache
@@ -65,16 +14,26 @@ D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.TagHelpe
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.RazorCoreGenerate.cache
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
-D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\_ViewImports.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\Razor\Views\_ViewStart.cshtml.g.cs
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.RazorTargetAssemblyInfo.cache
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.RazorTargetAssemblyInfo.cs
-D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.Views.pdb
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.dll
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\ref\testserver.dll
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.pdb
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\appsettings.Development.json
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\appsettings.json
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.exe
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.deps.json
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.runtimeconfig.json
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.runtimeconfig.dev.json
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.dll
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\ref\testserver.dll
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.pdb
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.Views.dll
+D:\IT\web\SurvialRoyal.io\Server\testserver\bin\Debug\net5.0\testserver.Views.pdb
+D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.Views.pdb
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.genruntimeconfig.cache
 D:\IT\web\SurvialRoyal.io\Server\testserver\obj\Debug\net5.0\testserver.csproj.CopyComplete

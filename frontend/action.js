@@ -18,23 +18,26 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (x, y, id) {
+connection.on("drawCharacters", function (x, y, id, servertiks) {
     if(playerid!=id){
-    myGamePieces.forEach(myGamePiece=>{
-        if(myGamePiece.id==id){    
-            isplayer=true;
-            
-            myGamePiece.x = x;
-            myGamePiece.y = y;   
-            myGamePiece.Draw();
+        myGamePieces.forEach(myGamePiece=>{
+            if(myGamePiece.id==id){    
+                isplayer=true;
+                
+                myGamePiece.x = x;
+                myGamePiece.y = y;   
+                myGamePiece.Draw();
+            }
+        })
+        if(!isplayer){
+            myGamePieces.push(new playercomponent(x, y, "red", playerWidth, playerHeight));
+            myGamePieces[myGamePieces.length-1].SetId(id);
+            isplayer=false;
         }
-    })
-    if(!isplayer){
-        myGamePieces.push(new playercomponent(x, y, "red", playerWidth, playerHeight));
-        myGamePieces[myGamePieces.length-1].SetId(id);
-        isplayer=false;
+    
     }
-}
+    console.log(servertiks);
+
 });
 start(connection);
 
@@ -47,7 +50,7 @@ var playerid=-1 , isplayer=false;
 function startGame() {
     myGamePieces.push(new playercomponent(playerCodinateX, playerHeight, "blue", playerWidth, playerHeight));
 
-    connection.invoke("InitiatePlayers").catch(function (err) {
+    connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
         return console.error(err.toString());
     });
     
@@ -85,7 +88,7 @@ function playercomponent(x, y, color, width, height) {
     this.x = x;
     this.y = y;   
     // this.id =  id; 
-    
+
     this.SetId = function(id) {
         this.id =  id; 
     }

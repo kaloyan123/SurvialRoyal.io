@@ -7,8 +7,10 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using testserver.hubs;
+using testserver.Services;
 
 namespace testserver
 {
@@ -24,6 +26,8 @@ namespace testserver
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<Loop> ();
+            services.AddHostedService<Loop>(provider => provider.GetService<Loop>());
             services.AddControllersWithViews();
             services.AddSignalR();
 
@@ -70,6 +74,14 @@ namespace testserver
 
                 endpoints.MapHub<GameHub>("/drawDotHub");
             });
+            /*
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+            Loop gameLoop = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<Loop>();
+            gameLoop.map = new Objects.Map();
+
+            gameLoop.StartAsync(token).Wait();
+            */
         }
     }
 }

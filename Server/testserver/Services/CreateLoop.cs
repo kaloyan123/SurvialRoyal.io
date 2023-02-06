@@ -1,27 +1,18 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using testserver.Models;
-using testserver.Objects;
-using testserver.Services;
 
-namespace testserver.hubs
+namespace testserver.Services
 {
-    public class GameHub : Hub
+    public class CreateLoop
     {
-        static int playernumber = -1 ;
-        Player player = new Player();
-
         private IServiceProvider serviceProvider;
+        private Loop loop;
 
-        Map curMap;
-
-        Loop loop;
-
-        public GameHub(IServiceProvider serviceProvider)
+        public CreateLoop(IServiceProvider serviceProvider)
         {
             // Key - Socket Id (client), Value - Game Session
             /*
@@ -33,50 +24,21 @@ namespace testserver.hubs
             this.OtherPlayer = new ConcurrentDictionary<string, string>();
             this.PlayerColor = new ConcurrentDictionary<string, string>();
             */
-           // this.map = new Map ();
-
             this.serviceProvider = serviceProvider;
-        }
-
-        public async Task UpdatePlayers(int x, int y, int id)
-        {
-            //this.map?.MovePlayer(x, y, id);
-           // int tik = curMap.tiks;
-
-            await Clients.All.SendAsync("drawCharacters", x, y, id);
-        }
-
-        public async Task InitiatePlayers(int x,int y)
-        {
-            playernumber++;
-            if (playernumber == 0)
-            {
-                Createloop();
-            }
-
-           // this.map?.MovePlayer(x, y, playernumber);
-
-            await Clients.All.SendAsync("startCharacters", playernumber);
         }
 
         public void Createloop()
         {
-            Map map = new Map();
-
             CancellationTokenSource tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
+             CancellationToken token = tokenSource.Token;
             Loop gameLoop = this.serviceProvider.CreateScope().ServiceProvider.GetRequiredService<Loop>();
 
             // Loop gameLoop = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<Loop>();
 
-            loop = gameLoop;
-            this.curMap = map;
+            loop = gameLoop ;
 
-            // gameLoop.map = new Objects.Map();
-            gameLoop.map = map;
+            gameLoop.map = new Objects.Map();
             gameLoop.StartAsync(token).Wait();
         }
-
-
     }
 }
