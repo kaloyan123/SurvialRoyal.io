@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using testserver.Models;
@@ -13,35 +14,21 @@ namespace testserver.hubs
     public class GameHub : Hub
     {
         static int playernumber = -1 ;
-        Player player = new Player();
 
-        private IServiceProvider serviceProvider;
+        CreateLoop loopCraete;
 
-        Map curMap;
-
-        Loop loop;
-
-        public GameHub(IServiceProvider serviceProvider)
+        public GameHub(CreateLoop loopCraete)
         {
-            // Key - Socket Id (client), Value - Game Session
-            /*
-            this.sessions = new ConcurrentDictionary<string, GameSession>();
-            this.loops = new ConcurrentDictionary<string, GameLoopService>();
-            this.loopCancellationTokens = new ConcurrentDictionary<string, CancellationToken>();
-            this.Waiting = new List<string>();
-            this.PlayerUsernames = new ConcurrentDictionary<string, string>();
-            this.OtherPlayer = new ConcurrentDictionary<string, string>();
-            this.PlayerColor = new ConcurrentDictionary<string, string>();
-            */
-           // this.map = new Map ();
-
-            this.serviceProvider = serviceProvider;
+            this.loopCraete = loopCraete;
         }
 
         public async Task UpdatePlayers(int x, int y, int id)
         {
-            //this.map?.MovePlayer(x, y, id);
-           // int tik = curMap.tiks;
+            this.loopCraete.curMap?.MovePlayer(x, y, id);
+
+          //  int? tiks = this.loopCraete.curMap?.tiks;
+
+           // var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
             await Clients.All.SendAsync("drawCharacters", x, y, id);
         }
@@ -49,34 +36,16 @@ namespace testserver.hubs
         public async Task InitiatePlayers(int x,int y)
         {
             playernumber++;
+
             if (playernumber == 0)
             {
-                Createloop();
+                this.loopCraete.Start();
             }
 
-           // this.map?.MovePlayer(x, y, playernumber);
+            this.loopCraete.curMap?.CreatePlayer(x, y, playernumber);
 
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
-
-        public void Createloop()
-        {
-            Map map = new Map();
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
-            Loop gameLoop = this.serviceProvider.CreateScope().ServiceProvider.GetRequiredService<Loop>();
-
-            // Loop gameLoop = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<Loop>();
-
-            loop = gameLoop;
-            this.curMap = map;
-
-            // gameLoop.map = new Objects.Map();
-            gameLoop.map = map;
-            gameLoop.StartAsync(token).Wait();
-        }
-
 
     }
 }

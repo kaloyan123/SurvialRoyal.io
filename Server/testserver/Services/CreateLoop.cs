@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using testserver.Objects;
 
 namespace testserver.Services
 {
@@ -11,6 +12,7 @@ namespace testserver.Services
     {
         private IServiceProvider serviceProvider;
         private Loop loop;
+        public Map curMap;
 
         public CreateLoop(IServiceProvider serviceProvider)
         {
@@ -27,17 +29,22 @@ namespace testserver.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public void Createloop()
+
+
+        public void Start()
         {
+            Map map = new Map();
+
             CancellationTokenSource tokenSource = new CancellationTokenSource();
              CancellationToken token = tokenSource.Token;
             Loop gameLoop = this.serviceProvider.CreateScope().ServiceProvider.GetRequiredService<Loop>();
 
-            // Loop gameLoop = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<Loop>();
-
             loop = gameLoop ;
+            this.curMap = map;
 
-            gameLoop.map = new Objects.Map();
+            gameLoop.map = map;
+            loop.map = curMap;
+
             gameLoop.StartAsync(token).Wait();
         }
     }

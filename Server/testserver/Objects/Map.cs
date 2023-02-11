@@ -35,10 +35,11 @@ namespace testserver.Objects
             });
         }
 
+
         public void Update()
         {
             tiks++;
-            Console.WriteLine("working");
+           // Console.WriteLine("working");
         }
     }
 }

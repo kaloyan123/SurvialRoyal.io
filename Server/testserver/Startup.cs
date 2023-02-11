@@ -27,6 +27,7 @@ namespace testserver
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Loop> ();
+            services.AddSingleton<CreateLoop>();
             services.AddHostedService<Loop>(provider => provider.GetService<Loop>());
             services.AddControllersWithViews();
             services.AddSignalR();

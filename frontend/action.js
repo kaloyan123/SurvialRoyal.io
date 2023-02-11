@@ -1,4 +1,4 @@
-var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:8000/drawDotHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5001/drawDotHub").build();
 function start(connection) {
     const starting = async () => {
         try {
@@ -41,14 +41,23 @@ connection.on("drawCharacters", function (x, y, id, servertiks) {
 });
 start(connection);
 
-var myGamePieces = [];
+var myGamePieces = [], otherenteties= [];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
 playerWidth=30,playerHeight=30;
+var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var characters = [] , numb=0;
 var playerid=-1 , isplayer=false;
 
 function startGame() {
-    myGamePieces.push(new playercomponent(playerCodinateX, playerHeight, "blue", playerWidth, playerHeight));
+    myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight));
+    
+    otherenteties.push(new othercomponent(100, 100, "gray", playerWidth, playerHeight));
+    otherenteties.push(new othercomponent(500, 100, "gray", playerWidth, playerHeight));
+    otherenteties.push(new othercomponent(300, 500, "gray", playerWidth, playerHeight));
+    otherenteties.push(new othercomponent(500, 500, "gray", playerWidth, playerHeight));
+    otherenteties.push(new othercomponent(700, 700, "gray", playerWidth, playerHeight));
+
+   //otherentety = new othercomponent(100, 100, "gray", playerWidth, playerHeight);
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
         return console.error(err.toString());
@@ -93,10 +102,15 @@ function playercomponent(x, y, color, width, height) {
         this.id =  id; 
     }
 
+    this.Drawrl = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(centerX, centerY, this.width, this.height);
+    }  
     this.Draw = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x-cameraX, this.y-cameraY, this.width, this.height);
     }  
     this.newPosUpdate = function() {
         this.x += this.speedX;
@@ -105,10 +119,26 @@ function playercomponent(x, y, color, width, height) {
         playerCodinateX = this.x;
         playerCodinateY = this.y;
 
+        cameraX = playerCodinateX-centerX;
+        cameraY = playerCodinateY-centerY;
+
         connection.invoke("UpdatePlayers", this.x, this.y, playerid).catch(function (err) {
             return console.error(err.toString());
         });
     }   
+}
+function othercomponent(x, y, color, width, height) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;   
+
+    this.Draw = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
+    }  
+    
 }
 
 function updateGameArea() {
@@ -125,10 +155,18 @@ function updateGameArea() {
             if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 2; }
             
             myGamePiece.newPosUpdate(); 
-        }
+
+            myGamePiece.Drawrl();
+        }else{
         myGamePiece.Draw();
-        
+        }
+       
+
     })
+    otherenteties.forEach(otherentety=>{
+        otherentety.Draw();
+    })
+    
 }
 
 
