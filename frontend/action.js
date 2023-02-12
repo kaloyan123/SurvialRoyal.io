@@ -26,7 +26,6 @@ connection.on("drawCharacters", function (x, y, id, servertiks) {
                 
                 myGamePiece.x = x;
                 myGamePiece.y = y;   
-                myGamePiece.Draw();
             }
         })
         if(!isplayer){
@@ -36,14 +35,14 @@ connection.on("drawCharacters", function (x, y, id, servertiks) {
         }
     
     }
-    console.log(servertiks);
+   // console.log(servertiks);
 
 });
 start(connection);
 
-var myGamePieces = [], otherenteties= [];
+var myGamePieces = [], otherenteties= [],background,playrsprites = [];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
-playerWidth=30,playerHeight=30;
+playerWidth=50,playerHeight=50;
 var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var characters = [] , numb=0;
 var playerid=-1 , isplayer=false;
@@ -51,6 +50,10 @@ var playerid=-1 , isplayer=false;
 function startGame() {
     myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight));
     
+    playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
+        imgSrc:'./image/playrsircle.png'}));
+
+
     otherenteties.push(new othercomponent(100, 100, "gray", playerWidth, playerHeight));
     otherenteties.push(new othercomponent(500, 100, "gray", playerWidth, playerHeight));
     otherenteties.push(new othercomponent(300, 500, "gray", playerWidth, playerHeight));
@@ -58,6 +61,8 @@ function startGame() {
     otherenteties.push(new othercomponent(700, 700, "gray", playerWidth, playerHeight));
 
    //otherentety = new othercomponent(100, 100, "gray", playerWidth, playerHeight);
+
+   background = new Sprite({x:0,y:0,width:1000,height:1000,imgSrc:'./image/map_grass.png'})
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
         return console.error(err.toString());
@@ -141,26 +146,58 @@ function othercomponent(x, y, color, width, height) {
     
 }
 
+class Sprite{
+    constructor({x,y,width,height,imgSrc}){
+        this.x=x;
+        this.y=y;
+        this.width = width;
+        this.height = height;
+        this.image = new Image();
+        this.image.src = imgSrc;
+    }
+
+    draw(){
+        myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
+    }
+    drawrl(){
+        myGameArea.context.drawImage(this.image,centerX,centerY,this.width,this.height);
+    }
+    update(newx,newy){
+        this.x=newx;
+        this.y=newy;
+    }
+}
+
 function updateGameArea() {
     myGameArea.clear();
+    background.draw();
 
     myGamePieces.forEach(myGamePiece=>{
         if(playerid==myGamePiece.id){
 
             myGamePiece.speedX = 0;
             myGamePiece.speedY = 0;    
-            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
-            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
-            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -2; }
-            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 2; }
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -3; }
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 3; }
             
+            if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -3; }
+            if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = 3; }
+            if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -3; }
+            if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = 3; }
+
             myGamePiece.newPosUpdate(); 
+            
+            //playrsprite[0].update(playerCodinateX,playerCodinateY);
 
             myGamePiece.Drawrl();
+
+            playrsprites[0].drawrl(playerCodinateX,playerCodinateY);
         }else{
         myGamePiece.Draw();
         }
-       
+       // playrsprite.draw();
 
     })
     otherenteties.forEach(otherentety=>{
@@ -168,7 +205,6 @@ function updateGameArea() {
     })
     
 }
-
 
 /*
 function moveup() {
@@ -195,7 +231,8 @@ function clearmove() {
 <div style="text-align:center;width:480px;">
         <button onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">UP</button><br><br>
         <button onmousedown="moveleft()" onmouseup="clearmove()" ontouchstart="moveleft()">LEFT</button>
-        <button onmousedown="moveright()" onmouseup="clearmove()" ontouchstart="moveright()">RIGHT</button><br><br>
+        <button onmousedown="moveright()" onmouseup="clearmove()" ontouchstart="moveright()">RIGHT
+        </button><br><br>
         <button onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()">DOWN</button>
 </div>
 */
