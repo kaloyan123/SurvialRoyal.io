@@ -38,6 +38,7 @@ namespace testserver.Objects
 
         public void Update()
         {
+
             tiks++;
            // Console.WriteLine("working");
         }

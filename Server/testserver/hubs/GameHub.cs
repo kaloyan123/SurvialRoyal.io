@@ -46,6 +46,12 @@ namespace testserver.hubs
 
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
+        public async Task PlayerAttack(int x, int y, int id)
+        {
+            this.loopCraete.curMap?.CreatePlayer(x, y, id);
+
+            await Clients.All.SendAsync("startCharacters", id);
+        }
 
     }
 }

@@ -38,15 +38,26 @@ connection.on("drawCharacters", function (x, y, id, servertiks) {
    // console.log(servertiks);
 
 });
+connection.on("Attacked", function (id) {
+    
+    if(playerid==id){
+     console.log('attacked');
+    }
+ });
 start(connection);
 
-var myGamePieces = [], otherenteties= [],background,playrsprites = [];
+var myGamePieces = [], //players
+otherenteties= [],background,playrsprites = [];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
 playerWidth=50,playerHeight=50;
-var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
-var characters = [] , numb=0;
+var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY,
+canvassezeX=1300,canvassezeY=800,mapX=-1900,mapY=1100,mapendX=2600,mapendY=1600;
 var playerid=-1 , isplayer=false;
 
+
+//  * * *
+//  * * *
+//  * * *
 function startGame() {
     myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight));
     
@@ -62,7 +73,7 @@ function startGame() {
 
    //otherentety = new othercomponent(100, 100, "gray", playerWidth, playerHeight);
 
-   background = new Sprite({x:0,y:0,width:1000,height:1000,imgSrc:'./image/map_grass.png'})
+   background = new Sprite({x:mapX,y:mapY,width:mapX*-2,height:mapY*-2,imgSrc:'./image/map_grass.png'})
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
         return console.error(err.toString());
@@ -75,8 +86,8 @@ function startGame() {
 var myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
-        this.canvas.width = 1300;
-        this.canvas.height = 800;
+        this.canvas.width = canvassezeX;
+        this.canvas.height = canvassezeY;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 20);
@@ -87,6 +98,10 @@ var myGameArea = {
         })
         window.addEventListener('keyup', function (e) {
             myGameArea.keys[e.keyCode] = (e.type == "keydown");
+        })
+
+        window.addEventListener('click', function (e) {
+            console.log("sdd");
         })
     },
     clear : function() {
