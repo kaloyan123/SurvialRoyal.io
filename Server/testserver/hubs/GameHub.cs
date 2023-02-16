@@ -13,7 +13,7 @@ namespace testserver.hubs
 {
     public class GameHub : Hub
     {
-        static int playernumber = -1 ;
+        static int playernumber = -1;
 
         CreateLoop loopCraete;
 
@@ -26,20 +26,21 @@ namespace testserver.hubs
         {
             this.loopCraete.curMap?.MovePlayer(x, y, id);
 
-          //  int? tiks = this.loopCraete.curMap?.tiks;
+            //  int? tiks = this.loopCraete.curMap?.tiks;
 
-           // var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
+            // var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
             await Clients.All.SendAsync("drawCharacters", x, y, id);
         }
 
-        public async Task InitiatePlayers(int x,int y)
+        public async Task InitiatePlayers(int x, int y)
         {
             playernumber++;
 
             if (playernumber == 0)
             {
                 this.loopCraete.Start();
+                this.loopCraete.curMap?.StartOfGame();
             }
 
             this.loopCraete.curMap?.CreatePlayer(x, y, playernumber);
@@ -51,6 +52,80 @@ namespace testserver.hubs
             this.loopCraete.curMap?.CreatePlayer(x, y, id);
 
             await Clients.All.SendAsync("startCharacters", id);
+        }
+
+        public async Task GetImobileObj()
+        {
+            List<double> Xes = new List<double>();
+            this.loopCraete.curMap?.imobileObjs.ForEach(imobileobj =>
+            {
+                double x = imobileobj.X;
+                Xes.Add(x);
+            });
+
+            List<double> Yes = new List<double>();
+            this.loopCraete.curMap?.imobileObjs.ForEach(imobileobj =>
+            {
+                double y = imobileobj.Y;
+                Yes.Add(y);
+            });
+
+            List<double> Ids = new List<double>();
+            this.loopCraete.curMap?.imobileObjs.ForEach(imobileobj =>
+            {
+                double id = imobileobj.Id;
+                Ids.Add(id);
+            });
+
+            List<string> Types = new List<string>();
+            this.loopCraete.curMap?.imobileObjs.ForEach(imobileobj =>
+            {
+                string type = imobileobj.Type;
+                Types.Add(type);
+            });
+
+            await Clients.All.SendAsync("drawObjects", Xes, Yes, Ids, Types);
+        }
+
+        public async Task GetMobileEntity()
+        {
+            List<double> EntityX = new List<double>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                double x = mobileEntity.X;
+                EntityX.Add(x);
+                // Console.WriteLine(x);
+            });
+
+            List<double> EntityY = new List<double>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                double y = mobileEntity.Y;
+                EntityY.Add(y);
+            });
+
+            List<double> EntityId = new List<double>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                double id = mobileEntity.Id;
+                EntityId.Add(id);
+            });
+
+            List<string> EntityTypes = new List<string>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                string type = mobileEntity.Type;
+                EntityTypes.Add(type);
+            });
+            /*
+            foreach (var i in EntityX)
+            {
+                Console.WriteLine(i);
+            }
+            */
+            //Console.WriteLine(EntityX);
+
+            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityId, EntityTypes);
         }
 
     }

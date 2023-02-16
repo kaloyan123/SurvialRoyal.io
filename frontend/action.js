@@ -38,21 +38,70 @@ connection.on("drawCharacters", function (x, y, id, servertiks) {
    // console.log(servertiks);
 
 });
+
 connection.on("Attacked", function (id) {
     
     if(playerid==id){
      console.log('attacked');
     }
  });
+
+ connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
+    for(i=0;i<Xes.length;i++){
+        if(Types[i]=="tree"){
+            stationObjects.push(new othercomponent(Xes[i], Yes[i], "green", 100, 100, Ids[i], Types[i]));
+        }else{
+            stationObjects.push(new othercomponent(Xes[i], Yes[i], "gray", 100, 100, Ids[i], Types[i]));
+        }
+        console.log("object drawn");
+    }
+    
+
+    /*
+    console.log("sdlojk");
+    Xes.forEach(x => {
+        console.log(x);
+   });
+   */
+});
+
+connection.on("drawEnteties", function (Xes,Yes,Ids,Types) {
+    
+    mobileEntities.forEach(mobileEntity=>{
+       
+        mobileEntity.x = Xes[numbr];
+        mobileEntity.y = Yes[numbr];   
+        //console.log(mobileEntity.x, Xes[numbr],"   ",mobileEntity.y, Yes[numbr]);
+        //console.log(mobileEntity.x,mobileEntity.y);
+       // console.log(numbr);
+        numbr++;
+    })
+    //console.log(mobileEntities.length);
+    if(numbr<Xes.length){
+        for(i=numbr;i<Xes.length;i++){
+            if(Types[i]=="rabit"){
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 100, 100, Ids[i], Types[i]));
+            }else{
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 100, 100, Ids[i], Types[i]));
+            }
+            console.log("entity drawn");
+        }
+        
+    }
+    numbr=0;
+
+});
+
+
 start(connection);
 
 var myGamePieces = [], //players
-otherenteties= [],background,playrsprites = [];
+stationObjects= [], mobileEntities = [],background,playrsprites = [];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
-playerWidth=50,playerHeight=50;
+playerWidth=50,playerHeight=50,playerspeed=5;
 var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY,
-canvassezeX=1300,canvassezeY=800,mapX=-1900,mapY=1100,mapendX=2600,mapendY=1600;
-var playerid=-1 , isplayer=false;
+canvassezeX=1300,canvassezeY=800,mapX = -1900,mapY = -1100,mapendX=2600,mapendY=1600;
+var playerid=-1 , isplayer=false ,numbr=0;
 
 
 //  * * *
@@ -64,20 +113,19 @@ function startGame() {
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
         imgSrc:'./image/playrsircle.png'}));
 
-
-    otherenteties.push(new othercomponent(100, 100, "gray", playerWidth, playerHeight));
-    otherenteties.push(new othercomponent(500, 100, "gray", playerWidth, playerHeight));
-    otherenteties.push(new othercomponent(300, 500, "gray", playerWidth, playerHeight));
-    otherenteties.push(new othercomponent(500, 500, "gray", playerWidth, playerHeight));
-    otherenteties.push(new othercomponent(700, 700, "gray", playerWidth, playerHeight));
-
    //otherentety = new othercomponent(100, 100, "gray", playerWidth, playerHeight);
 
-   background = new Sprite({x:mapX,y:mapY,width:mapX*-2,height:mapY*-2,imgSrc:'./image/map_grass.png'})
+   background = new Sprite({x:mapX, y:mapY, width:mapendX-mapX, height:mapendY-mapY, imgSrc:'./image/map_grass.png'})
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
         return console.error(err.toString());
     });
+
+    connection.invoke("GetImobileObj").catch(function (err) {
+        return console.error(err.toString());
+    });
+
+   // mobileEntities.push(new othercomponent(100, 100, "yellow", 100, 100, 0, "rabit"));
     
     myGameArea.start();
 }
@@ -147,11 +195,13 @@ function playercomponent(x, y, color, width, height) {
         });
     }   
 }
-function othercomponent(x, y, color, width, height) {
+function othercomponent(x, y, color, width, height, id , type) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;   
+    this.id = id;   
+    this.type = type; 
 
     this.Draw = function() {
         ctx = myGameArea.context;
@@ -187,20 +237,21 @@ function updateGameArea() {
     myGameArea.clear();
     background.draw();
 
+
     myGamePieces.forEach(myGamePiece=>{
         if(playerid==myGamePiece.id){
 
             myGamePiece.speedX = 0;
             myGamePiece.speedY = 0;    
-            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3; }
-            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3; }
-            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -3; }
-            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 3; }
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = playerspeed; }
             
-            if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -3; }
-            if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = 3; }
-            if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -3; }
-            if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = 3; }
+            if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -playerspeed; }
+            if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = playerspeed; }
 
             myGamePiece.newPosUpdate(); 
             
@@ -215,11 +266,31 @@ function updateGameArea() {
        // playrsprite.draw();
 
     })
-    otherenteties.forEach(otherentety=>{
+    
+    connection.invoke("GetMobileEntity").catch(function (err) {
+        return console.error(err.toString());
+    });
+    
+    
+    mobileEntities.forEach(otherentety=>{
+        //otherentety.x=otherentety.x+0.5;
+        otherentety.Draw();
+    })
+
+    stationObjects.forEach(otherentety=>{
         otherentety.Draw();
     })
     
 }
+function onmousemove (e) {
+    console.log("sd");
+    /*
+    var dx = e.pageX - centerX;
+    var dy = e.pageY - centerY;
+    var theta = Math.atan2(dy, dx);
+    drawArrow(theta);
+    */
+};
 
 /*
 function moveup() {
