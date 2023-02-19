@@ -218,6 +218,7 @@ function othercomponent(x, y, color, width, height, id , type) {
     this.y = y;   
     this.id = id;   
     this.type = type; 
+    
 
     this.Draw = function() {
         ctx = myGameArea.context;
@@ -252,6 +253,7 @@ class Sprite{
 function updateGameArea() {
     myGameArea.clear();
     background.draw();
+    console.log(value_);
 
 
     myGamePieces.forEach(myGamePiece=>{
