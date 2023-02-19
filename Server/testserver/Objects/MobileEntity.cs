@@ -15,6 +15,7 @@ namespace testserver.Objects
 
         public string Type { get; set; }
 
-        public double Direction { get; set; }
+        public double DirectionX { get; set; }
+        public double DirectionY { get; set; }
     }
 }

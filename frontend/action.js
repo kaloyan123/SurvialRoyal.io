@@ -13,30 +13,40 @@ function start(connection) {
 connection.on("startCharacters", function (id) {
    if(playerid<0){
     myGamePieces[0].SetId(id);
+    playrsprites[0].setId(id);
     playerid=id;
    }
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (x, y, id, servertiks) {
+connection.on("drawCharacters", function (X, Y, id) {
     if(playerid!=id){
         myGamePieces.forEach(myGamePiece=>{
             if(myGamePiece.id==id){    
                 isplayer=true;
                 
-                myGamePiece.x = x;
-                myGamePiece.y = y;   
+                myGamePiece.x = X;
+                myGamePiece.y = Y;   
+            }
+        })
+        playrsprites.forEach(playrsprite=>{
+            if(playrsprite.id==id){    
+                playrsprite.x = X-10;
+                playrsprite.y = Y-10;   
             }
         })
         if(!isplayer){
-            myGamePieces.push(new playercomponent(x, y, "red", playerWidth, playerHeight));
+            myGamePieces.push(new playercomponent(X, Y, "red", playerWidth, playerHeight));
+
+            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerWidth+20,height:playerHeight+20,
+                imgSrc:'./image/Coolplayer.webp'}));
+
             myGamePieces[myGamePieces.length-1].SetId(id);
+            playrsprites[myGamePieces.length-1].setId(id);
             isplayer=false;
         }
     
     }
-   // console.log(servertiks);
-
 });
 
 connection.on("Attacked", function (id) {
@@ -50,15 +60,19 @@ connection.on("Attacked", function (id) {
     for(i=0;i<Xes.length;i++){
         if(Types[i]=="tree"){
             stationObjects.push(new othercomponent(Xes[i], Yes[i], "green", 100, 100, Ids[i], Types[i]));
+
+            objectSprites.push(new Sprite({x:Xes[i]-10,y:Yes[i]-10,width:120,height:120,
+            imgSrc:'./image/tree.png'}));
+
         }else{
             stationObjects.push(new othercomponent(Xes[i], Yes[i], "gray", 100, 100, Ids[i], Types[i]));
+
+            objectSprites.push(new Sprite({x:Xes[i]-30,y:Yes[i]-35,width:160,height:160,
+            imgSrc:'./image/rock.png'}));
         }
         console.log("object drawn");
     }
-    
-
     /*
-    console.log("sdlojk");
     Xes.forEach(x => {
         console.log(x);
    });
@@ -68,21 +82,28 @@ connection.on("Attacked", function (id) {
 connection.on("drawEnteties", function (Xes,Yes,Ids,Types) {
     
     mobileEntities.forEach(mobileEntity=>{
-       
         mobileEntity.x = Xes[numbr];
         mobileEntity.y = Yes[numbr];   
-        //console.log(mobileEntity.x, Xes[numbr],"   ",mobileEntity.y, Yes[numbr]);
-        //console.log(mobileEntity.x,mobileEntity.y);
-       // console.log(numbr);
         numbr++;
     })
-    //console.log(mobileEntities.length);
+    numbr=0;
+    entitySprites.forEach(entitySprite=>{
+        entitySprite.x = Xes[numbr];
+        entitySprite.y = Yes[numbr];   
+        numbr++;
+    })
     if(numbr<Xes.length){
         for(i=numbr;i<Xes.length;i++){
             if(Types[i]=="rabit"){
-                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 100, 100, Ids[i], Types[i]));
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 30, 30, Ids[i], Types[i]));
+
+                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:30,height:30,
+                    imgSrc:'./image/bunny.png'}));
             }else{
-                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 100, 100, Ids[i], Types[i]));
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 50, 50, Ids[i], Types[i]));
+
+                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
+                    imgSrc:'./image/pig_maybe.png'}));
             }
             console.log("entity drawn");
         }
@@ -96,7 +117,7 @@ connection.on("drawEnteties", function (Xes,Yes,Ids,Types) {
 start(connection);
 
 var myGamePieces = [], //players
-stationObjects= [], mobileEntities = [],background,playrsprites = [];
+stationObjects= [], mobileEntities = [],background,playrsprites = [],objectSprites=[],entitySprites=[];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
 playerWidth=50,playerHeight=50,playerspeed=5;
 var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY,
@@ -111,9 +132,7 @@ function startGame() {
     myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight));
     
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
-        imgSrc:'./image/playrsircle.png'}));
-
-   //otherentety = new othercomponent(100, 100, "gray", playerWidth, playerHeight);
+        imgSrc:'./image/Coolplayer.webp'}));
 
    background = new Sprite({x:mapX, y:mapY, width:mapendX-mapX, height:mapendY-mapY, imgSrc:'./image/map_grass.png'})
 
@@ -124,8 +143,6 @@ function startGame() {
     connection.invoke("GetImobileObj").catch(function (err) {
         return console.error(err.toString());
     });
-
-   // mobileEntities.push(new othercomponent(100, 100, "yellow", 100, 100, 0, "rabit"));
     
     myGameArea.start();
 }
@@ -164,7 +181,6 @@ function playercomponent(x, y, color, width, height) {
     this.speedY = 0;
     this.x = x;
     this.y = y;   
-    // this.id =  id; 
 
     this.SetId = function(id) {
         this.id =  id; 
@@ -219,17 +235,17 @@ class Sprite{
         this.height = height;
         this.image = new Image();
         this.image.src = imgSrc;
+        this.id =  0; 
+    }
+    setId(id){
+        this.id = id;   
     }
 
     draw(){
         myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
     }
     drawrl(){
-        myGameArea.context.drawImage(this.image,centerX,centerY,this.width,this.height);
-    }
-    update(newx,newy){
-        this.x=newx;
-        this.y=newy;
+        myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
     }
 }
 
@@ -254,17 +270,20 @@ function updateGameArea() {
             if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = playerspeed; }
 
             myGamePiece.newPosUpdate(); 
-            
-            //playrsprite[0].update(playerCodinateX,playerCodinateY);
 
-            myGamePiece.Drawrl();
+           // myGamePiece.Drawrl();
 
-            playrsprites[0].drawrl(playerCodinateX,playerCodinateY);
         }else{
-        myGamePiece.Draw();
+        // myGamePiece.Draw();
         }
-       // playrsprite.draw();
 
+    })
+    playrsprites.forEach(playrsprite=>{
+        if(playerid==playrsprite.id){ 
+           playrsprite.drawrl();
+        }else{
+            playrsprite.draw();
+        }
     })
     
     connection.invoke("GetMobileEntity").catch(function (err) {
@@ -273,15 +292,25 @@ function updateGameArea() {
     
     
     mobileEntities.forEach(otherentety=>{
-        //otherentety.x=otherentety.x+0.5;
-        otherentety.Draw();
-    })
-
-    stationObjects.forEach(otherentety=>{
         otherentety.Draw();
     })
     
+    /*
+    stationObjects.forEach(otherentety=>{
+        otherentety.Draw();
+    })
+    */
+
+    entitySprites.forEach(entitySprites=>{
+        entitySprites.draw();
+    })
+
+    objectSprites.forEach(objectSprite=>{
+        objectSprite.draw();
+    })
+    
 }
+
 function onmousemove (e) {
     console.log("sd");
     /*

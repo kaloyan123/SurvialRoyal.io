@@ -49,7 +49,7 @@ namespace testserver.hubs
         }
         public async Task PlayerAttack(int x, int y, int id)
         {
-            this.loopCraete.curMap?.CreatePlayer(x, y, id);
+            this.loopCraete.curMap?.AttackPlayer(x, y, id);
 
             await Clients.All.SendAsync("startCharacters", id);
         }

@@ -34,6 +34,12 @@ namespace testserver.Objects
             players.Add(player);
         }
 
+        public void AttackPlayer(int x, int y, int id)
+        {
+            Player player = new Player() { X = x, Y = y, Id = id };
+            players.Add(player);
+        }
+
         public void MovePlayer(int x, int y, int id)
         {
             players.ForEach(player =>
@@ -56,7 +62,7 @@ namespace testserver.Objects
 
         public void CreateEntity(int x, int y, int id, string type)
         {
-            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Id = id, Type = type, Direction = 0 };
+            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Id = id, Type = type, DirectionX = 0, DirectionY=0 };
             mobileEntities.Add(mobileEntity);
 
             // Console.WriteLine(mobileEntity.Type);
@@ -76,15 +82,17 @@ namespace testserver.Objects
                 }
             }
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 10; i++)
             {
                 if (rnd.Next(0, 100) <= 50)
                 {
+                    Console.WriteLine("rabit ");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "rabit");
                 }
                 else
                 {
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "rabit");
+                    Console.WriteLine("pig");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "pig");
                 }
             }
 
@@ -101,22 +109,109 @@ namespace testserver.Objects
 
             mobileEntities.ForEach(mobileEntity =>
             {
-                if (mobileEntity.Direction == 0)
+                if (mobileEntity.Type == "rabit")
                 {
-                    mobileEntity.Direction = 1;
-                }
+                    if (tiks % 100 == 0)
+                    {
 
-                if (mobileEntity.X + 50 > mapendX)
+                        if (rnd.Next(0, 100) <= 50)
+                        {
+                            mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+                        }
+                        else
+                        {
+                            mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
+
+                        }
+
+                        if (rnd.Next(0, 100) <= 50)
+                        {
+                            mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+                        }
+                        else
+                        {
+                            mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
+
+                        }
+
+                        //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
+                        //Console.WriteLine("work eaven" + neshto);
+                    }
+
+                    if (mobileEntity.X + 50 > mapendX && mobileEntity.X < mapstartX)
+                    {
+                        //mobileEntity.DirectionX = -1;
+                    }
+                    else
+                    {
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                    }
+
+                    if (mobileEntity.Y + 50 > mapendY && mobileEntity.Y < mapstartY)
+                    {
+                        //mobileEntity.DirectionX = -1;
+                    }
+                    else
+                    {
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                    }
+                }
+                else if(mobileEntity.Type == "pig")
                 {
-                    mobileEntity.Direction = -1;
-                }
+                    if (tiks % 500 == 0)
+                    {
+                        mobileEntity.DirectionX = 0;
+                        mobileEntity.DirectionY = 0;
 
-                if (mobileEntity.X < mapstartX)
-                {
-                    mobileEntity.Direction = 1;
-                }
+                        //  Console.WriteLine("work eaven" + mobileEntity.DirectionY);
+                    }
+                    if (tiks % 1000 == 0)
+                    {
+                      //  Console.WriteLine("work pig");
 
-                mobileEntity.X = mobileEntity.X + mobileEntity.Direction;
+                        if (rnd.Next(0, 100) <= 50)
+                        {
+                            mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                        }
+                        else
+                        {
+                            mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                        }
+                        if (rnd.Next(0, 100) <= 50)
+                        {
+                            mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                        }
+                        else
+                        {
+                            mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                        }
+                        //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
+                    }
+
+                    if (mobileEntity.X + 50 > mapendX && mobileEntity.X < mapstartX)
+                    {
+                        //mobileEntity.DirectionX = -1;
+                    }
+                    else
+                    {
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                    }
+
+                    
+                    if (mobileEntity.Y + 50 > mapendY && mobileEntity.Y < mapstartY)
+                    {
+                        //mobileEntity.DirectionX = -1;
+                    }
+                    else
+                    {
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                    }
+                }
+                
+
+
 
                 // Console.WriteLine(mobileEntity.X);
             });
@@ -126,7 +221,7 @@ namespace testserver.Objects
             //  Console.WriteLine(obj.X);
 
             // Console.WriteLine("working");
-            //  Console.WriteLine(tiks);
+              //Console.WriteLine(tiks);
 
             tiks++;
         }
