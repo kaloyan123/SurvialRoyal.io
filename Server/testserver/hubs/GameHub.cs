@@ -28,12 +28,18 @@ namespace testserver.hubs
 
             //  int? tiks = this.loopCraete.curMap?.tiks;
 
-            // var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
+            var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
-            await Clients.All.SendAsync("drawCharacters", x, y, id);
+            double hp = 0;
+            this.loopCraete.curMap?.players.ForEach(player =>
+            {
+                hp = player.Hp;
+            });
+
+            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, id);
         }
 
-        public async Task InitiatePlayers(int x, int y)
+        public async Task InitiatePlayers(int x, int y, int health)
         {
             playernumber++;
 
@@ -43,15 +49,15 @@ namespace testserver.hubs
                 this.loopCraete.curMap?.StartOfGame();
             }
 
-            this.loopCraete.curMap?.CreatePlayer(x, y, playernumber);
+            this.loopCraete.curMap?.CreatePlayer(x, y, health, playernumber);
 
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
         public async Task PlayerAttack(int x, int y, int id)
         {
-            this.loopCraete.curMap?.AttackPlayer(x, y, id);
+            this.loopCraete.curMap?.Attack(x, y, id);
 
-            await Clients.All.SendAsync("startCharacters", id);
+            await Clients.All.SendAsync("atak", id);
         }
 
         public async Task GetImobileObj()
@@ -104,6 +110,13 @@ namespace testserver.hubs
                 EntityY.Add(y);
             });
 
+            List<double> EntityHp = new List<double>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                double hp = mobileEntity.Hp;
+                EntityHp.Add(hp);
+            });
+
             List<double> EntityId = new List<double>();
             this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
             {
@@ -125,7 +138,7 @@ namespace testserver.hubs
             */
             //Console.WriteLine(EntityX);
 
-            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityId, EntityTypes);
+            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityHp, EntityId, EntityTypes);
         }
 
     }

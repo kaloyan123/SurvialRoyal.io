@@ -19,14 +19,18 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (X, Y, id) {
-    if(playerid!=id){
+connection.on("drawCharacters", function (X, Y, Hp, id) {
+    if(playerid==id){
+        myGamePieces[0].health = Hp;
+    }
+    else{
         myGamePieces.forEach(myGamePiece=>{
             if(myGamePiece.id==id){    
                 isplayer=true;
                 
                 myGamePiece.x = X;
                 myGamePiece.y = Y;   
+                myGamePiece.health = Hp;
             }
         })
         playrsprites.forEach(playrsprite=>{
@@ -36,7 +40,7 @@ connection.on("drawCharacters", function (X, Y, id) {
             }
         })
         if(!isplayer){
-            myGamePieces.push(new playercomponent(X, Y, "red", playerWidth, playerHeight));
+            myGamePieces.push(new playercomponent(X, Y, "red", playerWidth, playerHeight, Hp));
 
             playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerWidth+20,height:playerHeight+20,
                 imgSrc:'./image/Coolplayer.webp'}));
@@ -45,7 +49,6 @@ connection.on("drawCharacters", function (X, Y, id) {
             playrsprites[myGamePieces.length-1].setId(id);
             isplayer=false;
         }
-    
     }
 });
 
@@ -59,13 +62,13 @@ connection.on("Attacked", function (id) {
  connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
     for(i=0;i<Xes.length;i++){
         if(Types[i]=="tree"){
-            stationObjects.push(new othercomponent(Xes[i], Yes[i], "green", 100, 100, Ids[i], Types[i]));
+            stationObjects.push(new objectcomponent(Xes[i], Yes[i], "green", 100, 100, Ids[i], Types[i]));
 
             objectSprites.push(new Sprite({x:Xes[i]-10,y:Yes[i]-10,width:120,height:120,
             imgSrc:'./image/tree.png'}));
 
         }else{
-            stationObjects.push(new othercomponent(Xes[i], Yes[i], "gray", 100, 100, Ids[i], Types[i]));
+            stationObjects.push(new objectcomponent(Xes[i], Yes[i], "gray", 100, 100, Ids[i], Types[i]));
 
             objectSprites.push(new Sprite({x:Xes[i]-30,y:Yes[i]-35,width:160,height:160,
             imgSrc:'./image/rock.png'}));
@@ -79,11 +82,12 @@ connection.on("Attacked", function (id) {
    */
 });
 
-connection.on("drawEnteties", function (Xes,Yes,Ids,Types) {
+connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
     
     mobileEntities.forEach(mobileEntity=>{
         mobileEntity.x = Xes[numbr];
         mobileEntity.y = Yes[numbr];   
+        mobileEntity.health = Hps[numbr];   
         numbr++;
     })
     numbr=0;
@@ -95,19 +99,18 @@ connection.on("drawEnteties", function (Xes,Yes,Ids,Types) {
     if(numbr<Xes.length){
         for(i=numbr;i<Xes.length;i++){
             if(Types[i]=="rabit"){
-                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 30, 30, Ids[i], Types[i]));
+                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "yellow", 30, 30, Ids[i], Types[i],Hps[i]));
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:30,height:30,
                     imgSrc:'./image/bunny.png'}));
             }else{
-                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "yellow", 50, 50, Ids[i], Types[i]));
+                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
                     imgSrc:'./image/pig_maybe.png'}));
             }
             console.log("entity drawn");
         }
-        
     }
     numbr=0;
 
@@ -119,7 +122,7 @@ start(connection);
 var myGamePieces = [], //players
 stationObjects= [], mobileEntities = [],background,playrsprites = [],objectSprites=[],entitySprites=[];
 var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
-playerWidth=50,playerHeight=50,playerspeed=5;
+playerWidth=50,playerHeight=50,playerspeed=5,playerHealth=100,playerReach=50;
 var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY,
 canvassezeX=1300,canvassezeY=800,mapX = -1900,mapY = -1100,mapendX=2600,mapendY=1600;
 var playerid=-1 , isplayer=false ,numbr=0;
@@ -129,14 +132,14 @@ var playerid=-1 , isplayer=false ,numbr=0;
 //  * * *
 //  * * *
 function startGame() {
-    myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight));
+    myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight, playerHealth));
     
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
         imgSrc:'./image/Coolplayer.webp'}));
 
    background = new Sprite({x:mapX, y:mapY, width:mapendX-mapX, height:mapendY-mapY, imgSrc:'./image/map_grass.png'})
 
-    connection.invoke("InitiatePlayers",playerCodinateX ,playerHeight).catch(function (err) {
+    connection.invoke("InitiatePlayers",playerCodinateX ,playerCodinateY ,playerHealth).catch(function (err) {
         return console.error(err.toString());
     });
 
@@ -166,7 +169,10 @@ var myGameArea = {
         })
 
         window.addEventListener('click', function (e) {
-            console.log("sdd");
+            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid).catch(function (err) {
+                return console.error(err.toString());
+            });
+            myGamePieces[0].DrawAttavkBoxrl();
         })
     },
     clear : function() {
@@ -174,13 +180,14 @@ var myGameArea = {
     }
 }
   
-function playercomponent(x, y, color, width, height) {
+function playercomponent(x, y, color, width, height, health) {
     this.width = width;
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
     this.x = x;
-    this.y = y;   
+    this.y = y;
+    this.health = health;   
 
     this.SetId = function(id) {
         this.id =  id; 
@@ -195,6 +202,18 @@ function playercomponent(x, y, color, width, height) {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x-cameraX, this.y-cameraY, this.width, this.height);
+    }  
+    this.DrawAttavkBoxrl = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = "red";
+        ctx.fillRect(this.x-cameraX-playerReach, this.y-cameraY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2));
+    }  
+    this.DrawHealth = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.width, 10);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
     }  
     this.newPosUpdate = function() {
         this.x += this.speedX;
@@ -211,7 +230,7 @@ function playercomponent(x, y, color, width, height) {
         });
     }   
 }
-function othercomponent(x, y, color, width, height, id , type) {
+function objectcomponent(x, y, color, width, height, id , type) {
     this.width = width;
     this.height = height;
     this.x = x;
@@ -225,6 +244,31 @@ function othercomponent(x, y, color, width, height, id , type) {
         ctx.fillStyle = color;
         ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
     }  
+    
+}
+
+function entitycomponent(x, y, color, width, height, id , type, health) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;   
+    this.id = id;   
+    this.type = type; 
+    this.health = health; 
+    
+
+    this.Draw = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
+    }  
+    this.DrawHealth = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.width, 10);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
+    }
     
 }
 
@@ -253,7 +297,7 @@ class Sprite{
 function updateGameArea() {
     myGameArea.clear();
     background.draw();
-    console.log(value_);
+    //console.log(value_);
 
 
     myGamePieces.forEach(myGamePiece=>{
@@ -274,9 +318,10 @@ function updateGameArea() {
             myGamePiece.newPosUpdate(); 
 
            // myGamePiece.Drawrl();
-
+           myGamePiece.DrawHealth();
         }else{
         // myGamePiece.Draw();
+        myGamePiece.DrawHealth();
         }
 
     })
@@ -295,6 +340,7 @@ function updateGameArea() {
     
     mobileEntities.forEach(otherentety=>{
         otherentety.Draw();
+        otherentety.DrawHealth();
     })
     
     /*

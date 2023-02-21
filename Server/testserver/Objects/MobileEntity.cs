@@ -11,6 +11,8 @@ namespace testserver.Objects
 
         public double Y { get; set; }
 
+        public double Hp { get; set; }
+
         public int Id { get; set; }
 
         public string Type { get; set; }

@@ -28,16 +28,90 @@ namespace testserver.Objects
         public int mapendX = 2600;
         public int mapendY = 1600;
 
-        public void CreatePlayer(int x, int y, int id)
+        public int playerReach = 50;
+        public int playerSize = 50;
+
+        public void CreatePlayer(int x, int y,int health, int id)
         {
-            Player player = new Player() { X = x, Y = y, Id = id };
+            Player player = new Player() { X = x, Y = y, Hp = health, Id = id };
             players.Add(player);
         }
 
-        public void AttackPlayer(int x, int y, int id)
+        public void Attack(int x, int y, int id)
         {
-            Player player = new Player() { X = x, Y = y, Id = id };
-            players.Add(player);
+            int attackboxX = x-playerReach;
+            int attackboxY = y- playerReach;
+            int attackboxHight = x + playerSize + playerReach;
+            int attackboxWidth = y + playerSize + playerReach;
+
+             List<int> attackedPlayersId = new List<int>();
+
+            //Console.WriteLine("atack");
+            
+            players.ForEach(player =>
+            {
+                if (player.Id == id)
+                {
+                }
+                else
+                {
+                    if (player.X + playerSize >= attackboxX && player.Y + playerSize >= attackboxY && player.X <= attackboxHight && 
+                    player.Y<= attackboxWidth)
+                    {
+                        player.Hp -= 10;
+                        Console.WriteLine(player.Hp);
+                        attackedPlayersId.Add(player.Id);
+                    }
+                }
+                /*
+                Console.WriteLine(player.Id);
+
+                Console.WriteLine(player.X);
+                Console.WriteLine(player.Y);
+                Console.WriteLine(player.X + playerSize);
+                Console.WriteLine(player.Y + playerSize);
+                */
+            });
+
+            mobileEntities.ForEach(mobileEntity =>
+            {
+                if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
+                    mobileEntity.Y <= attackboxWidth)
+                {
+                    mobileEntity.Hp -= 10;
+                    Console.WriteLine(mobileEntity.Hp);
+                    attackedPlayersId.Add(mobileEntity.Id);
+                }
+                /*
+                if (mobileEntity.Id == id)
+                {
+                }
+                else
+                {
+                    
+                }
+                */
+                /*
+                Console.WriteLine(player.Id);
+
+                Console.WriteLine(player.X);
+                Console.WriteLine(player.Y);
+                Console.WriteLine(player.X + playerSize);
+                Console.WriteLine(player.Y + playerSize);
+                */
+            });
+
+            /*
+            Console.WriteLine(attackboxX);
+            Console.WriteLine(attackboxY);
+            Console.WriteLine(attackboxHight);
+            Console.WriteLine(attackboxWidth);
+            */
+            attackedPlayersId.ForEach(attackedPlayerId =>
+            {
+                Console.WriteLine("attack made on");
+                Console.WriteLine(attackedPlayerId);
+            });
         }
 
         public void MovePlayer(int x, int y, int id)
@@ -60,9 +134,9 @@ namespace testserver.Objects
             //  Console.WriteLine(imobileobject.Type);
         }
 
-        public void CreateEntity(int x, int y, int id, string type)
+        public void CreateEntity(int x, int y,int Hp, int id, string type)
         {
-            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Id = id, Type = type, DirectionX = 0, DirectionY=0 };
+            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Hp = Hp, Id = id, Type = type, DirectionX = 0, DirectionY=0 };
             mobileEntities.Add(mobileEntity);
 
             // Console.WriteLine(mobileEntity.Type);
@@ -87,12 +161,12 @@ namespace testserver.Objects
                 if (rnd.Next(0, 100) <= 50)
                 {
                     Console.WriteLine("rabit ");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "rabit");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, i, "rabit");
                 }
                 else
                 {
                     Console.WriteLine("pig");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "pig");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, i, "pig");
                 }
             }
 

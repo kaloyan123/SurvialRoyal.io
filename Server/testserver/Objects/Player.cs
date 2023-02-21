@@ -11,47 +11,15 @@ namespace testserver.Models
 
         public double Y { get; set; }
 
-        public int Id { get; set; }
+        public double Hp { get; set; }
 
-       // public string Color { get; set; }
+        public int Id { get; set; }
 
      //   public string Direction { get; set; }
 
-       // public string Type { get; set; }
-
      //   public bool IsDead { get; set; } = false;
 
-        public void MoveUp()
-        {
-            if (this.Y - 20 >= 0)
-            {
-                this.Y -= 20;
-            }
-        }
-
-        public void MoveRight()
-        {
-            if (this.X + 20 <= 1366)
-            {
-                this.X += 20;
-            }
-        }
-
-        public void MoveDown()
-        {
-            if (this.Y + 20 <= 1366)
-            {
-                this.Y += 20;
-            }
-        }
-
-        public void MoveLeft()
-        {
-            if (this.X - 20 >= 0)
-            {
-                this.X -= 20;
-            }
-        }
+        
         /*
         private Dictionary<string, string> directionsRight = new Dictionary<string, string>
         {
