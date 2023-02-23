@@ -62,13 +62,21 @@ connection.on("Attacked", function (id) {
  connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
     for(i=0;i<Xes.length;i++){
         if(Types[i]=="tree"){
+<<<<<<< Updated upstream
             stationObjects.push(new objectcomponent(Xes[i], Yes[i], "green", 100, 100, Ids[i], Types[i]));
+=======
+            stationObjects.push(new othercomponent(Xes[i], Yes[i], "transparent", 100, 100, Ids[i], Types[i]));
+>>>>>>> Stashed changes
 
             objectSprites.push(new Sprite({x:Xes[i]-10,y:Yes[i]-10,width:120,height:120,
             imgSrc:'./image/tree.png'}));
 
         }else{
+<<<<<<< Updated upstream
             stationObjects.push(new objectcomponent(Xes[i], Yes[i], "gray", 100, 100, Ids[i], Types[i]));
+=======
+            stationObjects.push(new othercomponent(Xes[i], Yes[i], "transparent", 100, 100, Ids[i], Types[i]));
+>>>>>>> Stashed changes
 
             objectSprites.push(new Sprite({x:Xes[i]-30,y:Yes[i]-35,width:160,height:160,
             imgSrc:'./image/rock.png'}));
@@ -99,12 +107,20 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
     if(numbr<Xes.length){
         for(i=numbr;i<Xes.length;i++){
             if(Types[i]=="rabit"){
+<<<<<<< Updated upstream
                 mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "yellow", 30, 30, Ids[i], Types[i],Hps[i]));
+=======
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i] , "transparent" ,30, 30, Ids[i], Types[i]));
+>>>>>>> Stashed changes
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:30,height:30,
                     imgSrc:'./image/bunny.png'}));
             }else{
+<<<<<<< Updated upstream
                 mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
+=======
+                mobileEntities.push(new othercomponent(Xes[i], Yes[i], "transparent" ,50, 50, Ids[i], Types[i]));
+>>>>>>> Stashed changes
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
                     imgSrc:'./image/pig_maybe.png'}));
@@ -132,7 +148,11 @@ var playerid=-1 , isplayer=false ,numbr=0;
 //  * * *
 //  * * *
 function startGame() {
+<<<<<<< Updated upstream
     myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight, playerHealth));
+=======
+    myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "transparent", playerWidth, playerHeight));
+>>>>>>> Stashed changes
     
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
         imgSrc:'./image/Coolplayer.webp'}));
@@ -319,7 +339,11 @@ function updateGameArea() {
     myGameArea.clear();
     backbackground.draw();
     background.draw();
+<<<<<<< Updated upstream
     //console.log(value_);
+=======
+    
+>>>>>>> Stashed changes
 
 
     myGamePieces.forEach(myGamePiece=>{
