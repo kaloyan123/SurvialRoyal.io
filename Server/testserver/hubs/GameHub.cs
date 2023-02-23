@@ -30,12 +30,6 @@ namespace testserver.hubs
 
             var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
-            double hp = 0;
-            this.loopCraete.curMap?.players.ForEach(player =>
-            {
-                hp = player.Hp;
-            });
-
             await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, id);
         }
 

@@ -23,10 +23,10 @@ namespace testserver.Objects
 
         public int tiks { get; set; } = 0;
 
-        public int mapstartX = -1900;
-        public int mapstartY = -1100;
-        public int mapendX = 2600;
-        public int mapendY = 1600;
+        public int mapstartX = 0;
+        public int mapstartY = 0;
+        public int mapendX = 4000;
+        public int mapendY = 2400;
 
         public int playerReach = 50;
         public int playerSize = 50;
@@ -59,7 +59,7 @@ namespace testserver.Objects
                     player.Y<= attackboxWidth)
                     {
                         player.Hp -= 10;
-                        Console.WriteLine(player.Hp);
+                       // Console.WriteLine(player.Hp);
                         attackedPlayersId.Add(player.Id);
                     }
                 }
@@ -106,12 +106,13 @@ namespace testserver.Objects
             Console.WriteLine(attackboxY);
             Console.WriteLine(attackboxHight);
             Console.WriteLine(attackboxWidth);
-            */
             attackedPlayersId.ForEach(attackedPlayerId =>
             {
                 Console.WriteLine("attack made on");
                 Console.WriteLine(attackedPlayerId);
             });
+            */
+
         }
 
         public void MovePlayer(int x, int y, int id)
@@ -212,23 +213,27 @@ namespace testserver.Objects
                         //Console.WriteLine("work eaven" + neshto);
                     }
 
-                    if (mobileEntity.X + 50 > mapendX && mobileEntity.X < mapstartX)
+                    if (mobileEntity.X + 50 > mapendX)
                     {
-                        //mobileEntity.DirectionX = -1;
+                        mobileEntity.DirectionX = -1;
                     }
-                    else
+                    if (mobileEntity.X < mapstartX)
                     {
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        mobileEntity.DirectionX = 1;
                     }
+                    mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
 
-                    if (mobileEntity.Y + 50 > mapendY && mobileEntity.Y < mapstartY)
+
+                    if (mobileEntity.Y + 50 > mapendY)
                     {
-                        //mobileEntity.DirectionX = -1;
+                        mobileEntity.DirectionY = -1;
                     }
-                    else
+                    if (mobileEntity.Y < mapstartY)
                     {
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                        mobileEntity.DirectionY = 1;
                     }
+                    mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                    
                 }
                 else if(mobileEntity.Type == "pig")
                 {
@@ -264,24 +269,26 @@ namespace testserver.Objects
                         //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
                     }
 
-                    if (mobileEntity.X + 50 > mapendX && mobileEntity.X < mapstartX)
+                    if (mobileEntity.X + 50 > mapendX)
                     {
-                        //mobileEntity.DirectionX = -1;
+                        mobileEntity.DirectionX = -1;
                     }
-                    else
+                    if (mobileEntity.X < mapstartX)
                     {
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        mobileEntity.DirectionX = 1;
                     }
+                    mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
 
-                    
-                    if (mobileEntity.Y + 50 > mapendY && mobileEntity.Y < mapstartY)
+
+                    if (mobileEntity.Y + 50 > mapendY)
                     {
-                        //mobileEntity.DirectionX = -1;
+                        mobileEntity.DirectionY = -1;
                     }
-                    else
+                    if (mobileEntity.Y < mapstartY)
                     {
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                        mobileEntity.DirectionY = 1;
                     }
+                    mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                 }
                 
 

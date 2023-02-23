@@ -119,12 +119,12 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
 
 start(connection);
 
-var myGamePieces = [], //players
-stationObjects= [], mobileEntities = [],background,playrsprites = [],objectSprites=[],entitySprites=[];
-var playerCodinateX = Math.floor(Math.random()*1000), playerCodinateY = Math.floor(Math.random()*700), 
+var myGamePieces = [], stationObjects= [], mobileEntities = [],
+background,backbackground, playrsprites = [], objectSprites=[], entitySprites=[];
+var mapX = 0, mapY = 0, mapendX=4000, mapendY=2400, canvassezeX=1300, canvassezeY=800;
+var playerCodinateX = Math.floor(Math.random()*3900), playerCodinateY = Math.floor(Math.random()*2400), 
 playerWidth=50,playerHeight=50,playerspeed=5,playerHealth=100,playerReach=50;
-var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY,
-canvassezeX=1300,canvassezeY=800,mapX = -1900,mapY = -1100,mapendX=2600,mapendY=1600;
+var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var playerid=-1 , isplayer=false ,numbr=0;
 
 
@@ -138,6 +138,8 @@ function startGame() {
         imgSrc:'./image/Coolplayer.webp'}));
 
    background = new Sprite({x:mapX, y:mapY, width:mapendX-mapX, height:mapendY-mapY, imgSrc:'./image/map_grass.png'})
+
+   backbackground = new Sprite({x:mapX-1000, y:mapY-1000, width:mapendX-mapX+2000, height:mapendY-mapY+2000, imgSrc:'./image/mapVoid.png'})
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerCodinateY ,playerHealth).catch(function (err) {
         return console.error(err.toString());
@@ -174,6 +176,12 @@ var myGameArea = {
             });
             myGamePieces[0].DrawAttavkBoxrl();
         })
+
+        window.addEventListener("mousemove", function(e) {
+            mousex = e.pageX;
+            mousey = e.pageY;
+            //console.log(mousex);
+        });
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -228,7 +236,12 @@ function playercomponent(x, y, color, width, height, health) {
         connection.invoke("UpdatePlayers", this.x, this.y, playerid).catch(function (err) {
             return console.error(err.toString());
         });
-    }   
+    } 
+    this.Drawformap = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }  
 }
 function objectcomponent(x, y, color, width, height, id , type) {
     this.width = width;
@@ -244,7 +257,12 @@ function objectcomponent(x, y, color, width, height, id , type) {
         ctx.fillStyle = color;
         ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
     }  
-    
+
+    this.Drawformap = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }
 }
 
 function entitycomponent(x, y, color, width, height, id , type, health) {
@@ -292,10 +310,14 @@ class Sprite{
     drawrl(){
         myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
     }
+    drawformap(){
+        myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);
+    }
 }
 
 function updateGameArea() {
     myGameArea.clear();
+    backbackground.draw();
     background.draw();
     //console.log(value_);
 
@@ -304,17 +326,31 @@ function updateGameArea() {
         if(playerid==myGamePiece.id){
 
             myGamePiece.speedX = 0;
-            myGamePiece.speedY = 0;    
-            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = playerspeed; }
-            
-            if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -playerspeed; }
-            if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = playerspeed; }
+            myGamePiece.speedY = 0;  
 
+            if(myGamePiece.x+50<=mapendX){
+                if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = playerspeed; }
+
+                if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = playerspeed; }
+            }
+            if(myGamePiece.x>=mapX){
+                if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -playerspeed; }
+                
+                if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -playerspeed; }
+            }
+
+            if(myGamePiece.y>=mapY){
+                if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -playerspeed; }
+                
+                if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -playerspeed; }
+            }
+            if(myGamePiece.y+50<=mapendY){
+                if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = playerspeed; }
+
+                if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = playerspeed; }
+            }
+           
+            
             myGamePiece.newPosUpdate(); 
 
            // myGamePiece.Drawrl();
@@ -343,11 +379,11 @@ function updateGameArea() {
         otherentety.DrawHealth();
     })
     
-    /*
+    
     stationObjects.forEach(otherentety=>{
-        otherentety.Draw();
+       // otherentety.Draw();
     })
-    */
+    
 
     entitySprites.forEach(entitySprites=>{
         entitySprites.draw();
@@ -356,7 +392,22 @@ function updateGameArea() {
     objectSprites.forEach(objectSprite=>{
         objectSprite.draw();
     })
+
     
+     Drawminimap();
+}
+
+function Drawminimap(){
+    backbackground.drawformap();
+    background.drawformap();
+
+    myGamePieces.forEach(myGamePiece=>{
+        myGamePiece.Drawformap();
+    })
+
+    stationObjects.forEach(otherentety=>{
+        otherentety.Drawformap();
+     })
 }
 
 function onmousemove (e) {
