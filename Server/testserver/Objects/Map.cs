@@ -37,12 +37,65 @@ namespace testserver.Objects
             players.Add(player);
         }
 
-        public void Attack(int x, int y, int id)
+        public void Attack(int x, int y, int id, double angle)
         {
+            int attackboxX = 0;
+            int attackboxY = 0;
+            int attackboxHight = 0;
+            int attackboxWidth = 0;
+
+            // general up
+            if (angle <= 0.8 && angle >= -0.8)
+            {
+                 attackboxX = x - playerReach;
+                 attackboxY = y - playerReach;
+                 attackboxHight = x + playerSize + playerReach;
+                 attackboxWidth = y + playerSize + playerReach -75;
+
+            }
+
+            // general right
+            if (angle > 0.8 && angle <= 2.2)
+            {
+                 attackboxX = x - playerReach + 75;
+                 attackboxY = y - playerReach;
+                 attackboxHight = x + playerSize + playerReach;
+                 attackboxWidth = y + playerSize + playerReach;
+
+            }
+
+            // general down
+            if (angle > 2.2 && angle <= 3.8)
+            {
+                 attackboxX = x - playerReach;
+                 attackboxY = y - playerReach + 75;
+                 attackboxHight = x + playerSize + playerReach;
+                 attackboxWidth = y + playerSize + playerReach;
+
+            }
+
+            // general left
+            if (angle > 3.8)
+            {
+                 attackboxX = x - playerReach;
+                 attackboxY = y - playerReach;
+                 attackboxHight = x + playerSize + playerReach - 75;
+                 attackboxWidth = y + playerSize + playerReach;
+
+            }
+            if (angle < -0.8)
+            {
+                 attackboxX = x - playerReach;
+                 attackboxY = y - playerReach;
+                 attackboxHight = x + playerSize + playerReach - 75;
+                 attackboxWidth = y + playerSize + playerReach;
+            }
+            /*
             int attackboxX = x-playerReach;
             int attackboxY = y- playerReach;
             int attackboxHight = x + playerSize + playerReach;
             int attackboxWidth = y + playerSize + playerReach;
+            */
 
              List<int> attackedPlayersId = new List<int>();
 
@@ -79,7 +132,7 @@ namespace testserver.Objects
                     mobileEntity.Y <= attackboxWidth)
                 {
                     mobileEntity.Hp -= 10;
-                    Console.WriteLine(mobileEntity.Hp);
+                    //Console.WriteLine(mobileEntity.Hp);
                     attackedPlayersId.Add(mobileEntity.Id);
                 }
                 /*

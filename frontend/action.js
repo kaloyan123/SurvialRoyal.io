@@ -19,7 +19,7 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (X, Y, Hp, id) {
+connection.on("drawCharacters", function (X, Y, Hp, id, angle) {
     if(playerid==id){
         players[0].health = Hp;
     }
@@ -36,14 +36,17 @@ connection.on("drawCharacters", function (X, Y, Hp, id) {
         playrsprites.forEach(playrsprite=>{
             if(playrsprite.id==id){    
                 playrsprite.x = X-10;
-                playrsprite.y = Y-10;   
+                playrsprite.y = Y-10;  
+                
+                console.log(angle);
+                playrsprite.angle = angle; 
             }
         })
         if(!isplayer){
             players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp));
 
-            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerSize+20,height:playerSize+20,
-                imgSrc:'./image/Coolplayer.webp'}));
+            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerSize,height:playerSize,
+                imgSrc:'./image/Coolplayer.png'}));
 
             players[players.length-1].SetId(id);
             playrsprites[players.length-1].setId(id);
@@ -126,7 +129,7 @@ var players = [], stationObjects= [], mobileEntities = [],
 background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
 var playerCodinateX = Math.floor(Math.random()*mapHight-100), playerCodinateY = Math.floor(Math.random()*mapWidth-100), 
-playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50;
+playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0;
 var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var playerid=-1 , isplayer=false ,numbr=0;
 
@@ -140,7 +143,7 @@ function startGame() {
 
     
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerSize,height:playerSize,
-        imgSrc:'./image/Coolplayer.webp'}));
+        imgSrc:'./image/Coolplayer.png'}));
 
    background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
 
@@ -176,7 +179,7 @@ var myGameArea = {
         })
 
         window.addEventListener('click', function (e) {
-            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid).catch(function (err) {
+            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle).catch(function (err) {
                 return console.error(err.toString());
             });
             players[0].DrawAttavkBoxrl();
@@ -201,8 +204,8 @@ function playercomponent(x, y, color, width, height, health) {
     this.x = x;
     this.y = y;
     this.health = health;   
-    this.centerx = 0;
-    this.centery = 0;
+    this.centerx = centerX + this.width / 2;;
+    this.centery = centerY + this.width / 2;;
 
     this.SetId = function(id) {
         this.id =  id; 
@@ -221,7 +224,37 @@ function playercomponent(x, y, color, width, height, health) {
     this.DrawAttavkBoxrl = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = "red";
-        ctx.fillRect(this.x-cameraX-playerReach, this.y-cameraY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2));
+
+        // general up
+        if(playerAngle < 0.8 && playerAngle>-0.8){
+            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2) -75);
+            console.log("general up");
+        }
+
+        // general right
+        if(playerAngle > 0.8 && playerAngle<2.2){
+            ctx.fillRect(this.centerx, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
+            console.log("general right");
+        }
+
+        // general down
+        if(playerAngle > 2.2 && playerAngle<3.8){
+            ctx.fillRect(centerX-playerReach, this.centery, this.width+(playerReach*2), this.height+(playerReach*2)-75);
+            console.log("general down");
+        }
+
+        // general left
+        if(playerAngle>3.8){
+            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
+            console.log("general left");
+        }
+        if(playerAngle < -0.8 ){
+            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2) );
+            console.log("general left");
+        }
+        
+        
+        //ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2));
     }  
     this.DrawHealth = function() {
         ctx = myGameArea.context;
@@ -240,11 +273,12 @@ function playercomponent(x, y, color, width, height, health) {
         cameraX = playerCodinateX-centerX;
         cameraY = playerCodinateY-centerY;
 
-        connection.invoke("UpdatePlayers", this.x, this.y, playerid).catch(function (err) {
+        connection.invoke("UpdatePlayers", this.x, this.y, playerid, playerAngle).catch(function (err) {
             return console.error(err.toString());
         });
     } 
-    this.update = function(){
+    /*
+    this.rotationdraw = function(){
         ctx = myGameArea.context;
         ctx.fillStyle = color;
 
@@ -260,6 +294,7 @@ function playercomponent(x, y, color, width, height, health) {
         ctx.fillRect(centerX, centerY, this.width, this.height); 
         ctx.setTransform(1, 0, 0, 1, 0, 0);   
    }
+   */
     this.Drawformap = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
@@ -323,14 +358,19 @@ class Sprite{
         this.image = new Image();
         this.image.src = imgSrc;
         this.id =  0; 
+        this.angle = 0;
+        this.centerx = this.x-cameraX + this.width / 2;
+        this.centery = this.y-cameraY + this.height / 2;
     }
     setId(id){
+        console.log(id);
         this.id = id;   
     }
 
     draw(){
         myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
     }
+    
     drawrl(){
         myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
     }
@@ -340,7 +380,23 @@ class Sprite{
     drawformap_(){
         myGameArea.context.drawImage(this.image,canvassezeX-200 -2,canvassezeY-200 -2,200,200);
     }
-    update(){
+    
+    rotationdraw(){
+        ctx = myGameArea.context;
+
+        //this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
+
+        //playerAngle=this.angle;
+
+        ctx.translate(this.centerx, this.centery);
+        ctx.rotate(this.angle);
+
+        ctx.translate(-this.centerx, -this.centery);
+        myGameArea.context.drawImage(this.image,this.x-cameraX-5,this.y-cameraY-0,this.width+30,this.height+20);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);   
+    }
+    
+    rotationdrawrl(){
         ctx = myGameArea.context;
 
         this.centerx = centerX + this.width / 2;
@@ -348,11 +404,13 @@ class Sprite{
 
         this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
 
+        playerAngle=this.angle;
+
         ctx.translate(this.centerx, this.centery);
         ctx.rotate(this.angle);
 
         ctx.translate(-this.centerx, -this.centery);
-        myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
+        myGameArea.context.drawImage(this.image,centerX-15,centerY-10,this.width+30,this.height+20);
         ctx.setTransform(1, 0, 0, 1, 0, 0);   
    }
 }
@@ -361,7 +419,7 @@ function updateGameArea() {
     myGameArea.clear();
     backbackground.draw();
     background.draw();
-
+   // console.log(playerAngle);
 
     players.forEach(player=>{
         if(playerid==player.id){
@@ -393,7 +451,7 @@ function updateGameArea() {
            
             
             player.newPosUpdate(); 
-            player.update(); 
+           //player.rotationdraw(); 
            // player.Drawrl();
            player.DrawHealth();
         }else{
@@ -404,9 +462,11 @@ function updateGameArea() {
     })
     playrsprites.forEach(playrsprite=>{
         if(playerid==playrsprite.id){ 
-           playrsprite.update();
+           playrsprite.rotationdrawrl();
+           //playrsprite.drawrl();
         }else{
-            playrsprite.draw();
+            //playrsprite.draw();
+            playrsprite.rotationdraw();
         }
     })
     
@@ -415,19 +475,19 @@ function updateGameArea() {
     });
     
     
-    mobileEntities.forEach(otherentety=>{
-        otherentety.Draw();
-        otherentety.DrawHealth();
+    mobileEntities.forEach(entity=>{
+        entity.Draw();
+        entity.DrawHealth();
     })
     
     
-    stationObjects.forEach(otherentety=>{
-       // otherentety.Draw();
+    stationObjects.forEach(object=>{
+       // object.Draw();
     })
     
 
-    entitySprites.forEach(entitySprites=>{
-        entitySprites.draw();
+    entitySprites.forEach(entitySprite=>{
+        entitySprite.draw();
     })
 
     objectSprites.forEach(objectSprite=>{
@@ -450,16 +510,6 @@ function Drawminimap(){
         otherentety.Drawformap();
      })
 }
-
-function onmousemove (e) {
-    console.log("sd");
-    /*
-    var dx = e.pageX - centerX;
-    var dy = e.pageY - centerY;
-    var theta = Math.atan2(dy, dx);
-    drawArrow(theta);
-    */
-};
 
 /*
 function moveup() {

@@ -22,7 +22,7 @@ namespace testserver.hubs
             this.loopCraete = loopCraete;
         }
 
-        public async Task UpdatePlayers(int x, int y, int id)
+        public async Task UpdatePlayers(int x, int y, int id, double angle)
         {
             this.loopCraete.curMap?.MovePlayer(x, y, id);
 
@@ -30,7 +30,7 @@ namespace testserver.hubs
 
             var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
-            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, id);
+            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, id, angle);
         }
 
         public async Task InitiatePlayers(int x, int y, int health)
@@ -47,9 +47,9 @@ namespace testserver.hubs
 
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
-        public async Task PlayerAttack(int x, int y, int id)
+        public async Task PlayerAttack(int x, int y, int id, double angle)
         {
-            this.loopCraete.curMap?.Attack(x, y, id);
+            this.loopCraete.curMap?.Attack(x, y, id, angle);
 
             await Clients.All.SendAsync("atak", id);
         }
