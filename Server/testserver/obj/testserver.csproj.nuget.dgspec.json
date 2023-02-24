@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\IT\\web\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj": {}
+    "C:\\Users\\Lorry\\Desktop\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj": {}
   },
   "projects": {
-    "D:\\IT\\web\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj": {
+    "C:\\Users\\Lorry\\Desktop\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\IT\\web\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj",
+        "projectUniqueName": "C:\\Users\\Lorry\\Desktop\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj",
         "projectName": "testserver",
-        "projectPath": "D:\\IT\\web\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj",
-        "packagesPath": "C:\\Users\\Dimitar\\.nuget\\packages\\",
-        "outputPath": "D:\\IT\\web\\SurvialRoyal.io\\Server\\testserver\\obj\\",
+        "projectPath": "C:\\Users\\Lorry\\Desktop\\SurvialRoyal.io\\Server\\testserver\\testserver.csproj",
+        "packagesPath": "C:\\Users\\Lorry\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lorry\\Desktop\\SurvialRoyal.io\\Server\\testserver\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Dimitar\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Lorry\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -61,7 +57,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }

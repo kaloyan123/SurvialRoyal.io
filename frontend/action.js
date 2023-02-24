@@ -201,6 +201,8 @@ function playercomponent(x, y, color, width, height, health) {
     this.x = x;
     this.y = y;
     this.health = health;   
+    this.centerx = 0;
+    this.centery = 0;
 
     this.SetId = function(id) {
         this.id =  id; 
@@ -242,11 +244,28 @@ function playercomponent(x, y, color, width, height, health) {
             return console.error(err.toString());
         });
     } 
+    this.update = function(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+
+        this.centerx = centerX + this.width / 2;
+        this.centery = centerY + this.height / 2;
+
+        this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
+
+        ctx.translate(this.centerx, this.centery);
+        ctx.rotate(this.angle);
+
+        ctx.translate(-this.centerx, -this.centery);
+        ctx.fillRect(centerX, centerY, this.width, this.height); 
+        ctx.setTransform(1, 0, 0, 1, 0, 0);   
+   }
     this.Drawformap = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
     }  
+    
 }
 function objectcomponent(x, y, color, width, height, id , type) {
     this.width = width;
@@ -318,6 +337,21 @@ class Sprite{
     drawformap(){
         myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);
     }
+    update(){
+        ctx = myGameArea.context;
+
+        this.centerx = centerX + this.width / 2;
+        this.centery = centerY + this.height / 2;
+
+        this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
+
+        ctx.translate(this.centerx, this.centery);
+        ctx.rotate(this.angle);
+
+        ctx.translate(-this.centerx, -this.centery);
+        myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);   
+   }
 }
 
 function updateGameArea() {
@@ -356,7 +390,7 @@ function updateGameArea() {
            
             
             myGamePiece.newPosUpdate(); 
-
+            myGamePiece.update(); 
            // myGamePiece.Drawrl();
            myGamePiece.DrawHealth();
         }else{
@@ -367,7 +401,7 @@ function updateGameArea() {
     })
     playrsprites.forEach(playrsprite=>{
         if(playerid==playrsprite.id){ 
-           playrsprite.drawrl();
+           playrsprite.update();
         }else{
             playrsprite.draw();
         }
