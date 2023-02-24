@@ -159,15 +159,21 @@ namespace testserver.Objects
 
             for (int i = 0; i < 10; i++)
             {
-                if (rnd.Next(0, 100) <= 50)
+                int randm = rnd.Next(0, 100);
+                if (randm <= 33)
                 {
                     Console.WriteLine("rabit ");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, i, "rabit");
                 }
-                else
+                else if(randm <= 66)
                 {
                     Console.WriteLine("pig");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, i, "pig");
+                }
+                else
+                {
+                    Console.WriteLine("cow");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, i, "cow");
                 }
             }
 

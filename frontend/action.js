@@ -12,7 +12,7 @@ function start(connection) {
 
 connection.on("startCharacters", function (id) {
    if(playerid<0){
-    myGamePieces[0].SetId(id);
+    players[0].SetId(id);
     playrsprites[0].setId(id);
     playerid=id;
    }
@@ -21,16 +21,16 @@ connection.on("startCharacters", function (id) {
 });
 connection.on("drawCharacters", function (X, Y, Hp, id) {
     if(playerid==id){
-        myGamePieces[0].health = Hp;
+        players[0].health = Hp;
     }
     else{
-        myGamePieces.forEach(myGamePiece=>{
-            if(myGamePiece.id==id){    
+        players.forEach(player=>{
+            if(player.id==id){    
                 isplayer=true;
                 
-                myGamePiece.x = X;
-                myGamePiece.y = Y;   
-                myGamePiece.health = Hp;
+                player.x = X;
+                player.y = Y;   
+                player.health = Hp;
             }
         })
         playrsprites.forEach(playrsprite=>{
@@ -40,13 +40,13 @@ connection.on("drawCharacters", function (X, Y, Hp, id) {
             }
         })
         if(!isplayer){
-            myGamePieces.push(new playercomponent(X, Y, "red", playerWidth, playerHeight, Hp));
+            players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp));
 
-            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerWidth+20,height:playerHeight+20,
+            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerSize+20,height:playerSize+20,
                 imgSrc:'./image/Coolplayer.webp'}));
 
-            myGamePieces[myGamePieces.length-1].SetId(id);
-            playrsprites[myGamePieces.length-1].setId(id);
+            players[players.length-1].SetId(id);
+            playrsprites[players.length-1].setId(id);
             isplayer=false;
         }
     }
@@ -122,12 +122,12 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
 
 start(connection);
 
-var myGamePieces = [], stationObjects= [], mobileEntities = [],
-background,backbackground, playrsprites = [], objectSprites=[], entitySprites=[];
-var mapX = 0, mapY = 0, mapendX=4000, mapendY=2400, canvassezeX=1300, canvassezeY=800;
-var playerCodinateX = Math.floor(Math.random()*3900), playerCodinateY = Math.floor(Math.random()*2400), 
-playerWidth=50,playerHeight=50,playerspeed=5,playerHealth=100,playerReach=50;
-var centerX= 600, centerY=300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
+var players = [], stationObjects= [], mobileEntities = [],
+background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[];
+var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
+var playerCodinateX = Math.floor(Math.random()*mapHight-100), playerCodinateY = Math.floor(Math.random()*mapWidth-100), 
+playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50;
+var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var playerid=-1 , isplayer=false ,numbr=0;
 
 
@@ -136,15 +136,15 @@ var playerid=-1 , isplayer=false ,numbr=0;
 //  * * *
 function startGame() {
 
-    myGamePieces.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerWidth, playerHeight, playerHealth));
+    players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth));
 
     
-    playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerWidth,height:playerHeight,
+    playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerSize,height:playerSize,
         imgSrc:'./image/Coolplayer.webp'}));
 
-   background = new Sprite({x:mapX, y:mapY, width:mapendX-mapX, height:mapendY-mapY, imgSrc:'./image/map_grass.png'})
+   background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
 
-   backbackground = new Sprite({x:mapX-1000, y:mapY-1000, width:mapendX-mapX+2000, height:mapendY-mapY+2000, imgSrc:'./image/mapVoid.png'})
+   backbackground = new Sprite({x:mapX-1000, y:mapY-1000, width:mapHight-mapX+2000, height:mapWidth-mapY+2000, imgSrc:'./image/mapVoid.png'})
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerCodinateY ,playerHealth).catch(function (err) {
         return console.error(err.toString());
@@ -179,7 +179,7 @@ var myGameArea = {
             connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid).catch(function (err) {
                 return console.error(err.toString());
             });
-            myGamePieces[0].DrawAttavkBoxrl();
+            players[0].DrawAttavkBoxrl();
         })
 
         window.addEventListener("mousemove", function(e) {
@@ -337,6 +337,9 @@ class Sprite{
     drawformap(){
         myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);
     }
+    drawformap_(){
+        myGameArea.context.drawImage(this.image,canvassezeX-200 -2,canvassezeY-200 -2,200,200);
+    }
     update(){
         ctx = myGameArea.context;
 
@@ -360,42 +363,42 @@ function updateGameArea() {
     background.draw();
 
 
-    myGamePieces.forEach(myGamePiece=>{
-        if(playerid==myGamePiece.id){
+    players.forEach(player=>{
+        if(playerid==player.id){
 
-            myGamePiece.speedX = 0;
-            myGamePiece.speedY = 0;  
+            player.speedX = 0;
+            player.speedY = 0;  
 
-            if(myGamePiece.x+50<=mapendX){
-                if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = playerspeed; }
+            if(player.x+50<=mapHight){
+                if (myGameArea.keys && myGameArea.keys[39]) {player.speedX = playerspeed; }
 
-                if (myGameArea.keys && myGameArea.keys[68]) {myGamePiece.speedX = playerspeed; }
+                if (myGameArea.keys && myGameArea.keys[68]) {player.speedX = playerspeed; }
             }
-            if(myGamePiece.x>=mapX){
-                if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -playerspeed; }
+            if(player.x>=mapX){
+                if (myGameArea.keys && myGameArea.keys[37]) {player.speedX = -playerspeed; }
                 
-                if (myGameArea.keys && myGameArea.keys[65]) {myGamePiece.speedX = -playerspeed; }
+                if (myGameArea.keys && myGameArea.keys[65]) {player.speedX = -playerspeed; }
             }
 
-            if(myGamePiece.y>=mapY){
-                if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -playerspeed; }
+            if(player.y>=mapY){
+                if (myGameArea.keys && myGameArea.keys[38]) {player.speedY = -playerspeed; }
                 
-                if (myGameArea.keys && myGameArea.keys[87]) {myGamePiece.speedY = -playerspeed; }
+                if (myGameArea.keys && myGameArea.keys[87]) {player.speedY = -playerspeed; }
             }
-            if(myGamePiece.y+50<=mapendY){
-                if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = playerspeed; }
+            if(player.y+50<=mapWidth){
+                if (myGameArea.keys && myGameArea.keys[40]) {player.speedY = playerspeed; }
 
-                if (myGameArea.keys && myGameArea.keys[83]) {myGamePiece.speedY = playerspeed; }
+                if (myGameArea.keys && myGameArea.keys[83]) {player.speedY = playerspeed; }
             }
            
             
-            myGamePiece.newPosUpdate(); 
-            myGamePiece.update(); 
-           // myGamePiece.Drawrl();
-           myGamePiece.DrawHealth();
+            player.newPosUpdate(); 
+            player.update(); 
+           // player.Drawrl();
+           player.DrawHealth();
         }else{
-        // myGamePiece.Draw();
-        myGamePiece.DrawHealth();
+        // player.Draw();
+        player.DrawHealth();
         }
 
     })
@@ -436,11 +439,11 @@ function updateGameArea() {
 }
 
 function Drawminimap(){
-    backbackground.drawformap();
+    backbackground.drawformap_();
     background.drawformap();
 
-    myGamePieces.forEach(myGamePiece=>{
-        myGamePiece.Drawformap();
+    players.forEach(player=>{
+        player.Drawformap();
     })
 
     stationObjects.forEach(otherentety=>{
@@ -460,24 +463,24 @@ function onmousemove (e) {
 
 /*
 function moveup() {
-    myGamePieces[0].speedY = -1; 
+    players[0].speedY = -1; 
 }
 
 function movedown() {
-    myGamePieces[0].speedY = 1; 
+    players[0].speedY = 1; 
 }
 
 function moveleft() {
-    myGamePieces[0].speedX = -1; 
+    players[0].speedX = -1; 
 }
 
 function moveright() {
-    myGamePieces[0].speedX = 1; 
+    players[0].speedX = 1; 
 }
 
 function clearmove() {
-    myGamePieces[0].speedX = 0; 
-    myGamePieces[0].speedY = 0; 
+    players[0].speedX = 0; 
+    players[0].speedY = 0; 
 }
 
 <div style="text-align:center;width:480px;">
