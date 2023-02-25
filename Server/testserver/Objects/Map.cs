@@ -20,6 +20,7 @@ namespace testserver.Objects
         public List<StationryObj> imobileObjs { get; set; } = new List<StationryObj>();
 
         public List<MobileEntity> mobileEntities { get; set; } = new List<MobileEntity>();
+        public int entityNumber = -1;
 
         public int tiks { get; set; } = 0;
 
@@ -102,6 +103,12 @@ namespace testserver.Objects
                         player.Hp -= 10;
                        // Console.WriteLine(player.Hp);
                         attackedPlayersId.Add(player.Id);
+
+                        if (player.Hp <= 0 && player.IsAlive)
+                        {
+                            players[id].IsAlive = false;
+                            players[id].Points += 50;
+                        }
                     }
                 }
                 /*
@@ -114,8 +121,32 @@ namespace testserver.Objects
                 */
             });
 
+            imobileObjs.ForEach(Object =>
+            {
+                if (Object.Id == id)
+                {
+                }
+                else
+                {
+                    if (Object.X + playerSize >= attackboxX && Object.Y + playerSize >= attackboxY && Object.X <= attackboxHight &&
+                    Object.Y <= attackboxWidth)
+                    {
+                        // Console.WriteLine(Object.Type);
+                        if (Object.Type == "tree") { // Object.Type is tree/rock
+                            players[id].Wood += 10;
+                        }
+                        else
+                        {
+                            players[id].Stone += 10;
+                        }
+                    }
+                }
+            });
+
             //int sizeOfArray = mobileEntities.Length;
-            
+
+            int addAnimals = 0;
+
             mobileEntities.ForEach(mobileEntity =>
             {
                 if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
@@ -129,13 +160,12 @@ namespace testserver.Objects
 
                         if (mobileEntity.Hp <= 0)
                         {
+                            addAnimals++;
+
                             mobileEntity.IsAlive = false;
                             Console.WriteLine(mobileEntity.IsAlive);
-                            /*
-                            CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), mobileEntity.Hp,
-                                mobileEntities.Count + 1, mobileEntity.Type);
-                            Console.WriteLine(mobileEntity.Type);
-                            */
+
+                            players[id].Points += 10;
                         }
                     }
                 }
@@ -157,7 +187,28 @@ namespace testserver.Objects
                 Console.WriteLine(player.Y + playerSize);
                 */
             });
-
+            if(addAnimals>0)
+            {
+                for (int i = 0; i < addAnimals; i++)
+                {
+                    int randm = rnd.Next(0, 100);
+                    if (randm <= 33)
+                    {
+                        Console.WriteLine("rabit ");
+                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
+                    }
+                    else if (randm <= 66)
+                    {
+                        Console.WriteLine("pig");
+                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
+                    }
+                    else
+                    {
+                        Console.WriteLine("cow");
+                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
+                    }
+                }
+            }
             /*
             Console.WriteLine(attackboxX);
             Console.WriteLine(attackboxY);
@@ -192,9 +243,10 @@ namespace testserver.Objects
             //  Console.WriteLine(imobileobject.Type);
         }
 
-        public void CreateEntity(int x, int y,double Hp, int id, string type)
+        public void CreateEntity(int x, int y,double Hp, string type)
         {
-            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Hp = Hp, Id = id, Type = type, DirectionX = 0, DirectionY=0 };
+            entityNumber++;
+            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Hp = Hp, Id = entityNumber, Type = type};
             mobileEntities.Add(mobileEntity);
 
             // Console.WriteLine(mobileEntity.Type);
@@ -220,17 +272,17 @@ namespace testserver.Objects
                 if (randm <= 33)
                 {
                     Console.WriteLine("rabit ");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, i, "rabit");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
                 }
                 else if(randm <= 66)
                 {
                     Console.WriteLine("pig");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, i, "pig");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
                 }
                 else
                 {
                     Console.WriteLine("cow");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, i, "cow");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
                 }
             }
 

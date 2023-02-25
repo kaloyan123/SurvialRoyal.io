@@ -19,9 +19,12 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (X, Y, Hp, id, angle) {
+connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, angle) {
     if(playerid==id){
         players[0].health = Hp;
+        players[0].points = Points;
+        players[0].wood = Wood;
+        players[0].stone = Stone;
     }
     else{
         players.forEach(player=>{
@@ -210,6 +213,9 @@ function playercomponent(x, y, color, width, height, health) {
     this.x = x;
     this.y = y;
     this.health = health;   
+    this.wood = 0;
+    this.stone = 0;
+    this.points = 0;
     this.centerx = centerX + this.width / 2;;
     this.centery = centerY + this.width / 2;;
 
@@ -459,9 +465,15 @@ function updateGameArea() {
            //player.rotationdraw(); 
            // player.Drawrl();
            player.DrawHealth();
+
+           if(player.health<=0){
+            window.location.href = "index.html";
+           }
         }else{
-        // player.Draw();
-        player.DrawHealth();
+            if(player.health>0){
+                // player.Draw();
+                player.DrawHealth();
+            }
         }
 
     })
@@ -503,6 +515,19 @@ function updateGameArea() {
 
     
      Drawminimap();
+     DrawExtentions();
+}
+
+function DrawExtentions(){
+    ctx = myGameArea.context;
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+
+    ctx.fillText("points: " + players[0].points, canvassezeX-100, canvassezeY-210);
+    ctx.fillText("wood: " + players[0].wood, canvassezeX-100, canvassezeY-260);
+    ctx.fillText("stone: " + players[0].stone, canvassezeX-100, canvassezeY-310);
+
 }
 
 function Drawminimap(){
@@ -510,7 +535,9 @@ function Drawminimap(){
     background.drawformap();
 
     players.forEach(player=>{
-        player.Drawformap();
+        if(player.health>0){
+            player.Drawformap();
+        }
     })
 
     stationObjects.forEach(otherentety=>{
@@ -519,6 +546,8 @@ function Drawminimap(){
 }
 
 /*
+
+
 function moveup() {
     players[0].speedY = -1; 
 }

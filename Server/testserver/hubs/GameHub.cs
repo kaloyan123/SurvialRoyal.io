@@ -30,7 +30,7 @@ namespace testserver.hubs
 
             var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
-            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, id, angle);
+            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, obj.Points, obj.Wood, obj.Stone, id, angle);
         }
 
         public async Task InitiatePlayers(int x, int y, int health)

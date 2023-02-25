@@ -15,37 +15,13 @@ namespace testserver.Models
 
         public int Id { get; set; }
 
-     //   public string Direction { get; set; }
+        public int Points { get; set; } = 0;
 
-     //   public bool IsDead { get; set; } = false;
+        public int Wood { get; set; } = 0;
+        public int Stone { get; set; } = 0;
 
-        
-        /*
-        private Dictionary<string, string> directionsRight = new Dictionary<string, string>
-        {
-            ["up"] = "right",
-            ["right"] = "down",
-            ["down"] = "left",
-            ["left"] = "up"
-        };
+        public bool IsAlive { get; set; } = true;
 
-        private Dictionary<string, string> directionsLeft = new Dictionary<string, string>
-        {
-            ["up"] = "left",
-            ["left"] = "down",
-            ["down"] = "right",
-            ["right"] = "up"
-        };
-        public void RotateLeft()
-        {
-            this.Direction = this.directionsLeft[this.Direction];
-        }
-
-        public void RotateRight()
-        {
-            this.Direction = this.directionsRight[this.Direction];
-        }
-        */
     }
 }
 

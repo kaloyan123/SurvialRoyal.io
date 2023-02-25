@@ -17,8 +17,8 @@ namespace testserver.Objects
 
         public string Type { get; set; }
 
-        public double DirectionX { get; set; }
-        public double DirectionY { get; set; }
+        public double DirectionX { get; set; } = 0;
+        public double DirectionY { get; set; } = 0;
 
         public bool IsAlive { get; set; } = true;
     }
