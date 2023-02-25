@@ -45,7 +45,7 @@ connection.on("drawCharacters", function (X, Y, Hp, id, angle) {
         if(!isplayer){
             players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp));
 
-            playrsprites.push(new Sprite({x:X-10,y:Y-10,width:playerSize,height:playerSize,
+            playrsprites.push(new Sprite({x:X,y:Y,width:playerSize,height:playerSize,
                 imgSrc:'./image/Coolplayer.png'}));
 
             players[players.length-1].SetId(id);
@@ -108,12 +108,18 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:30,height:30,
                     imgSrc:'./image/bunny.png'}));
-            }else{
+            }else if(Types[i]=="pig"){
                 mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
 
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
                     imgSrc:'./image/pig_maybe.png'}));
+            }else{
+                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
+
+
+                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
+                    imgSrc:'./image/unused/cow_maybe.png'}));
             }
             console.log("entity drawn");
         }
@@ -244,12 +250,8 @@ function playercomponent(x, y, color, width, height, health) {
         }
 
         // general left
-        if(playerAngle>3.8){
+        if(playerAngle>3.8 || playerAngle < -0.8 ){
             ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
-            console.log("general left");
-        }
-        if(playerAngle < -0.8 ){
-            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2) );
             console.log("general left");
         }
         
@@ -359,8 +361,8 @@ class Sprite{
         this.image.src = imgSrc;
         this.id =  0; 
         this.angle = 0;
-        this.centerx = this.x-cameraX + this.width / 2;
-        this.centery = this.y-cameraY + this.height / 2;
+       // this.centerx = this.x-cameraX + this.width / 2;
+        //this.centery = this.y-cameraY + this.height / 2;
     }
     setId(id){
         console.log(id);
@@ -387,6 +389,9 @@ class Sprite{
         //this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
 
         //playerAngle=this.angle;
+
+        this.centerx = (this.x-cameraX + this.width / 2) +10;
+        this.centery = (this.y-cameraY + this.height / 2) +10;
 
         ctx.translate(this.centerx, this.centery);
         ctx.rotate(this.angle);
@@ -476,8 +481,10 @@ function updateGameArea() {
     
     
     mobileEntities.forEach(entity=>{
-        entity.Draw();
-        entity.DrawHealth();
+        if(entity.health>0){
+            entity.Draw();
+            entity.DrawHealth();
+        }
     })
     
     

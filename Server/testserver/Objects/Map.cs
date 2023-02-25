@@ -75,7 +75,7 @@ namespace testserver.Objects
             }
 
             // general left
-            if (angle > 3.8)
+            if (angle > 3.8 || angle < -0.8)
             {
                  attackboxX = x - playerReach;
                  attackboxY = y - playerReach;
@@ -83,19 +83,7 @@ namespace testserver.Objects
                  attackboxWidth = y + playerSize + playerReach;
 
             }
-            if (angle < -0.8)
-            {
-                 attackboxX = x - playerReach;
-                 attackboxY = y - playerReach;
-                 attackboxHight = x + playerSize + playerReach - 75;
-                 attackboxWidth = y + playerSize + playerReach;
-            }
-            /*
-            int attackboxX = x-playerReach;
-            int attackboxY = y- playerReach;
-            int attackboxHight = x + playerSize + playerReach;
-            int attackboxWidth = y + playerSize + playerReach;
-            */
+            
 
              List<int> attackedPlayersId = new List<int>();
 
@@ -126,14 +114,30 @@ namespace testserver.Objects
                 */
             });
 
+            //int sizeOfArray = mobileEntities.Length;
+            
             mobileEntities.ForEach(mobileEntity =>
             {
                 if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
                     mobileEntity.Y <= attackboxWidth)
                 {
-                    mobileEntity.Hp -= 10;
-                    //Console.WriteLine(mobileEntity.Hp);
-                    attackedPlayersId.Add(mobileEntity.Id);
+                    if (mobileEntity.IsAlive) {
+
+                        mobileEntity.Hp -= 10;
+                        //Console.WriteLine(mobileEntity.Hp);
+                        attackedPlayersId.Add(mobileEntity.Id);
+
+                        if (mobileEntity.Hp <= 0)
+                        {
+                            mobileEntity.IsAlive = false;
+                            Console.WriteLine(mobileEntity.IsAlive);
+                            /*
+                            CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), mobileEntity.Hp,
+                                mobileEntities.Count + 1, mobileEntity.Type);
+                            Console.WriteLine(mobileEntity.Type);
+                            */
+                        }
+                    }
                 }
                 /*
                 if (mobileEntity.Id == id)
@@ -188,7 +192,7 @@ namespace testserver.Objects
             //  Console.WriteLine(imobileobject.Type);
         }
 
-        public void CreateEntity(int x, int y,int Hp, int id, string type)
+        public void CreateEntity(int x, int y,double Hp, int id, string type)
         {
             MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Hp = Hp, Id = id, Type = type, DirectionX = 0, DirectionY=0 };
             mobileEntities.Add(mobileEntity);
@@ -245,109 +249,114 @@ namespace testserver.Objects
             {
                 if (mobileEntity.Type == "rabit")
                 {
-                    if (tiks % 100 == 0)
+                    if (mobileEntity.IsAlive)
                     {
-
-                        if (rnd.Next(0, 100) <= 50)
+                        if (tiks % 100 == 0)
                         {
-                            mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+
+                            if (rnd.Next(0, 100) <= 50)
+                            {
+                                mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+                            }
+                            else
+                            {
+                                mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
+
+                            }
+
+                            if (rnd.Next(0, 100) <= 50)
+                            {
+                                mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+                            }
+                            else
+                            {
+                                mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
+
+                            }
+
+                            //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
+                            //Console.WriteLine("work eaven" + neshto);
                         }
-                        else
+
+                        if (mobileEntity.X + 50 > mapendX)
                         {
-                            mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
-
+                            mobileEntity.DirectionX = -1;
                         }
-
-                        if (rnd.Next(0, 100) <= 50)
+                        if (mobileEntity.X < mapstartX)
                         {
-                            mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1;
+                            mobileEntity.DirectionX = 1;
                         }
-                        else
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+
+
+                        if (mobileEntity.Y + 50 > mapendY)
                         {
-                            mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
-
+                            mobileEntity.DirectionY = -1;
                         }
-
-                        //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
-                        //Console.WriteLine("work eaven" + neshto);
+                        if (mobileEntity.Y < mapstartY)
+                        {
+                            mobileEntity.DirectionY = 1;
+                        }
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
-
-                    if (mobileEntity.X + 50 > mapendX)
-                    {
-                        mobileEntity.DirectionX = -1;
-                    }
-                    if (mobileEntity.X < mapstartX)
-                    {
-                        mobileEntity.DirectionX = 1;
-                    }
-                    mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-
-
-                    if (mobileEntity.Y + 50 > mapendY)
-                    {
-                        mobileEntity.DirectionY = -1;
-                    }
-                    if (mobileEntity.Y < mapstartY)
-                    {
-                        mobileEntity.DirectionY = 1;
-                    }
-                    mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
-                    
                 }
-                else if(mobileEntity.Type == "pig")
+                else if (mobileEntity.Type == "pig")
                 {
-                    if (tiks % 500 == 0)
+                    if (mobileEntity.IsAlive)
                     {
-                        mobileEntity.DirectionX = 0;
-                        mobileEntity.DirectionY = 0;
-
-                        //  Console.WriteLine("work eaven" + mobileEntity.DirectionY);
-                    }
-                    if (tiks % 1000 == 0)
-                    {
-                      //  Console.WriteLine("work pig");
-
-                        if (rnd.Next(0, 100) <= 50)
+                        if (tiks % 500 == 0)
                         {
-                            mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                            mobileEntity.DirectionX = 0;
+                            mobileEntity.DirectionY = 0;
+
+                            //  Console.WriteLine("work eaven" + mobileEntity.DirectionY);
                         }
-                        else
+                        if (tiks % 1000 == 0)
                         {
-                            mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+                            //  Console.WriteLine("work pig");
 
+                            if (rnd.Next(0, 100) <= 50)
+                            {
+                                mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                            }
+                            else
+                            {
+                                mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                            }
+                            if (rnd.Next(0, 100) <= 50)
+                            {
+                                mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                            }
+                            else
+                            {
+                                mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                            }
+                            //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
                         }
-                        if (rnd.Next(0, 100) <= 50)
+
+                        if (mobileEntity.X + 50 > mapendX)
                         {
-                            mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                            mobileEntity.DirectionX = -1;
                         }
-                        else
+                        if (mobileEntity.X < mapstartX)
                         {
-                            mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
-
+                            mobileEntity.DirectionX = 1;
                         }
-                        //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
-                    }
-
-                    if (mobileEntity.X + 50 > mapendX)
-                    {
-                        mobileEntity.DirectionX = -1;
-                    }
-                    if (mobileEntity.X < mapstartX)
-                    {
-                        mobileEntity.DirectionX = 1;
-                    }
-                    mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
 
 
-                    if (mobileEntity.Y + 50 > mapendY)
-                    {
-                        mobileEntity.DirectionY = -1;
+                        if (mobileEntity.Y + 50 > mapendY)
+                        {
+                            mobileEntity.DirectionY = -1;
+                        }
+                        if (mobileEntity.Y < mapstartY)
+                        {
+                            mobileEntity.DirectionY = 1;
+                        }
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
-                    if (mobileEntity.Y < mapstartY)
-                    {
-                        mobileEntity.DirectionY = 1;
-                    }
-                    mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                 }
                 
 

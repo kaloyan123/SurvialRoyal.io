@@ -124,7 +124,16 @@ namespace testserver.hubs
                 string type = mobileEntity.Type;
                 EntityTypes.Add(type);
             });
+
+
             /*
+            List<bool> LivingEntities = new List<bool>();
+            this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
+            {
+                bool stateOfLife = mobileEntity.IsAlive;
+                LivingEntities.Add(stateOfLife);
+            });
+
             foreach (var i in EntityX)
             {
                 Console.WriteLine(i);
