@@ -26,11 +26,16 @@ namespace testserver.hubs
         {
             this.loopCraete.curMap?.MovePlayer(x, y, id);
 
-            //  int? tiks = this.loopCraete.curMap?.tiks;
-
             var obj = this.loopCraete.curMap?.players.FirstOrDefault(x => x.Id == id);
 
-            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, obj.Points, obj.Wood, obj.Stone, id, angle);
+            List<double> points = new List<double>();
+            this.loopCraete.curMap?.players.ForEach(player =>
+            {
+                double id = player.Points;
+                points.Add(id);
+            });
+
+            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, points, obj.Wood, obj.Stone, id, angle);
         }
 
         public async Task InitiatePlayers(int x, int y, int health)
@@ -94,7 +99,6 @@ namespace testserver.hubs
             {
                 double x = mobileEntity.X;
                 EntityX.Add(x);
-                // Console.WriteLine(x);
             });
 
             List<double> EntityY = new List<double>();
@@ -125,23 +129,14 @@ namespace testserver.hubs
                 EntityTypes.Add(type);
             });
 
-
-            /*
-            List<bool> LivingEntities = new List<bool>();
+            List<double> EntityAngles = new List<double>();
             this.loopCraete.curMap?.mobileEntities.ForEach(mobileEntity =>
             {
-                bool stateOfLife = mobileEntity.IsAlive;
-                LivingEntities.Add(stateOfLife);
+                double agle = mobileEntity.Angle;
+                EntityAngles.Add(agle);
             });
 
-            foreach (var i in EntityX)
-            {
-                Console.WriteLine(i);
-            }
-            */
-            //Console.WriteLine(EntityX);
-
-            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityHp, EntityId, EntityTypes);
+            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityHp, EntityId, EntityTypes, EntityAngles);
         }
 
     }

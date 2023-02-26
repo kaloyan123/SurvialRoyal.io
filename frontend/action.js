@@ -19,10 +19,10 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, angle) {
+connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, angle) { 
     if(playerid==id){
         players[0].health = Hp;
-        players[0].points = Points;
+        players[0].points = Points[playerid];
         players[0].wood = Wood;
         players[0].stone = Stone;
     }
@@ -35,16 +35,17 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
                 player.y = Y;   
                 player.health = Hp;
             }
+            player.points = Points[player.id];
         })
         playrsprites.forEach(playrsprite=>{
             if(playrsprite.id==id){    
                 playrsprite.x = X-10;
                 playrsprite.y = Y-10;  
                 
-                console.log(angle);
                 playrsprite.angle = angle; 
             }
         })
+        
         if(!isplayer){
             players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp));
 
@@ -53,16 +54,14 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
 
             players[players.length-1].SetId(id);
             playrsprites[players.length-1].setId(id);
-            isplayer=false;
+            
         }
+        isplayer=false;
+        
     }
 });
 
 connection.on("Attacked", function (id) {
-    
-    if(playerid==id){
-     console.log('attacked');
-    }
  });
 
  connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
@@ -83,15 +82,9 @@ connection.on("Attacked", function (id) {
         }
         console.log("object drawn");
     }
-    /*
-    Xes.forEach(x => {
-        console.log(x);
-   });
-   */
 });
 
-connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
-    
+connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
     mobileEntities.forEach(mobileEntity=>{
         mobileEntity.x = Xes[numbr];
         mobileEntity.y = Yes[numbr];   
@@ -102,6 +95,7 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
     entitySprites.forEach(entitySprite=>{
         entitySprite.x = Xes[numbr];
         entitySprite.y = Yes[numbr];   
+        entitySprite.angle = Angles[numbr];  
         numbr++;
     })
     if(numbr<Xes.length){
@@ -128,7 +122,6 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types) {
         }
     }
     numbr=0;
-
 });
 
 
@@ -143,9 +136,6 @@ var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = pl
 var playerid=-1 , isplayer=false ,numbr=0;
 
 
-//  * * *
-//  * * *
-//  * * *
 function startGame() {
 
     players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth));
@@ -261,8 +251,6 @@ function playercomponent(x, y, color, width, height, health) {
             console.log("general left");
         }
         
-        
-        //ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2));
     }  
     this.DrawHealth = function() {
         ctx = myGameArea.context;
@@ -284,25 +272,7 @@ function playercomponent(x, y, color, width, height, health) {
         connection.invoke("UpdatePlayers", this.x, this.y, playerid, playerAngle).catch(function (err) {
             return console.error(err.toString());
         });
-    } 
-    /*
-    this.rotationdraw = function(){
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-
-        this.centerx = centerX + this.width / 2;
-        this.centery = centerY + this.height / 2;
-
-        this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
-
-        ctx.translate(this.centerx, this.centery);
-        ctx.rotate(this.angle);
-
-        ctx.translate(-this.centerx, -this.centery);
-        ctx.fillRect(centerX, centerY, this.width, this.height); 
-        ctx.setTransform(1, 0, 0, 1, 0, 0);   
-   }
-   */
+    }
     this.Drawformap = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
@@ -367,8 +337,6 @@ class Sprite{
         this.image.src = imgSrc;
         this.id =  0; 
         this.angle = 0;
-       // this.centerx = this.x-cameraX + this.width / 2;
-        //this.centery = this.y-cameraY + this.height / 2;
     }
     setId(id){
         console.log(id);
@@ -377,10 +345,6 @@ class Sprite{
 
     draw(){
         myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
-    }
-    
-    drawrl(){
-        myGameArea.context.drawImage(this.image,centerX-10,centerY-10,this.width+20,this.height+20);
     }
     drawformap(){
         myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);
@@ -391,10 +355,6 @@ class Sprite{
     
     rotationdraw(){
         ctx = myGameArea.context;
-
-        //this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
-
-        //playerAngle=this.angle;
 
         this.centerx = (this.x-cameraX + this.width / 2) +10;
         this.centery = (this.y-cameraY + this.height / 2) +10;
@@ -430,7 +390,6 @@ function updateGameArea() {
     myGameArea.clear();
     backbackground.draw();
     background.draw();
-   // console.log(playerAngle);
 
     players.forEach(player=>{
         if(playerid==player.id){
@@ -462,7 +421,6 @@ function updateGameArea() {
            
             
             player.newPosUpdate(); 
-           //player.rotationdraw(); 
            // player.Drawrl();
            player.DrawHealth();
 
@@ -480,9 +438,7 @@ function updateGameArea() {
     playrsprites.forEach(playrsprite=>{
         if(playerid==playrsprite.id){ 
            playrsprite.rotationdrawrl();
-           //playrsprite.drawrl();
         }else{
-            //playrsprite.draw();
             playrsprite.rotationdraw();
         }
     })
@@ -499,14 +455,16 @@ function updateGameArea() {
         }
     })
     
-    
+    /*
     stationObjects.forEach(object=>{
        // object.Draw();
     })
-    
+    */
 
     entitySprites.forEach(entitySprite=>{
-        entitySprite.draw();
+       // entitySprite.draw();
+        
+       entitySprite.rotationdraw();
     })
 
     objectSprites.forEach(objectSprite=>{
@@ -515,6 +473,7 @@ function updateGameArea() {
 
     
      Drawminimap();
+     DrawLeaderboard();
      DrawExtentions();
 }
 
@@ -528,6 +487,26 @@ function DrawExtentions(){
     ctx.fillText("wood: " + players[0].wood, canvassezeX-100, canvassezeY-260);
     ctx.fillText("stone: " + players[0].stone, canvassezeX-100, canvassezeY-310);
 
+}
+
+function DrawLeaderboard(){
+    ctx = myGameArea.context;
+    ctx.fillStyle = "black";
+   
+    ctx.globalAlpha = 0.2;
+    ctx.fillRect(canvassezeX-200, 0, 200, 200);
+    ctx.globalAlpha = 1;
+    
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.font = "10px Arial";
+
+    var number = 0; 
+    players.forEach(player=>{
+        number +=11;
+        ctx.fillText("player: "+player.id + "          has: " + player.points, canvassezeX-100, 10 + number);
+    })
+   
 }
 
 function Drawminimap(){
@@ -546,7 +525,6 @@ function Drawminimap(){
 }
 
 /*
-
 
 function moveup() {
     players[0].speedY = -1; 
@@ -576,4 +554,64 @@ function clearmove() {
         </button><br><br>
         <button onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()">DOWN</button>
 </div>
+
+const btn = document.getElementById('btnValue');
+
+btn.addEventListener('click', GetValue);
+
+let value_ = 0;
+function GetValue()
+{
+
+    value_ = document.getElementById('getMyValue').value;
+    console.log(value_ );
+}
+
+<p></p>
+              <p><form method="GET">
+                <div class="row">
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Name" id="getMyValue">
+                  </div>
+                </div>
+              </form></p>
+
+
+players.forEach(player=>{
+        numbr++;
+    })
+    if(numbr<playerId.length){
+        for(i=numbr;i<playerId.length;i++){
+            players.push(new playercomponent(playerX[i], playerY[i], "red", 50, 50, 100));
+
+            playrsprites.push(new Sprite({x:playerX[i],y:playerY[i],width:50,height:50, imgSrc:'./image/Coolplayer.png'}));
+          
+            players[players.length-1].SetId(playerId[i]);
+            playrsprites[players.length-1].setId(playerId[i]);
+
+            console.log("new player join");
+        }
+    }
+    numbr=0;
+              
+
+    List<double> PlayerIds = new List<double>();
+            this.loopCraete.curMap?.players.ForEach(player =>
+            {
+                double id = player.Id;
+                PlayerIds.Add(id);
+            });
+    List<double> PlayerY = new List<double>();
+            this.loopCraete.curMap?.players.ForEach(player =>
+            {
+                double y = player.Y;
+                PlayerY.Add(y);
+            });
+    List<double> PlayerX = new List<double>();
+            this.loopCraete.curMap?.players.ForEach(player =>
+            {
+                double x = player.X;
+                PlayerX.Add(x);
+            });
+    
 */
