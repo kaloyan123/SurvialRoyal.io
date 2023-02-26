@@ -83,12 +83,13 @@ namespace testserver.Objects
             for (int i = 0; i < 10; i++)
             {
                 int randm = rnd.Next(0, 100);
-                if (randm <= 33)
+                
+                if (randm <= 50)
                 {
                     Console.WriteLine("rabit ");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
                 }
-                else if(randm <= 66)
+                else if (randm >= 50)
                 {
                     Console.WriteLine("pig");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
@@ -98,6 +99,9 @@ namespace testserver.Objects
                     Console.WriteLine("cow");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
                 }
+                
+                
+                
             }
 
             Console.WriteLine(imobileObjs.Count);
@@ -135,28 +139,32 @@ namespace testserver.Objects
                                 mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
 
                             }
-
                             //general up-right
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0) 
+                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
                             {
                                 mobileEntity.Angle = 0.8;
+                                // Console.WriteLine("general up-right");
+
                             }
                             //general down-right
                             if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
                             {
                                 mobileEntity.Angle = 2.2;
+                                //Console.WriteLine("general down-right");
                             }
                             //general down-left
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
                             {
                                 mobileEntity.Angle = 3.8;
+                                // Console.WriteLine("general down-left");
                             }
                             //general up-left
                             if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
                             {
                                 mobileEntity.Angle = -0.8;
+                                //  Console.WriteLine("general up-left");
                             }
-
+                            /*
                             // if speed by Y is low  \/ \/
                             if (mobileEntity.DirectionY<=0.4 && mobileEntity.DirectionY> 0 || mobileEntity.DirectionY >= -0.4 && mobileEntity.DirectionY < 0)
                             {
@@ -185,10 +193,8 @@ namespace testserver.Objects
                                     mobileEntity.Angle = 1.6;
                                 }
                             }
-                            
+                            */
 
-                            //double neshto = rnd.NextDouble() * ((0.1 - 1)*-1) + 0.1;
-                            //Console.WriteLine("work eaven" + neshto);
                         }
 
                         if (mobileEntity.X + 50 > mapendX)
@@ -247,31 +253,31 @@ namespace testserver.Objects
 
                             }
                             //general up-right
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
+                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
                             {
                                 mobileEntity.Angle = 0.8;
-                                Console.WriteLine("general up-right");
+                               // Console.WriteLine("general up-right");
 
                             }
                             //general down-right
                             if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
                             {
                                 mobileEntity.Angle = 2.2;
-                                Console.WriteLine("general down-right");
+                                //Console.WriteLine("general down-right");
                             }
                             //general down-left
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
                             {
                                 mobileEntity.Angle = 3.8;
-                                Console.WriteLine("general down-left");
+                               // Console.WriteLine("general down-left");
                             }
                             //general up-left
                             if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
                             {
                                 mobileEntity.Angle = -0.8;
-                                Console.WriteLine("general up-right");
+                              //  Console.WriteLine("general up-left");
                             }
-
+                            /*
                             // if speed by Y is low  \/ \/
                             if (mobileEntity.DirectionY <= 0.2 && mobileEntity.DirectionY > 0 )
                             {
@@ -335,10 +341,12 @@ namespace testserver.Objects
                                     Console.WriteLine("general right");
                                 }
                             }
-
+                            */
+                            /*
                             Console.WriteLine(mobileEntity.DirectionX);
                             Console.WriteLine(mobileEntity.DirectionY);
                              Console.WriteLine(mobileEntity.Angle);
+                            */
 
                         }
 

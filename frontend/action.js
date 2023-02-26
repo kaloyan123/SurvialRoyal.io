@@ -324,6 +324,11 @@ function entitycomponent(x, y, color, width, height, id , type, health) {
         ctx.fillStyle = "green";
         ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
     }
+    this.Drawformap = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }
     
 }
 
@@ -450,7 +455,7 @@ function updateGameArea() {
     
     mobileEntities.forEach(entity=>{
         if(entity.health>0){
-            entity.Draw();
+           // entity.Draw();
             entity.DrawHealth();
         }
     })
@@ -516,6 +521,12 @@ function Drawminimap(){
     players.forEach(player=>{
         if(player.health>0){
             player.Drawformap();
+        }
+    })
+
+    mobileEntities.forEach(entity=>{
+        if(entity.health>0){
+            entity.Drawformap();
         }
     })
 
