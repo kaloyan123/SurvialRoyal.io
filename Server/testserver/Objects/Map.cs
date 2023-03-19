@@ -786,35 +786,35 @@ namespace testserver.Objects
                 mobileEntities.ForEach(mobileEntity =>
                 {
                     if (mobileEntity.Type == type)
-                {
-                }
-                else
-                {
-                    if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
-               mobileEntity.Y <= attackboxWidth)
                     {
-                        if (mobileEntity.IsAlive)
+                    }
+                    else
+                    {
+                        if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
+                        mobileEntity.Y <= attackboxWidth)
                         {
-
-                            mobileEntity.Hp -= 10;
-                            attackedThingsId.Add(mobileEntity.Id);
-
-                            if (mobileEntity.Type == "cow")
+                            if (mobileEntity.IsAlive)
                             {
-                                mobileEntity.AgrivatedBy = type;
-                                mobileEntity.AgrivatedById = id;
-                            }
 
-                            if (mobileEntity.Hp <= 0)
-                            {
-                                addAnimals++;
+                                mobileEntity.Hp -= 10;
+                                attackedThingsId.Add(mobileEntity.Id);
 
-                                mobileEntity.IsAlive = false;
-                                Console.WriteLine(mobileEntity.IsAlive);
+                                if (mobileEntity.Type == "cow")
+                                {
+                                    mobileEntity.AgrivatedBy = type;
+                                    mobileEntity.AgrivatedById = id;
+                                }
+
+                                if (mobileEntity.Hp <= 0)
+                                {
+                                    addAnimals++;
+
+                                    mobileEntity.IsAlive = false;
+                                    Console.WriteLine(mobileEntity.IsAlive);
+                                }
                             }
                         }
                     }
-                }
                 });
             }
 
