@@ -20,6 +20,8 @@ namespace testserver.Objects
         public List<StationryObj> imobileObjs { get; set; } = new List<StationryObj>();
 
         public List<MobileEntity> mobileEntities { get; set; } = new List<MobileEntity>();
+
+        public int objectNumber = -1;
         public int entityNumber = -1;
 
         public int tiks { get; set; } = 0;
@@ -37,14 +39,14 @@ namespace testserver.Objects
             Player player = new Player() { X = x, Y = y, Hp = health, Id = id };
             players.Add(player);
         }
-        public void CreateObj(int x, int y, int id, string type)
+        public void CreateObj(int x, int y, string type)
         {
-            StationryObj imobileobject = new StationryObj() { X = x, Y = y, Id = id, Type = type };
+            objectNumber++;
+            StationryObj imobileobject = new StationryObj() { X = x, Y = y, Id = objectNumber, Type = type };
             imobileObjs.Add(imobileobject);
 
             //  Console.WriteLine(imobileobject.Type);
         }
-
         public void CreateEntity(int x, int y, double Hp, string type)
         {
             entityNumber++;
@@ -54,55 +56,49 @@ namespace testserver.Objects
             // Console.WriteLine(mobileEntity.Type);
         }
 
-        public void MovePlayer(int x, int y, int id)
+        public void CreateObjectByNumber(int number)
         {
-            players.ForEach(player =>
-            {
-                if (player.Id == id)
-                {
-                    player.X = x;
-                    player.Y = y;
-                }
-            });
-        }
-
-        public void StartOfGame()
-        {
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < number; i++)
             {
                 if (rnd.Next(0, 100) <= 50)
                 {
-                    CreateObj(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "tree");
+                    CreateObj(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), "tree");
                 }
                 else
                 {
-                    CreateObj(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), i, "rock");
+                    CreateObj(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), "rock");
                 }
             }
-
-            for (int i = 0; i < 10; i++)
+        }
+        public void CreateEntityByNumber(int number)
+        {
+            for (int i = 0; i < number; i++)
             {
                 int randm = rnd.Next(0, 100);
-                
-                if (randm <= 50)
+
+                if (randm <= 33)
                 {
                     Console.WriteLine("rabit ");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
                 }
-                else if (randm >= 50)
+                else if (randm > 33 && randm <= 66)
                 {
                     Console.WriteLine("pig");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
                 }
-                else
+                else if (randm > 66)
                 {
                     Console.WriteLine("cow");
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
                 }
-                
-                
-                
             }
+        }
+         
+        public void StartOfGame()
+        {
+            CreateObjectByNumber(15);
+
+            CreateEntityByNumber(10);
 
             Console.WriteLine(imobileObjs.Count);
             Console.WriteLine(mobileEntities.Count);
@@ -139,61 +135,101 @@ namespace testserver.Objects
                                 mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 1) * -1) + 0.1) * -1;
 
                             }
-                            //general up-right
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
-                            {
-                                mobileEntity.Angle = 0.8;
-                                // Console.WriteLine("general up-right");
 
-                            }
-                            //general down-right
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
+                            //entity rotation
+                            if (true)
                             {
-                                mobileEntity.Angle = 2.2;
-                                //Console.WriteLine("general down-right");
-                            }
-                            //general down-left
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
-                            {
-                                mobileEntity.Angle = 3.8;
-                                // Console.WriteLine("general down-left");
-                            }
-                            //general up-left
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
-                            {
-                                mobileEntity.Angle = -0.8;
-                                //  Console.WriteLine("general up-left");
-                            }
-                            /*
-                            // if speed by Y is low  \/ \/
-                            if (mobileEntity.DirectionY<=0.4 && mobileEntity.DirectionY> 0 || mobileEntity.DirectionY >= -0.4 && mobileEntity.DirectionY < 0)
-                            {
-                                //general up
-                                if (mobileEntity.DirectionX < 0)
+                                //general up-right
+                                if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
                                 {
-                                    mobileEntity.Angle = 0;
+                                    mobileEntity.Angle = 0.8;
+                                    // Console.WriteLine("general up-right");
+
                                 }
-                                //general down
-                                if (mobileEntity.DirectionX > 0)
+                                //general down-right
+                                if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
                                 {
-                                    mobileEntity.Angle = 3;
+                                    mobileEntity.Angle = 2.2;
+                                    //Console.WriteLine("general down-right");
+                                }
+                                //general down-left
+                                if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
+                                {
+                                    mobileEntity.Angle = 3.8;
+                                    // Console.WriteLine("general down-left");
+                                }
+                                //general up-left
+                                if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
+                                {
+                                    mobileEntity.Angle = -0.8;
+                                    //  Console.WriteLine("general up-left");
+                                }
+
+
+                                // if speed by Y is low  \/ \/
+                                if (mobileEntity.DirectionY <= 0.4 && mobileEntity.DirectionY > 0)
+                                {
+                                    //general up
+                                    if (mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = -0.8;
+                                        // Console.WriteLine("general up");
+                                    }
+                                    //general down
+                                    if (mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 1.6;
+                                        // Console.WriteLine("general down");
+                                    }
+                                }
+                                if (mobileEntity.DirectionY >= -0.4 && mobileEntity.DirectionY < 0)
+                                {
+                                    //general up
+                                    if (mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = -0.8;
+                                        // Console.WriteLine("general up");
+                                    }
+                                    //general down
+                                    if (mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 1.6;
+                                        //  Console.WriteLine("general down");
+                                    }
+                                }
+
+                                // if speed by X is low  \/ \/
+                                if (mobileEntity.DirectionX <= 0.4 && mobileEntity.DirectionX > 0)
+                                {
+                                    //general left
+                                    if (mobileEntity.DirectionY < 0)
+                                    {
+                                        mobileEntity.Angle = 0;
+                                        //    Console.WriteLine("general left");
+                                    }
+                                    //general right
+                                    if (mobileEntity.DirectionY > 0)
+                                    {
+                                        mobileEntity.Angle = 3.2;
+                                        //      Console.WriteLine("general right");
+                                    }
+                                }
+                                if (mobileEntity.DirectionX >= -0.4 && mobileEntity.DirectionX < 0)
+                                {
+                                    //general left
+                                    if (mobileEntity.DirectionY < 0)
+                                    {
+                                        mobileEntity.Angle = 0;
+                                        //       Console.WriteLine("general left");
+                                    }
+                                    //general right
+                                    if (mobileEntity.DirectionY > 0)
+                                    {
+                                        mobileEntity.Angle = 3.2;
+                                        //      Console.WriteLine("general right");
+                                    }
                                 }
                             }
-                            // if speed by X is low  \/ \/
-                            if (mobileEntity.DirectionX <= 0.4 && mobileEntity.DirectionX > 0 || mobileEntity.DirectionX >= -0.4 && mobileEntity.DirectionX < 0)
-                            {
-                                //general left
-                                if (mobileEntity.DirectionY < 0)
-                                {
-                                    mobileEntity.Angle = 4;
-                                }
-                                //general right
-                                if (mobileEntity.DirectionY > 0)
-                                {
-                                    mobileEntity.Angle = 1.6;
-                                }
-                            }
-                            */
 
                         }
 
@@ -228,12 +264,9 @@ namespace testserver.Objects
                             mobileEntity.DirectionX = 0;
                             mobileEntity.DirectionY = 0;
 
-                            //  Console.WriteLine("work eaven" + mobileEntity.DirectionY);
                         }
                         if (tiks % 1000 == 0)
                         {
-                            //  Console.WriteLine("work pig");
-
                             if (rnd.Next(0, 100) <= 50)
                             {
                                 mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
@@ -252,103 +285,106 @@ namespace testserver.Objects
                                 mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
 
                             }
-                            //general up-right
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                            //entity rotation
+                            if (true)
                             {
-                                mobileEntity.Angle = 0.8;
-                               // Console.WriteLine("general up-right");
+                                //general up-right
+                                if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                                {
+                                    mobileEntity.Angle = 0.8;
+                                    // Console.WriteLine("general up-right");
 
-                            }
-                            //general down-right
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
-                            {
-                                mobileEntity.Angle = 2.2;
-                                //Console.WriteLine("general down-right");
-                            }
-                            //general down-left
-                            if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
-                            {
-                                mobileEntity.Angle = 3.8;
-                               // Console.WriteLine("general down-left");
-                            }
-                            //general up-left
-                            if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
-                            {
-                                mobileEntity.Angle = -0.8;
-                              //  Console.WriteLine("general up-left");
-                            }
-                            /*
-                            // if speed by Y is low  \/ \/
-                            if (mobileEntity.DirectionY <= 0.2 && mobileEntity.DirectionY > 0 )
-                            {
-                                //general up
-                                if (mobileEntity.DirectionX < 0)
-                                {
-                                    mobileEntity.Angle = 0;
-                                    Console.WriteLine("general up");
                                 }
-                                //general down
-                                if (mobileEntity.DirectionX > 0)
+                                //general down-right
+                                if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
                                 {
-                                    mobileEntity.Angle = 3;
-                                    Console.WriteLine("general down");
+                                    mobileEntity.Angle = 2.2;
+                                    //Console.WriteLine("general down-right");
                                 }
-                            }
-                            if (mobileEntity.DirectionY >= -0.2 && mobileEntity.DirectionY < 0)
-                            {
-                                //general up
-                                if (mobileEntity.DirectionX < 0)
+                                //general down-left
+                                if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
                                 {
-                                    mobileEntity.Angle = 0;
-                                    Console.WriteLine("general up");
+                                    mobileEntity.Angle = 3.8;
+                                    // Console.WriteLine("general down-left");
                                 }
-                                //general down
-                                if (mobileEntity.DirectionX > 0)
+                                //general up-left
+                                if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
                                 {
-                                    mobileEntity.Angle = 3;
-                                    Console.WriteLine("general down");
+                                    mobileEntity.Angle = -0.8;
+                                    //  Console.WriteLine("general up-left");
+                                }
+
+                                // if speed by Y is low  \/ \/
+                                if (mobileEntity.DirectionY <= 0.2 && mobileEntity.DirectionY > 0)
+                                {
+                                    //general up
+                                    if (mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = 4;
+                                        //   Console.WriteLine("general up");
+                                    }
+                                    //general down
+                                    if (mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 1.6;
+                                        // Console.WriteLine("general down");
+                                    }
+                                }
+                                if (mobileEntity.DirectionY >= -0.2 && mobileEntity.DirectionY < 0)
+                                {
+                                    //general up
+                                    if (mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = 4;
+                                        //  Console.WriteLine("general up");
+                                    }
+                                    //general down
+                                    if (mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 1.6;
+                                        //  Console.WriteLine("general down");
+                                    }
+                                }
+
+                                // if speed by X is low  \/ \/
+                                if (mobileEntity.DirectionX <= 0.2 && mobileEntity.DirectionX > 0)
+                                {
+                                    //general left
+                                    if (mobileEntity.DirectionY < 0)
+                                    {
+                                        mobileEntity.Angle = 0;
+                                        //  Console.WriteLine("general left");
+                                    }
+                                    //general right
+                                    if (mobileEntity.DirectionY > 0)
+                                    {
+                                        mobileEntity.Angle = 3.2;
+                                        // Console.WriteLine("general right");
+                                    }
+                                }
+                                if (mobileEntity.DirectionX >= -0.2 && mobileEntity.DirectionX < 0)
+                                {
+                                    //general left
+                                    if (mobileEntity.DirectionY < 0)
+                                    {
+                                        mobileEntity.Angle = 0;
+                                        //  Console.WriteLine("general left");
+                                    }
+                                    //general right
+                                    if (mobileEntity.DirectionY > 0)
+                                    {
+                                        mobileEntity.Angle = 3.2;
+                                        // Console.WriteLine("general right");
+                                    }
                                 }
                             }
 
-                            // if speed by X is low  \/ \/
-                            if (mobileEntity.DirectionX <= 0.2 && mobileEntity.DirectionX > 0)
-                            {
-                                //general left
-                                if (mobileEntity.DirectionY < 0)
-                                {
-                                    mobileEntity.Angle = 4;
-                                    Console.WriteLine("general left");
-                                }
-                                //general right
-                                if (mobileEntity.DirectionY > 0)
-                                {
-                                    mobileEntity.Angle = 1.6;
-                                    Console.WriteLine("general right");
-                                }
-                            }
-                            if (mobileEntity.DirectionX >= -0.2 && mobileEntity.DirectionX < 0)
-                            {
-                                //general left
-                                if (mobileEntity.DirectionX < 0)
-                                {
-                                    mobileEntity.Angle = 4;
-                                    Console.WriteLine("general left");
-                                }
-                                //general right
-                                if (mobileEntity.DirectionX > 0)
-                                {
-                                    mobileEntity.Angle = 1.6;
-                                    Console.WriteLine("general right");
-                                }
-                            }
-                            */
                             /*
                             Console.WriteLine(mobileEntity.DirectionX);
                             Console.WriteLine(mobileEntity.DirectionY);
                              Console.WriteLine(mobileEntity.Angle);
                             */
-
-                        }
+                        } 
 
                         if (mobileEntity.X + 50 > mapendX)
                         {
@@ -372,89 +408,332 @@ namespace testserver.Objects
                         mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
                 }
-                
+                else if (mobileEntity.Type == "cow")
+                {
+                    if (mobileEntity.IsAlive)
+                    {
+                        if (mobileEntity.AgrivatedById < 0)
+                        {
+                            if (tiks % 500 == 0)
+                            {
+                                mobileEntity.DirectionX = 0;
+                                mobileEntity.DirectionY = 0;
+
+                            }
+                            if (tiks % 1000 == 0)
+                            {
+                                if (rnd.Next(0, 100) <= 50)
+                                {
+                                    mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                                }
+                                else
+                                {
+                                    mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                                }
+                                if (rnd.Next(0, 100) <= 50)
+                                {
+                                    mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                                }
+                                else
+                                {
+                                    mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                                }
+                                //entity rotation
+                                if (true)
+                                {
+                                    //general up-right
+                                    if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 0.8;
+                                        // Console.WriteLine("general up-right");
+
+                                    }
+                                    //general down-right
+                                    if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 2.2;
+                                        //Console.WriteLine("general down-right");
+                                    }
+                                    //general down-left
+                                    if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = 3.8;
+                                        // Console.WriteLine("general down-left");
+                                    }
+                                    //general up-left
+                                    if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = -0.8;
+                                        //  Console.WriteLine("general up-left");
+                                    }
+
+                                    // if speed by Y is low  \/ \/
+                                    if (mobileEntity.DirectionY <= 0.2 && mobileEntity.DirectionY > 0)
+                                    {
+                                        //general up
+                                        if (mobileEntity.DirectionX < 0)
+                                        {
+                                            mobileEntity.Angle = 4;
+                                            //   Console.WriteLine("general up");
+                                        }
+                                        //general down
+                                        if (mobileEntity.DirectionX > 0)
+                                        {
+                                            mobileEntity.Angle = 1.6;
+                                            // Console.WriteLine("general down");
+                                        }
+                                    }
+                                    if (mobileEntity.DirectionY >= -0.2 && mobileEntity.DirectionY < 0)
+                                    {
+                                        //general up
+                                        if (mobileEntity.DirectionX < 0)
+                                        {
+                                            mobileEntity.Angle = 4;
+                                            //  Console.WriteLine("general up");
+                                        }
+                                        //general down
+                                        if (mobileEntity.DirectionX > 0)
+                                        {
+                                            mobileEntity.Angle = 1.6;
+                                            //  Console.WriteLine("general down");
+                                        }
+                                    }
+
+                                    // if speed by X is low  \/ \/
+                                    if (mobileEntity.DirectionX <= 0.2 && mobileEntity.DirectionX > 0)
+                                    {
+                                        //general left
+                                        if (mobileEntity.DirectionY < 0)
+                                        {
+                                            mobileEntity.Angle = 0;
+                                            //  Console.WriteLine("general left");
+                                        }
+                                        //general right
+                                        if (mobileEntity.DirectionY > 0)
+                                        {
+                                            mobileEntity.Angle = 3.2;
+                                            // Console.WriteLine("general right");
+                                        }
+                                    }
+                                    if (mobileEntity.DirectionX >= -0.2 && mobileEntity.DirectionX < 0)
+                                    {
+                                        //general left
+                                        if (mobileEntity.DirectionY < 0)
+                                        {
+                                            mobileEntity.Angle = 0;
+                                            //  Console.WriteLine("general left");
+                                        }
+                                        //general right
+                                        if (mobileEntity.DirectionY > 0)
+                                        {
+                                            mobileEntity.Angle = 3.2;
+                                            // Console.WriteLine("general right");
+                                        }
+                                    }
+                                }
+
+                                /*
+                                Console.WriteLine(mobileEntity.DirectionX);
+                                Console.WriteLine(mobileEntity.DirectionY);
+                                 Console.WriteLine(mobileEntity.Angle);
+                                */
+                            }
+
+                            if (mobileEntity.X + 50 > mapendX)
+                            {
+                                mobileEntity.DirectionX = -1;
+                            }
+                            if (mobileEntity.X < mapstartX)
+                            {
+                                mobileEntity.DirectionX = 1;
+                            }
+                            
+
+                            if (mobileEntity.Y + 50 > mapendY)
+                            {
+                                mobileEntity.DirectionY = -1;
+                            }
+                            if (mobileEntity.Y < mapstartY)
+                            {
+                                mobileEntity.DirectionY = 1;
+                            }
+                            
+                        } 
+                        else {
+                            if (mobileEntity.AgrivatedBy == "player")
+                            {
+                                var obj = players.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
+
+                                if (mobileEntity.X < obj.X) {
+                                    mobileEntity.DirectionX = 1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 2.2;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = 0.8;
+                                    }
+                                }
+
+                                if (mobileEntity.X > obj.X)
+                                {
+                                    mobileEntity.DirectionX = -1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 3.8;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = -0.8;
+                                    }
+                                }
+                            }
+
+                            if (mobileEntity.EntityTiks % 120 == 0)
+                            {
+                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0);
+                            }
+                        }
+
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                    }
+                }
+
+            });
+
+
+            mobileEntities.ForEach(mobileEntity =>
+            {
+                mobileEntity.EntityTiks++;
             });
 
             tiks++;
         }
 
-        public void Attack(int x, int y, int id, double angle)
+
+        public void MovePlayer(int x, int y, int id)
         {
-            int attackboxX = 0;
-            int attackboxY = 0;
-            int attackboxHight = 0;
-            int attackboxWidth = 0;
-
-            // general up
-            if (angle <= 0.8 && angle >= -0.8)
-            {
-                attackboxX = x - playerReach;
-                attackboxY = y - playerReach;
-                attackboxHight = x + playerSize + playerReach;
-                attackboxWidth = y + playerSize + playerReach - 75;
-
-            }
-
-            // general right
-            if (angle > 0.8 && angle <= 2.2)
-            {
-                attackboxX = x - playerReach + 75;
-                attackboxY = y - playerReach;
-                attackboxHight = x + playerSize + playerReach;
-                attackboxWidth = y + playerSize + playerReach;
-
-            }
-
-            // general down
-            if (angle > 2.2 && angle <= 3.8)
-            {
-                attackboxX = x - playerReach;
-                attackboxY = y - playerReach + 75;
-                attackboxHight = x + playerSize + playerReach;
-                attackboxWidth = y + playerSize + playerReach;
-
-            }
-
-            // general left
-            if (angle > 3.8 || angle < -0.8)
-            {
-                attackboxX = x - playerReach;
-                attackboxY = y - playerReach;
-                attackboxHight = x + playerSize + playerReach - 75;
-                attackboxWidth = y + playerSize + playerReach;
-
-            }
-
-            List<int> attackedPlayersId = new List<int>();
-
             players.ForEach(player =>
             {
                 if (player.Id == id)
                 {
+                    player.X = x;
+                    player.Y = y;
+                }
+            });
+        }
+
+        public void Attack(double x, double y, string type, int id, double angle)
+        {
+            double attackboxX = 0;
+            double attackboxY = 0;
+            double attackboxHight = 0;
+            double attackboxWidth = 0;
+
+            if (type == "player")
+            {
+                // general up
+                if (angle <= 0.8 && angle >= -0.8)
+                {
+                    attackboxX = x - playerReach;
+                    attackboxY = y - playerReach;
+                    attackboxHight = x + playerSize + playerReach;
+                    attackboxWidth = y + playerSize + playerReach - 75;
+
+                }
+
+                // general right
+                if (angle > 0.8 && angle <= 2.2)
+                {
+                    attackboxX = x - playerReach + 75;
+                    attackboxY = y - playerReach;
+                    attackboxHight = x + playerSize + playerReach;
+                    attackboxWidth = y + playerSize + playerReach;
+
+                }
+
+                // general down
+                if (angle > 2.2 && angle <= 3.8)
+                {
+                    attackboxX = x - playerReach;
+                    attackboxY = y - playerReach + 75;
+                    attackboxHight = x + playerSize + playerReach;
+                    attackboxWidth = y + playerSize + playerReach;
+
+                }
+
+                // general left
+                if (angle > 3.8 || angle < -0.8)
+                {
+                    attackboxX = x - playerReach;
+                    attackboxY = y - playerReach;
+                    attackboxHight = x + playerSize + playerReach - 75;
+                    attackboxWidth = y + playerSize + playerReach;
+
+                }
+            }
+            else
+            {
+                attackboxX = x - playerReach;
+                attackboxY = y - playerReach;
+                attackboxHight = x + playerSize + playerReach;
+                attackboxWidth = y + playerSize + playerReach;
+            }
+
+
+            List<int> attackedThingsId = new List<int>();
+            players.ForEach(player =>
+            {
+                if (type == "player") {
+                    if (player.Id == id)
+                    {
+                    }
+                    else
+                    {
+                        if (player.X + playerSize >= attackboxX && player.Y + playerSize >= attackboxY && player.X <= attackboxHight &&
+                        player.Y <= attackboxWidth)
+                        {
+                            player.Hp -= 10;
+                            attackedThingsId.Add(player.Id);
+
+                            if (player.Hp <= 0 && player.IsAlive)
+                            {
+                                player.IsAlive = false;
+                                players[id].Points += 50;
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     if (player.X + playerSize >= attackboxX && player.Y + playerSize >= attackboxY && player.X <= attackboxHight &&
-                    player.Y <= attackboxWidth)
+                        player.Y <= attackboxWidth)
                     {
                         player.Hp -= 10;
-                        attackedPlayersId.Add(player.Id);
+                        attackedThingsId.Add(player.Id);
 
                         if (player.Hp <= 0 && player.IsAlive)
                         {
                             player.IsAlive = false;
-                            players[id].Points += 50;
                         }
                     }
                 }
             });
 
-            imobileObjs.ForEach(Object =>
+            int addAnimals = 0;
+            if (type == "player")
             {
-                if (Object.Id == id)
-                {
-                }
-                else
+                imobileObjs.ForEach(Object =>
                 {
                     if (Object.X + playerSize >= attackboxX && Object.Y + playerSize >= attackboxY && Object.X <= attackboxHight &&
                     Object.Y <= attackboxWidth)
@@ -463,60 +742,85 @@ namespace testserver.Objects
                         { // Object.Type is tree/rock
                             players[id].Wood += 10;
                         }
-                        else
+                        else if (Object.Type == "rock")
                         {
                             players[id].Stone += 10;
                         }
                     }
-                }
-            });
+                });
 
-            int addAnimals = 0;
-            mobileEntities.ForEach(mobileEntity =>
-            {
-                if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
-                    mobileEntity.Y <= attackboxWidth)
+                
+                mobileEntities.ForEach(mobileEntity =>
                 {
-                    if (mobileEntity.IsAlive)
+                    if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
+                    mobileEntity.Y <= attackboxWidth)
                     {
-
-                        mobileEntity.Hp -= 10;
-                        attackedPlayersId.Add(mobileEntity.Id);
-
-                        if (mobileEntity.Hp <= 0)
+                        if (mobileEntity.IsAlive)
                         {
-                            addAnimals++;
 
-                            mobileEntity.IsAlive = false;
-                            Console.WriteLine(mobileEntity.IsAlive);
+                            mobileEntity.Hp -= 10;
+                            attackedThingsId.Add(mobileEntity.Id);
 
-                            players[id].Points += 10;
+                            if (mobileEntity.Type == "cow")
+                            {
+                                mobileEntity.AgrivatedBy = type;
+                                mobileEntity.AgrivatedById = id;
+                            }
+
+                            if (mobileEntity.Hp <= 0)
+                            {
+                                addAnimals++;
+
+                                mobileEntity.IsAlive = false;
+                                Console.WriteLine(mobileEntity.IsAlive);
+
+                                players[id].Points += 10;
+                            }
+                        }
+                    }
+                   
+                });
+            }
+            else
+            {
+                mobileEntities.ForEach(mobileEntity =>
+                {
+                    if (mobileEntity.Type == type)
+                {
+                }
+                else
+                {
+                    if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
+               mobileEntity.Y <= attackboxWidth)
+                    {
+                        if (mobileEntity.IsAlive)
+                        {
+
+                            mobileEntity.Hp -= 10;
+                            attackedThingsId.Add(mobileEntity.Id);
+
+                            if (mobileEntity.Type == "cow")
+                            {
+                                mobileEntity.AgrivatedBy = type;
+                                mobileEntity.AgrivatedById = id;
+                            }
+
+                            if (mobileEntity.Hp <= 0)
+                            {
+                                addAnimals++;
+
+                                mobileEntity.IsAlive = false;
+                                Console.WriteLine(mobileEntity.IsAlive);
+                            }
                         }
                     }
                 }
+                });
+            }
 
-            });
             if (addAnimals > 0)
             {
-                for (int i = 0; i < addAnimals; i++)
-                {
-                    int randm = rnd.Next(0, 100);
-                    if (randm <= 33)
-                    {
-                        Console.WriteLine("rabit ");
-                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
-                    }
-                    else if (randm <= 66)
-                    {
-                        Console.WriteLine("pig");
-                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
-                    }
-                    else
-                    {
-                        Console.WriteLine("cow");
-                        CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
-                    }
-                }
+                CreateEntityByNumber(addAnimals);
             }
 
         }

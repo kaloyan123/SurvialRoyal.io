@@ -54,7 +54,7 @@ namespace testserver.hubs
         }
         public async Task PlayerAttack(int x, int y, int id, double angle)
         {
-            this.loopCraete.curMap?.Attack(x, y, id, angle);
+            this.loopCraete.curMap?.Attack(x, y, "player", id, angle);
 
             await Clients.All.SendAsync("atak", id);
         }

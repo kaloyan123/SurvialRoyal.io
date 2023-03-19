@@ -22,5 +22,10 @@ namespace testserver.Objects
         public double Angle { get; set; } = 0;
 
         public bool IsAlive { get; set; } = true;
+
+        public string AgrivatedBy { get; set; } = "";
+        public int AgrivatedById { get; set; } = -1;
+
+        public int EntityTiks { get; set; } = 0;
     }
 }

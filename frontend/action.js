@@ -110,13 +110,13 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
 
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
-                    imgSrc:'./image/pig_maybe.png'}));
+                    imgSrc:'./image/Pig.png'}));
             }else{
                 mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
 
 
                 entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
-                    imgSrc:'./image/unused/cow_maybe.png'}));
+                    imgSrc:'./image/Bull.webp'}));
             }
             console.log("entity drawn");
         }
@@ -194,202 +194,6 @@ var myGameArea = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
-  
-function playercomponent(x, y, color, width, height, health) {
-    this.width = width;
-    this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;
-    this.x = x;
-    this.y = y;
-    this.health = health;   
-    this.wood = 0;
-    this.stone = 0;
-    this.points = 0;
-    this.centerx = centerX + this.width / 2;;
-    this.centery = centerY + this.width / 2;;
-
-    this.SetId = function(id) {
-        this.id =  id; 
-    }
-
-    this.Drawrl = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(centerX, centerY, this.width, this.height);
-    }  
-    this.Draw = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x-cameraX, this.y-cameraY, this.width, this.height);
-    }  
-    this.DrawAttavkBoxrl = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = "red";
-
-        // general up
-        if(playerAngle < 0.8 && playerAngle>-0.8){
-            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2) -75);
-            console.log("general up");
-        }
-
-        // general right
-        if(playerAngle > 0.8 && playerAngle<2.2){
-            ctx.fillRect(this.centerx, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
-            console.log("general right");
-        }
-
-        // general down
-        if(playerAngle > 2.2 && playerAngle<3.8){
-            ctx.fillRect(centerX-playerReach, this.centery, this.width+(playerReach*2), this.height+(playerReach*2)-75);
-            console.log("general down");
-        }
-
-        // general left
-        if(playerAngle>3.8 || playerAngle < -0.8 ){
-            ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
-            console.log("general left");
-        }
-        
-    }  
-    this.DrawHealth = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.width, 10);
-        ctx.fillStyle = "green";
-        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
-    }  
-    this.newPosUpdate = function() {
-        this.x += this.speedX;
-        this.y += this.speedY;  
-
-        playerCodinateX = this.x;
-        playerCodinateY = this.y;
-
-        cameraX = playerCodinateX-centerX;
-        cameraY = playerCodinateY-centerY;
-
-        connection.invoke("UpdatePlayers", this.x, this.y, playerid, playerAngle).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
-    this.Drawformap = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
-    }  
-    
-}
-function objectcomponent(x, y, color, width, height, id , type) {
-    this.width = width;
-    this.height = height;
-    this.x = x;
-    this.y = y;   
-    this.id = id;   
-    this.type = type; 
-    
-
-    this.Draw = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
-    }  
-
-    this.Drawformap = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
-    }
-}
-
-function entitycomponent(x, y, color, width, height, id , type, health) {
-    this.width = width;
-    this.height = height;
-    this.x = x;
-    this.y = y;   
-    this.id = id;   
-    this.type = type; 
-    this.health = health; 
-    
-
-    this.Draw = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
-    }  
-    this.DrawHealth = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.width, 10);
-        ctx.fillStyle = "green";
-        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
-    }
-    this.Drawformap = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
-    }
-    
-}
-
-class Sprite{
-    constructor({x,y,width,height,imgSrc}){
-        this.x=x;
-        this.y=y;
-        this.width = width;
-        this.height = height;
-        this.image = new Image();
-        this.image.src = imgSrc;
-        this.id =  0; 
-        this.angle = 0;
-    }
-    setId(id){
-        console.log(id);
-        this.id = id;   
-    }
-
-    draw(){
-        myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
-    }
-    drawformap(){
-        myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);
-    }
-    drawformap_(){
-        myGameArea.context.drawImage(this.image,canvassezeX-200 -2,canvassezeY-200 -2,200,200);
-    }
-    
-    rotationdraw(){
-        ctx = myGameArea.context;
-
-        this.centerx = (this.x-cameraX + this.width / 2) +10;
-        this.centery = (this.y-cameraY + this.height / 2) +10;
-
-        ctx.translate(this.centerx, this.centery);
-        ctx.rotate(this.angle);
-
-        ctx.translate(-this.centerx, -this.centery);
-        myGameArea.context.drawImage(this.image,this.x-cameraX-5,this.y-cameraY-0,this.width+30,this.height+20);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);   
-    }
-    
-    rotationdrawrl(){
-        ctx = myGameArea.context;
-
-        this.centerx = centerX + this.width / 2;
-        this.centery = centerY + this.height / 2;
-
-        this.angle = Math.atan2(mousey - this.centery, mousex - this.centerx) + (Math.PI/2);
-
-        playerAngle=this.angle;
-
-        ctx.translate(this.centerx, this.centery);
-        ctx.rotate(this.angle);
-
-        ctx.translate(-this.centerx, -this.centery);
-        myGameArea.context.drawImage(this.image,centerX-15,centerY-10,this.width+30,this.height+20);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);   
-   }
-}
 
 function updateGameArea() {
     myGameArea.clear();
@@ -459,7 +263,6 @@ function updateGameArea() {
             entity.DrawHealth();
         }
     })
-    
     /*
     stationObjects.forEach(object=>{
        // object.Draw();
@@ -624,5 +427,11 @@ players.forEach(player=>{
                 double x = player.X;
                 PlayerX.Add(x);
             });
-    
+
+
+
+mobileEntities.ForEach(mobileEntity =>
+    {
+        mobileEntity
+    });    
 */
