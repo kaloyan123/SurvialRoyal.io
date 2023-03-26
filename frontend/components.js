@@ -136,7 +136,7 @@ function entitycomponent(x, y, color, width, height, id , type, health) {
 }
 
 class Sprite{
-    constructor({x,y,width,height,imgSrc}){
+    constructor({x,y,width,height,spriteofsetx,spriteofsety,imgSrc}){
         this.x=x;
         this.y=y;
         this.width = width;
@@ -145,6 +145,8 @@ class Sprite{
         this.image.src = imgSrc;
         this.id =  0; 
         this.angle = 0;
+        this.spriteofsetx = spriteofsetx;
+        this.spriteofsety = spriteofsety;
     }
     setId(id){
         console.log(id);

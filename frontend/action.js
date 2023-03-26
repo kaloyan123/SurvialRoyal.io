@@ -93,30 +93,36 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
     })
     numbr=0;
     entitySprites.forEach(entitySprite=>{
-        entitySprite.x = Xes[numbr];
-        entitySprite.y = Yes[numbr];   
+        entitySprite.x = Xes[numbr]-entitySprite.spriteofsetx;
+        entitySprite.y = Yes[numbr]-entitySprite.spriteofsety;   
         entitySprite.angle = Angles[numbr];  
         numbr++;
-    })
-    if(numbr<Xes.length){
+    }) 
+    if(numbr<Xes.length){ 
         for(i=numbr;i<Xes.length;i++){
             if(Types[i]=="rabit"){
                 mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "yellow", 30, 30, Ids[i], Types[i],Hps[i]));
 
-                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:30,height:30,
-                    imgSrc:'./image/bunny.png'}));
+                entitySprites.push(new Sprite({x:Xes[i]-5,y:Yes[i]-5,width:25,height:25,spriteofsetx:5,spriteofsety:5,
+                    imgSrc:'./image/bunny.png'}));//bunnycrop.png
             }else if(Types[i]=="pig"){
-                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
+                mobileEntities.push(new entitycomponent(Xes[i]-2, Yes[i]-2, "pink", 50, 50, Ids[i], Types[i],Hps[i]));
 
 
-                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
+                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:35,height:55,spriteofsetx:0,spriteofsety:10,
                     imgSrc:'./image/Pig.png'}));
+            }else if(Types[i]=="cow"){
+                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 60, 60, Ids[i], Types[i],Hps[i]));
+
+
+                entitySprites.push(new Sprite({x:Xes[i]-5,y:Yes[i],width:55,height:50,spriteofsetx:5,spriteofsety:10,
+                    imgSrc:'./image/Bull.png'}));//Bull.webp   Bullcrop.png
             }else{
-                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "pink", 50, 50, Ids[i], Types[i],Hps[i]));
+                mobileEntities.push(new entitycomponent(Xes[i], Yes[i], "red", 50, 50, Ids[i], Types[i],Hps[i]));
 
 
-                entitySprites.push(new Sprite({x:Xes[i],y:Yes[i],width:50,height:50,
-                    imgSrc:'./image/Bull.webp'}));
+                entitySprites.push(new Sprite({x:Xes[i]-5,y:Yes[i],width:50,height:50,spriteofsetx:0,spriteofsety:0,
+                    imgSrc:'./image/wolf.png'}));
             }
             console.log("entity drawn");
         }

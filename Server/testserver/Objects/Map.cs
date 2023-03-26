@@ -34,6 +34,10 @@ namespace testserver.Objects
         public int playerReach = 50;
         public int playerSize = 50;
 
+        public int wolfSenseDistanse = 100;
+
+        public int addAnimals = 0;
+
         public void CreatePlayer(int x, int y,int health, int id)
         {
             Player player = new Player() { X = x, Y = y, Hp = health, Id = id };
@@ -76,20 +80,25 @@ namespace testserver.Objects
             {
                 int randm = rnd.Next(0, 100);
 
-                if (randm <= 33)
+                if (randm <= 35)
                 {
-                    Console.WriteLine("rabit ");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, "rabit");
+                    Console.WriteLine("rabit " + randm);
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 60, "rabit");
                 }
-                else if (randm > 33 && randm <= 66)
+                else if (randm > 35 && randm <= 70)
                 {
-                    Console.WriteLine("pig");
+                    Console.WriteLine("pig " + randm);
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
                 }
-                else if (randm > 66)
+                else if (randm > 70 && randm <= 80)
                 {
-                    Console.WriteLine("cow");
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "cow");
+                    Console.WriteLine("cow " + randm);
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 120, "cow");
+                }
+                else if (randm > 80)
+                {
+                    Console.WriteLine("wolf " + randm);
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "wolf");
                 }
             }
         }
@@ -597,6 +606,314 @@ namespace testserver.Objects
                                     }
                                 }
                             }
+                            else
+                            {
+                                var obj = mobileEntities.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
+
+                                if (mobileEntity.X < obj.X)
+                                {
+                                    mobileEntity.DirectionX = 1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 2.2;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = 0.8;
+                                    }
+                                }
+
+                                if (mobileEntity.X > obj.X)
+                                {
+                                    mobileEntity.DirectionX = -1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 3.8;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = -0.8;
+                                    }
+                                }
+                            }
+
+                            if (mobileEntity.EntityTiks % 120 == 0)
+                            {
+                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0);
+                            }
+                        }
+
+                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                    }
+                }
+                else if (mobileEntity.Type == "wolf")
+                {
+                    if (mobileEntity.IsAlive)
+                    {
+                       // Console.WriteLine(mobileEntity.AgrivatedById +" " + mobileEntity.Id);
+                        if (mobileEntity.AgrivatedById < 0)
+                        {
+                            if (tiks % 500 == 0)
+                            {
+                                mobileEntity.DirectionX = 0;
+                                mobileEntity.DirectionY = 0;
+
+                            }
+                            if (tiks % 1000 == 0)
+                            {
+                                if (rnd.Next(0, 100) <= 50)
+                                {
+                                    mobileEntity.DirectionX = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                                }
+                                else
+                                {
+                                    mobileEntity.DirectionX = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                                }
+                                if (rnd.Next(0, 100) <= 50)
+                                {
+                                    mobileEntity.DirectionY = rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1;
+                                }
+                                else
+                                {
+                                    mobileEntity.DirectionY = (rnd.NextDouble() * ((0.2 - 0.5) * -1) + 0.1) * -1;
+
+                                }
+                                //entity rotation
+                                if (true)
+                                {
+                                    //general up-right
+                                    if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 0.8;
+                                        // Console.WriteLine("general up-right");
+
+                                    }
+                                    //general down-right
+                                    if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX > 0)
+                                    {
+                                        mobileEntity.Angle = 2.2;
+                                        //Console.WriteLine("general down-right");
+                                    }
+                                    //general down-left
+                                    if (mobileEntity.DirectionY > 0 && mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = 3.8;
+                                        // Console.WriteLine("general down-left");
+                                    }
+                                    //general up-left
+                                    if (mobileEntity.DirectionY < 0 && mobileEntity.DirectionX < 0)
+                                    {
+                                        mobileEntity.Angle = -0.8;
+                                        //  Console.WriteLine("general up-left");
+                                    }
+
+                                    // if speed by Y is low  \/ \/
+                                    if (mobileEntity.DirectionY <= 0.2 && mobileEntity.DirectionY > 0)
+                                    {
+                                        //general up
+                                        if (mobileEntity.DirectionX < 0)
+                                        {
+                                            mobileEntity.Angle = 4;
+                                            //   Console.WriteLine("general up");
+                                        }
+                                        //general down
+                                        if (mobileEntity.DirectionX > 0)
+                                        {
+                                            mobileEntity.Angle = 1.6;
+                                            // Console.WriteLine("general down");
+                                        }
+                                    }
+                                    if (mobileEntity.DirectionY >= -0.2 && mobileEntity.DirectionY < 0)
+                                    {
+                                        //general up
+                                        if (mobileEntity.DirectionX < 0)
+                                        {
+                                            mobileEntity.Angle = 4;
+                                            //  Console.WriteLine("general up");
+                                        }
+                                        //general down
+                                        if (mobileEntity.DirectionX > 0)
+                                        {
+                                            mobileEntity.Angle = 1.6;
+                                            //  Console.WriteLine("general down");
+                                        }
+                                    }
+
+                                    // if speed by X is low  \/ \/
+                                    if (mobileEntity.DirectionX <= 0.2 && mobileEntity.DirectionX > 0)
+                                    {
+                                        //general left
+                                        if (mobileEntity.DirectionY < 0)
+                                        {
+                                            mobileEntity.Angle = 0;
+                                            //  Console.WriteLine("general left");
+                                        }
+                                        //general right
+                                        if (mobileEntity.DirectionY > 0)
+                                        {
+                                            mobileEntity.Angle = 3.2;
+                                            // Console.WriteLine("general right");
+                                        }
+                                    }
+                                    if (mobileEntity.DirectionX >= -0.2 && mobileEntity.DirectionX < 0)
+                                    {
+                                        //general left
+                                        if (mobileEntity.DirectionY < 0)
+                                        {
+                                            mobileEntity.Angle = 0;
+                                            //  Console.WriteLine("general left");
+                                        }
+                                        //general right
+                                        if (mobileEntity.DirectionY > 0)
+                                        {
+                                            mobileEntity.Angle = 3.2;
+                                            // Console.WriteLine("general right");
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            if (mobileEntity.X + 50 > mapendX)
+                            {
+                                mobileEntity.DirectionX = -1;
+                            }
+                            if (mobileEntity.X < mapstartX)
+                            {
+                                mobileEntity.DirectionX = 1;
+                            }
+
+                            if (mobileEntity.Y + 50 > mapendY)
+                            {
+                                mobileEntity.DirectionY = -1;
+                            }
+                            if (mobileEntity.Y < mapstartY)
+                            {
+                                mobileEntity.DirectionY = 1;
+                            }
+
+                            
+                            if (mobileEntity.EntityTiks % 240 == 0)
+                            {
+                                double senseboxX = mobileEntity.X - wolfSenseDistanse;
+                                double sensekboxY = mobileEntity.Y - wolfSenseDistanse;
+                                double senseboxHight = mobileEntity.X +50 + wolfSenseDistanse;
+                                double senseboxWidth = mobileEntity.Y +50 + wolfSenseDistanse;
+
+                                players.ForEach(player =>
+                                {
+                                    if (player.X + playerSize >= senseboxX && player.Y + playerSize >= sensekboxY && player.X <= senseboxHight &&
+                                    player.Y <= senseboxWidth)
+                                    {
+                                        mobileEntity.AgrivatedBy = "player";
+                                        mobileEntity.AgrivatedById = player.Id;
+                                    }
+
+                                });
+
+                                
+                                mobileEntities.ForEach(otherEntity =>
+                                {
+                                    if (otherEntity.Id != mobileEntity.Id)
+                                    {
+                                        if (otherEntity.X + 50 >= senseboxX && otherEntity.Y + 50 >= sensekboxY && otherEntity.X <= senseboxHight &&
+                                        otherEntity.Y <= senseboxWidth)
+                                        {
+                                            mobileEntity.AgrivatedBy = otherEntity.Type;
+                                            mobileEntity.AgrivatedById = otherEntity.Id;
+                                        }
+                                    }
+                                });
+                                 
+                                
+                            }
+                            
+                        }
+                        else
+                        {
+
+                            if (mobileEntity.AgrivatedBy == "player")
+                            {
+                                var obj = players.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
+
+                                if (mobileEntity.X < obj.X)
+                                {
+                                    mobileEntity.DirectionX = 1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 2.2;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = 0.8;
+                                    }
+                                }
+
+                                if (mobileEntity.X > obj.X)
+                                {
+                                    mobileEntity.DirectionX = -1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 3.8;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = -0.8;
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                var obj = mobileEntities.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
+
+                                if (mobileEntity.X < obj.X)
+                                {
+                                    mobileEntity.DirectionX = 1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 2.2;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = 0.8;
+                                    }
+                                }
+
+                                if (mobileEntity.X > obj.X)
+                                {
+                                    mobileEntity.DirectionX = -1;
+
+                                    if (mobileEntity.Y < obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = 1;
+                                        mobileEntity.Angle = 3.8;
+                                    }
+                                    if (mobileEntity.Y > obj.Y)
+                                    {
+                                        mobileEntity.DirectionY = -1;
+                                        mobileEntity.Angle = -0.8;
+                                    }
+                                }
+                            }
+
 
                             if (mobileEntity.EntityTiks % 120 == 0)
                             {
@@ -616,6 +933,17 @@ namespace testserver.Objects
             {
                 mobileEntity.EntityTiks++;
             });
+
+
+            if (addAnimals > 0)
+            {
+                Console.WriteLine(addAnimals);
+
+                CreateEntityByNumber(addAnimals);
+
+                addAnimals = 0;
+                Console.WriteLine(addAnimals);
+            }
 
             tiks++;
         }
@@ -730,7 +1058,6 @@ namespace testserver.Objects
                 }
             });
 
-            int addAnimals = 0;
             if (type == "player")
             {
                 imobileObjs.ForEach(Object =>
@@ -816,11 +1143,6 @@ namespace testserver.Objects
                         }
                     }
                 });
-            }
-
-            if (addAnimals > 0)
-            {
-                CreateEntityByNumber(addAnimals);
             }
 
         }
