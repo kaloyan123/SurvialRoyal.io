@@ -184,6 +184,7 @@ var myGameArea = {
         })
 
         window.addEventListener('click', function (e) {
+            console.log(playerAngle);
             connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle).catch(function (err) {
                 return console.error(err.toString());
             });

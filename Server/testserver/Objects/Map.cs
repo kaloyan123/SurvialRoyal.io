@@ -90,17 +90,19 @@ namespace testserver.Objects
                     Console.WriteLine("pig " + randm);
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
                 }
-                else if (randm > 70 && randm <= 80)
+                else if (randm > 70 && randm <= 90)
                 {
                     Console.WriteLine("cow " + randm);
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 120, "cow");
                 }
-                else if (randm > 80)
+                else if (randm > 90)
                 {
                     Console.WriteLine("wolf " + randm);
                     CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "wolf");
                 }
             }
+
+            addAnimals = 0;
         }
          
         public void StartOfGame()
@@ -421,6 +423,7 @@ namespace testserver.Objects
                 {
                     if (mobileEntity.IsAlive)
                     {
+                        
                         if (mobileEntity.AgrivatedById < 0)
                         {
                             if (tiks % 500 == 0)
@@ -484,7 +487,7 @@ namespace testserver.Objects
                                         //general up
                                         if (mobileEntity.DirectionX < 0)
                                         {
-                                            mobileEntity.Angle = 4;
+                                            mobileEntity.Angle = 4.5;
                                             //   Console.WriteLine("general up");
                                         }
                                         //general down
@@ -499,7 +502,7 @@ namespace testserver.Objects
                                         //general up
                                         if (mobileEntity.DirectionX < 0)
                                         {
-                                            mobileEntity.Angle = 4;
+                                            mobileEntity.Angle = 4.5;
                                             //  Console.WriteLine("general up");
                                         }
                                         //general down
@@ -575,6 +578,13 @@ namespace testserver.Objects
                             {
                                 var obj = players.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
 
+                                /*
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = 0;
+                                }
+                                */
+
                                 if (mobileEntity.X < obj.X) {
                                     mobileEntity.DirectionX = 1;
 
@@ -605,10 +615,24 @@ namespace testserver.Objects
                                         mobileEntity.Angle = -0.8;
                                     }
                                 }
+
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = -1;
+                                    mobileEntity.AgrivatedBy = "";
+                                    //Console.WriteLine();
+                                }
                             }
                             else
                             {
                                 var obj = mobileEntities.FirstOrDefault(x => x.Id == mobileEntity.AgrivatedById);
+
+                                /*
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = 0;
+                                }
+                                */
 
                                 if (mobileEntity.X < obj.X)
                                 {
@@ -640,6 +664,12 @@ namespace testserver.Objects
                                         mobileEntity.DirectionY = -1;
                                         mobileEntity.Angle = -0.8;
                                     }
+                                }
+
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = -1;
+                                    mobileEntity.AgrivatedBy = "";
                                 }
                             }
 
@@ -810,11 +840,13 @@ namespace testserver.Objects
 
                                 players.ForEach(player =>
                                 {
-                                    if (player.X + playerSize >= senseboxX && player.Y + playerSize >= sensekboxY && player.X <= senseboxHight &&
-                                    player.Y <= senseboxWidth)
-                                    {
-                                        mobileEntity.AgrivatedBy = "player";
-                                        mobileEntity.AgrivatedById = player.Id;
+                                    if (player.IsAlive == true) { 
+                                        if (player.X + playerSize >= senseboxX && player.Y + playerSize >= sensekboxY && player.X <= senseboxHight &&
+                                        player.Y <= senseboxWidth)
+                                        {
+                                            mobileEntity.AgrivatedBy = "player";
+                                            mobileEntity.AgrivatedById = player.Id;
+                                        }
                                     }
 
                                 });
@@ -822,7 +854,7 @@ namespace testserver.Objects
                                 
                                 mobileEntities.ForEach(otherEntity =>
                                 {
-                                    if (otherEntity.Id != mobileEntity.Id)
+                                    if (otherEntity.Id != mobileEntity.Id && otherEntity.IsAlive == true)
                                     {
                                         if (otherEntity.X + 50 >= senseboxX && otherEntity.Y + 50 >= sensekboxY && otherEntity.X <= senseboxHight &&
                                         otherEntity.Y <= senseboxWidth)
@@ -876,6 +908,11 @@ namespace testserver.Objects
                                     }
                                 }
 
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = -1;
+                                    mobileEntity.AgrivatedBy = "";
+                                }
                             }
                             else
                             {
@@ -912,6 +949,12 @@ namespace testserver.Objects
                                         mobileEntity.Angle = -0.8;
                                     }
                                 }
+
+                                if (obj.IsAlive == false)
+                                {
+                                    mobileEntity.AgrivatedById = -1;
+                                    mobileEntity.AgrivatedBy = "";
+                                }
                             }
 
 
@@ -937,12 +980,11 @@ namespace testserver.Objects
 
             if (addAnimals > 0)
             {
-                Console.WriteLine(addAnimals);
+               // Console.WriteLine(addAnimals);
 
                 CreateEntityByNumber(addAnimals);
 
                 addAnimals = 0;
-                Console.WriteLine(addAnimals);
             }
 
             tiks++;
@@ -1137,6 +1179,8 @@ namespace testserver.Objects
                                     addAnimals++;
 
                                     mobileEntity.IsAlive = false;
+
+                                    //mobileEntity[id] = 6;
                                     Console.WriteLine(mobileEntity.IsAlive);
                                 }
                             }
