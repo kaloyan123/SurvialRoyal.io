@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using testserver.Objects;
 
 namespace testserver.Models
 {
@@ -19,6 +20,9 @@ namespace testserver.Models
 
         public int Wood { get; set; } = 0;
         public int Stone { get; set; } = 0;
+
+
+        public List<Tool> playertools = new List<Tool>();
 
         public bool IsAlive { get; set; } = true;
 

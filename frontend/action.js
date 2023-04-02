@@ -64,6 +64,25 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
 connection.on("Attacked", function (id) {
  });
 
+ connection.on("addTools", function (id,type,tier) {
+
+    playertools.push(new toolcomponent(id, type, tier));
+
+    if(type =="pickaxe"){
+        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+            imgSrc:'./image/pick.png'}));
+    }
+    if(type =="axe"){
+        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+            imgSrc:'./image/axe.png'}));
+    }
+    if(type =="sword"){
+        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+            imgSrc:'./image/sword_wood.png'}));
+    }
+
+});
+
  connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
     for(i=0;i<Xes.length;i++){
         if(Types[i]=="tree"){
@@ -133,8 +152,8 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
 
 start(connection);
 
-var players = [], stationObjects= [], mobileEntities = [],
-background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[];
+var players = [], stationObjects= [], mobileEntities = [], playertools = [],
+background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
 var playerCodinateX = Math.floor(Math.random()*mapHight-100), playerCodinateY = Math.floor(Math.random()*mapWidth-100), 
 playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0;
@@ -145,14 +164,14 @@ var playerid=-1 , isplayer=false ,numbr=0;
 function startGame() {
 
     players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth));
-
-    
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerSize,height:playerSize,
         imgSrc:'./image/Coolplayer.png'}));
 
-   background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
 
+   background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
    backbackground = new Sprite({x:mapX-1000, y:mapY-1000, width:mapHight-mapX+2000, height:mapWidth-mapY+2000, imgSrc:'./image/mapVoid.png'})
+
+
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerCodinateY ,playerHealth).catch(function (err) {
         return console.error(err.toString());
@@ -162,6 +181,17 @@ function startGame() {
         return console.error(err.toString());
     });
     
+
+    connection.invoke("Createtool",playerid ,"pickaxe" ,1).catch(function (err) {
+        return console.error(err.toString());
+    });
+    connection.invoke("Createtool",playerid ,"axe" ,1).catch(function (err) {
+        return console.error(err.toString());
+    });
+    connection.invoke("Createtool",playerid ,"sword" ,1).catch(function (err) {
+        return console.error(err.toString());
+    });
+
     myGameArea.start();
 }
 
@@ -184,7 +214,7 @@ var myGameArea = {
         })
 
         window.addEventListener('click', function (e) {
-            console.log(playerAngle);
+           // console.log(playerAngle);
             connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle).catch(function (err) {
                 return console.error(err.toString());
             });
@@ -286,10 +316,14 @@ function updateGameArea() {
         objectSprite.draw();
     })
 
+    toolsprites.forEach(toolsprite=>{
+        toolsprite.absolutedraw();
+    })
     
      Drawminimap();
      DrawLeaderboard();
      DrawExtentions();
+     
 }
 
 function DrawExtentions(){
@@ -302,6 +336,22 @@ function DrawExtentions(){
     ctx.fillText("wood: " + players[0].wood, canvassezeX-100, canvassezeY-260);
     ctx.fillText("stone: " + players[0].stone, canvassezeX-100, canvassezeY-310);
 
+}
+
+function DrawItems(){
+    ctx = myGameArea.context;
+    ctx.fillStyle = "black";
+   
+    ctx.globalAlpha = 0.2;
+    ctx.fillRect(canvassezeX-200, 0, 200, 200);
+    ctx.globalAlpha = 1;
+
+    var number = 0; 
+    players.forEach(player=>{
+        number +=11;
+        ctx.fillText("player: "+player.id + "          has: " + player.points, canvassezeX-100, 10 + number);
+    })
+   
 }
 
 function DrawLeaderboard(){

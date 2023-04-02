@@ -135,6 +135,15 @@ function entitycomponent(x, y, color, width, height, id , type, health) {
     
 }
 
+function toolcomponent(id, type, tier) {
+    this.id = id;
+    this.type = type; 
+    this.tier = tier; 
+    //1 -- wood
+    //2 -- stone
+    //3 -- iron?
+}
+
 class Sprite{
     constructor({x,y,width,height,spriteofsetx,spriteofsety,imgSrc}){
         this.x=x;
@@ -155,6 +164,9 @@ class Sprite{
 
     draw(){
         myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);
+    }
+    absolutedraw(){
+        myGameArea.context.drawImage(this.image,this.x,this.y,this.width,this.height);
     }
     drawformap(){
         myGameArea.context.drawImage(this.image,canvassezeX-200,canvassezeY-200,200,200);

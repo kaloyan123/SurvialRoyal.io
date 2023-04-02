@@ -59,6 +59,26 @@ namespace testserver.Objects
 
             // Console.WriteLine(mobileEntity.Type);
         }
+        public void CreateTool(int playerid, string type, int tier)
+        {
+            players.ForEach(player =>
+            {
+                if (player.Id == playerid)
+                {
+                    int id = -1;
+                    player.playertools.ForEach(tool => {
+                        id++;
+                    });
+                    id++;
+
+                    Tool newtool = new Tool() {Id = id, Type = type, Tier = tier};
+
+                    player.playertools.Add(newtool);
+
+                    //  Console.WriteLine(newtool.Type);
+                }
+            });
+        }
 
         public void CreateObjectByNumber(int number)
         {
