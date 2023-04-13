@@ -53,16 +53,22 @@ namespace testserver.hubs
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
 
-        public async Task Createtool(int id, string type, int tier)
+        public async Task CreateTool(int id, string type, int tier, int woodcost, int stonecost)
         {
-            this.loopCraete.curMap?.CreateTool(id, type, tier);
+            this.loopCraete.curMap?.CreateTool(id, type, tier, woodcost, stonecost);
 
             await Clients.All.SendAsync("addTools", id, type, tier);
         }
-
-        public async Task PlayerAttack(int x, int y, int id, double angle)
+        public async Task RemoveTool(int id, int toolid)
         {
-            this.loopCraete.curMap?.Attack(x, y, "player", id, angle);
+            this.loopCraete.curMap?.RemoveTool(id, toolid);
+
+            await Clients.All.SendAsync("RemoveTools");
+        }
+
+        public async Task PlayerAttack(int x, int y, int id, double angle, string tooltype, int toolharvest, int tooldamage)
+        {
+            this.loopCraete.curMap?.Attack(x, y, "player", id, angle, tooltype, toolharvest, tooldamage);
 
             await Clients.All.SendAsync("atak", id);
         }

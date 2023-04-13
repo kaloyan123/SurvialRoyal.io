@@ -142,6 +142,32 @@ function toolcomponent(id, type, tier) {
     //1 -- wood
     //2 -- stone
     //3 -- iron?
+    this.specialharvest = 0;
+    if(this.tier=1){
+        this.specialharvest = 2;
+    }
+    this.extradamage = 0;
+    if(this.tier=1){
+        this.extradamage = 10;
+    }
+
+    this.x=0;
+    this.y=0;
+    this.width = 0;
+    this.height = 0;
+
+    this.costin_wood = 0;
+    this.costin_stone = 0;
+
+    this.SetParameters = function(x,y,width,height,woodcost,stonecost) {
+        this.x=x;
+        this.y=y;
+        this.width = width;
+        this.height = height;
+
+        this.costin_wood = woodcost;
+        this.costin_stone = stonecost;
+    }
 }
 
 class Sprite{
@@ -175,6 +201,21 @@ class Sprite{
         myGameArea.context.drawImage(this.image,canvassezeX-200 -2,canvassezeY-200 -2,200,200);
     }
     
+    backgrounddraw(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = "black";
+        ctx.globalAlpha = 0.2;
+        ctx.fillRect(this.x , this.y , this.width, this.height);
+        ctx.globalAlpha = 1;
+    }
+    backgrounddrawselect(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = "red";
+        ctx.globalAlpha = 0.2;
+        ctx.fillRect(this.x , this.y , this.width, this.height);
+        ctx.globalAlpha = 1;
+    }
+
     rotationdraw(){
         ctx = myGameArea.context;
 

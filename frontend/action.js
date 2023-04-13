@@ -64,21 +64,39 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
 connection.on("Attacked", function (id) {
  });
 
+ connection.on("RemoveTools", function (id) {
+});
+
  connection.on("addTools", function (id,type,tier) {
 
-    playertools.push(new toolcomponent(id, type, tier));
+    if(playerid==id){
 
-    if(type =="pickaxe"){
-        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-            imgSrc:'./image/pick.png'}));
-    }
-    if(type =="axe"){
-        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-            imgSrc:'./image/axe.png'}));
-    }
-    if(type =="sword"){
-        toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-            imgSrc:'./image/sword_wood.png'}));
+        
+        var toolid = 0;
+        //console.log(toolid);
+        if(playertools.length>0){
+            playertools.forEach(tool => {
+                console.log(tool);
+                toolid++;
+            });
+        }
+
+        console.log("new tool " + toolid);
+        
+        playertools.push(new toolcomponent(toolid, type, tier));
+
+        if(type =="pickaxe"){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/pick_wood.png'}));
+        }
+        if(type =="axe"){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/axe.png'}));
+        }
+        if(type =="sword"){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/sword_wood.png'}));
+        }
     }
 
 });
@@ -152,13 +170,13 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
 
 start(connection);
 
-var players = [], stationObjects= [], mobileEntities = [], playertools = [],
-background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [];
+var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [],
+background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
 var playerCodinateX = Math.floor(Math.random()*mapHight-100), playerCodinateY = Math.floor(Math.random()*mapWidth-100), 
-playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0;
+playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0, equipedtool=0;
 var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
-var playerid=-1 , isplayer=false ,numbr=0;
+var playerid=-1 , isplayer=false ,numbr=0,trowtoolsdelay=0;
 
 
 function startGame() {
@@ -181,16 +199,26 @@ function startGame() {
         return console.error(err.toString());
     });
     
+    /*
+    connection.invoke("CreateTool",playerid ,"pickaxe" ,1, 0, 0).catch(function (err) {
+        return console.error(err.toString());
+    });
+    */
 
-    connection.invoke("Createtool",playerid ,"pickaxe" ,1).catch(function (err) {
-        return console.error(err.toString());
-    });
-    connection.invoke("Createtool",playerid ,"axe" ,1).catch(function (err) {
-        return console.error(err.toString());
-    });
-    connection.invoke("Createtool",playerid ,"sword" ,1).catch(function (err) {
-        return console.error(err.toString());
-    });
+    craftables.push(new toolcomponent(0, "pickaxe", 1));
+    craftables[0].SetParameters(20+((craftables.length-1)*40),20,30,30,10,10);
+    craftables.push(new toolcomponent(1, "axe", 1));
+    craftables[1].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
+    craftables.push(new toolcomponent(2, "sword", 1));
+    craftables[2].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
+
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/pick.png'}));
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/axe.png'}));
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/sword_wood.png'}));
+   
 
     myGameArea.start();
 }
@@ -211,11 +239,66 @@ var myGameArea = {
         })
         window.addEventListener('keyup', function (e) {
             myGameArea.keys[e.keyCode] = (e.type == "keydown");
+
+            /*
+            for(i=0;i<200;i++){
+                console.log(myGameArea.keys[i]);
+            }
+            */
         })
 
         window.addEventListener('click', function (e) {
            // console.log(playerAngle);
-            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle).catch(function (err) {
+
+            craftables.forEach(craftable=>{
+
+                if(mousex >= craftable.x && mousex <= craftable.x+craftable.width && mousey >= craftable.y && 
+                mousey <= craftable.y+craftable.height){
+
+                    console.log(players[0].wood);
+                    console.log(craftable.costin_wood);
+                    console.log(players[0].stone);
+                    console.log(craftable.costin_stone);
+
+                    if(players[0].wood >= craftable.costin_wood && players[0].stone >= craftable.costin_stone){
+
+                        players[0].wood = players[0].wood - craftable.costin_wood;
+                        players[0].stone = players[0].stone - craftable.costin_stone;
+                        
+                        connection.invoke("CreateTool",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
+                        craftable.costin_stone).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+
+                    }
+                }
+            })
+
+            numbr=1;
+           // var harvest_wood=1,harvest_stone=1;
+            var equipedtype="",equipedharvest=1, equipeddamage=1;
+            playertools.forEach(tool =>{
+                if(numbr==equipedtool){
+                    equipedtype=tool.type;
+                    equipedharvest= tool.specialharvest;
+                    equipeddamage = tool.extradamage;
+                    /*
+                    if(tool.type == "pickaxe"){
+                        harvest_wood = tool.specialharvest;
+                    }
+                    if(tool.type == "axe"){
+                        harvest_stone = tool.specialharvest;
+                    }
+                    */
+                   // console.log(tool.specialharvest);
+                }
+                numbr++;
+            })
+            numbr=0;
+
+            console.log(equipedharvest);
+            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
+            equipedtype, equipedharvest, equipeddamage).catch(function (err) {
                 return console.error(err.toString());
             });
             players[0].DrawAttavkBoxrl();
@@ -279,8 +362,59 @@ function updateGameArea() {
                 player.DrawHealth();
             }
         }
-
     })
+
+    if (myGameArea.keys && myGameArea.keys[49]) {equipedtool=1 }
+    if (myGameArea.keys && myGameArea.keys[50]) {equipedtool=2 }
+    if (myGameArea.keys && myGameArea.keys[51]) {equipedtool=3 }
+    if (myGameArea.keys && myGameArea.keys[52]) {equipedtool=4 }
+    if (myGameArea.keys && myGameArea.keys[53]) {equipedtool=5 }
+    if (myGameArea.keys && myGameArea.keys[54]) {equipedtool=6 }
+    if (myGameArea.keys && myGameArea.keys[55]) {equipedtool=7 }
+    if (myGameArea.keys && myGameArea.keys[56]) {equipedtool=8 }
+    if (myGameArea.keys && myGameArea.keys[57]) {equipedtool=9 }
+
+    if (myGameArea.keys && myGameArea.keys[81] && trowtoolsdelay>100) {
+        numbr=1;
+        var equipedid=0,equipedindex=-1;
+
+        console.log(equipedtool);
+        playertools.forEach(tool =>{
+            if(numbr==equipedtool){
+                console.log("equipedtool");
+                
+                console.log(numbr);
+                equipedid=tool.id;
+                equipedindex=numbr-1;
+                console.log(equipedindex);
+             }
+            numbr++;
+        })
+        numbr=0;
+
+        console.log(playerid, equipedid);
+        connection.invoke("RemoveTool",playerid, equipedid).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        playertools.splice(equipedindex, 1); // 2nd parameter means remove one item only
+        toolsprites.splice(equipedindex, 1);
+
+        toolsprites.forEach(toolprite =>{
+            if(numbr>=equipedindex){
+                toolprite.x = toolprite.x - 40;
+             }
+            numbr++;
+        })
+        numbr=0;
+
+        console.log(playertools);
+
+        trowtoolsdelay=0;
+    }
+    trowtoolsdelay++;
+
+
     playrsprites.forEach(playrsprite=>{
         if(playerid==playrsprite.id){ 
            playrsprite.rotationdrawrl();
@@ -316,8 +450,26 @@ function updateGameArea() {
         objectSprite.draw();
     })
 
+    numbr=1;
     toolsprites.forEach(toolsprite=>{
-        toolsprite.absolutedraw();
+
+        if(numbr==equipedtool){
+            toolsprite.backgrounddrawselect();
+            
+            toolsprite.absolutedraw();
+        }else{
+            toolsprite.backgrounddraw();
+            
+            toolsprite.absolutedraw();
+        }
+        numbr++;
+    })
+    numbr=0;
+
+    craftablessprites.forEach(craftable=>{
+        craftable.backgrounddraw();
+
+        craftable.absolutedraw();
     })
     
      Drawminimap();
@@ -491,4 +643,11 @@ mobileEntities.ForEach(mobileEntity =>
     {
         mobileEntity
     });    
+
+    connection.invoke("CreateTool",playerid ,"axe" ,1).catch(function (err) {
+        return console.error(err.toString());
+    });
+    connection.invoke("CreateTool",playerid ,"sword" ,1).catch(function (err) {
+        return console.error(err.toString());
+    });
 */

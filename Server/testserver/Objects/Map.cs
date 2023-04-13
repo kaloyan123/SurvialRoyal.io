@@ -59,12 +59,15 @@ namespace testserver.Objects
 
             // Console.WriteLine(mobileEntity.Type);
         }
-        public void CreateTool(int playerid, string type, int tier)
+        public void CreateTool(int playerid, string type, int tier, int woodcost, int stonecost)
         {
             players.ForEach(player =>
             {
                 if (player.Id == playerid)
                 {
+                    player.Wood = player.Wood - woodcost;
+                    player.Stone = player.Stone - stonecost;
+
                     int id = -1;
                     player.playertools.ForEach(tool => {
                         id++;
@@ -72,13 +75,47 @@ namespace testserver.Objects
                     id++;
 
                     Tool newtool = new Tool() {Id = id, Type = type, Tier = tier};
-
+                    
                     player.playertools.Add(newtool);
 
-                    //  Console.WriteLine(newtool.Type);
+                    //Console.WriteLine(newtool.Type);
+                   // Console.WriteLine(newtool.Id);
                 }
             });
         }
+        public void RemoveTool(int playerid, int toolid)
+        {
+            players.ForEach(player =>
+            {
+                if (player.Id == playerid)
+                {
+                    var numbr = 0;
+                    var toolindex = 0;
+
+                    player.playertools.ForEach(tool =>
+                    {
+                      //  Console.WriteLine(tool.Type);
+                        if (tool.Id == toolid)
+                        {
+                            toolindex = numbr;
+                        }
+                        numbr++;
+                    });
+                   // Console.WriteLine("end of old list");
+
+                    player.playertools.RemoveAt(toolindex);
+
+                    /*
+                    player.playertools.ForEach(tool =>
+                    {
+                        Console.WriteLine(tool.Type);
+                    });
+                    Console.WriteLine("end of new list");
+                    */
+                }
+            });
+        }
+        
 
         public void CreateObjectByNumber(int number)
         {
@@ -695,7 +732,7 @@ namespace testserver.Objects
 
                             if (mobileEntity.EntityTiks % 120 == 0)
                             {
-                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0);
+                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0, "no tool", 0, 0);
                             }
                         }
 
@@ -980,7 +1017,7 @@ namespace testserver.Objects
 
                             if (mobileEntity.EntityTiks % 120 == 0)
                             {
-                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0);
+                                Attack(mobileEntity.X, mobileEntity.Y, mobileEntity.Type, mobileEntity.Id, 0, "no tool", 0, 0);
                             }
                         }
 
@@ -1023,7 +1060,7 @@ namespace testserver.Objects
             });
         }
 
-        public void Attack(double x, double y, string type, int id, double angle)
+        public void Attack(double x, double y, string type, int id, double angle, string tooltype, int toolharvest, int tooldamage)
         {
             double attackboxX = 0;
             double attackboxY = 0;
@@ -1093,7 +1130,13 @@ namespace testserver.Objects
                         if (player.X + playerSize >= attackboxX && player.Y + playerSize >= attackboxY && player.X <= attackboxHight &&
                         player.Y <= attackboxWidth)
                         {
-                            player.Hp -= 10;
+                            if (tooltype == "sword") {
+                                player.Hp -= 10;
+                            }
+                            else
+                            {
+                                player.Hp -= 5;
+                            }
                             attackedThingsId.Add(player.Id);
 
                             if (player.Hp <= 0 && player.IsAlive)
@@ -1129,11 +1172,28 @@ namespace testserver.Objects
                     {
                         if (Object.Type == "tree")
                         { // Object.Type is tree/rock
-                            players[id].Wood += 10;
+                            if (tooltype == "axe")
+                            {
+                               // Console.WriteLine(toolharvest);
+                                players[id].Wood += toolharvest;
+                            }
+                            else
+                            {
+                                players[id].Wood += 1;
+                            }
                         }
                         else if (Object.Type == "rock")
                         {
-                            players[id].Stone += 10;
+                            if (tooltype == "pickaxe")
+                            {
+                               // Console.WriteLine(toolharvest);
+                                players[id].Stone += toolharvest;
+                            }
+                            else
+                            {
+                                players[id].Stone += 1;
+                            }
+                            
                         }
                     }
                 });
@@ -1146,8 +1206,47 @@ namespace testserver.Objects
                     {
                         if (mobileEntity.IsAlive)
                         {
+                            if (tooltype == "sword")
+                            {
+                                mobileEntity.Hp -= tooldamage;
+                            }
+                            else
+                            {
+                                mobileEntity.Hp -= 5;
+                            }
 
-                            mobileEntity.Hp -= 10;
+                            // general up
+                            if (angle <= 0.8 && angle >= -0.8)
+                            {
+                                mobileEntity.DirectionX = 0;
+                                mobileEntity.DirectionY = -1;
+                                mobileEntity.Angle = angle;
+                            }
+
+                            // general right
+                            if (angle > 0.8 && angle <= 2.2)
+                            {
+                                mobileEntity.DirectionX = 1;
+                                mobileEntity.DirectionY = 0;
+                                mobileEntity.Angle = angle;
+                            }
+
+                            // general down
+                            if (angle > 2.2 && angle <= 3.8)
+                            {
+                                mobileEntity.DirectionX = 0;
+                                mobileEntity.DirectionY = 1;
+                                mobileEntity.Angle = angle;
+                            }
+
+                            // general left
+                            if (angle > 3.8 || angle < -0.8)
+                            {
+                                mobileEntity.DirectionX = -1;
+                                mobileEntity.DirectionY = 0;
+                                mobileEntity.Angle = angle;
+                            }
+
                             attackedThingsId.Add(mobileEntity.Id);
 
                             if (mobileEntity.Type == "cow")
