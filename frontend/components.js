@@ -26,6 +26,15 @@ function playercomponent(x, y, color, width, height, health) {
         ctx.fillStyle = color;
         ctx.fillRect(this.x-cameraX, this.y-cameraY, this.width, this.height);
     }  
+    this.DrawNamerl = function() {
+        ctx = myGameArea.context;
+
+        ctx.font = "15px Arial";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+    
+        ctx.fillText(playername, centerX+25, centerY-5);
+    } 
     this.DrawAttavkBoxrl = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = "red";
@@ -184,7 +193,7 @@ class Sprite{
         this.spriteofsety = spriteofsety;
     }
     setId(id){
-        console.log(id);
+       // console.log(id);
         this.id = id;   
     }
 

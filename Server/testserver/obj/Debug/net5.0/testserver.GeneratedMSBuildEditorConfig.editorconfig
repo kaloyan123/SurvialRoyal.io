@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = testserver
-build_property.ProjectDir = C:\Users\Lorry\Desktop\test\SurvialRoyal.io\Server\testserver\
+build_property.ProjectDir = D:\IT\web\SurvialRoyal.io\Server\testserver\

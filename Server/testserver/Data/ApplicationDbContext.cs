@@ -10,6 +10,7 @@ namespace testserver.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
+        public DbSet<PlayerAccount> Players { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -19,7 +20,7 @@ namespace testserver.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(
-                    "Server=localhost;Database=SurvivalRoyale;user=root;password=091104");
+                    "Server=localhost;Database=SurvivalRoyale;user=root;password=alabalanica");
             base.OnConfiguring(optionsBuilder);
         }
     }

@@ -12,8 +12,5 @@ namespace testserver.Data
 
         public string Userusername { get; set; }
 
-        public int TimesWon { get; set; }
-
-        public int TimesDied { get; set; }
     }
 }

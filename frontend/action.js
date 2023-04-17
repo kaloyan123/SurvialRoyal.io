@@ -174,6 +174,9 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
 
 start(connection);
 
+var connectiontid = sessionStorage.getItem("connectionid");    
+var playername = sessionStorage.getItem("connectionname");
+
 var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [],
 background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
@@ -193,7 +196,7 @@ function startGame() {
    background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
    backbackground = new Sprite({x:mapX-1000, y:mapY-1000, width:mapHight-mapX+2000, height:mapWidth-mapY+2000, imgSrc:'./image/mapVoid.png'})
 
-
+   console.log(playername);
 
     connection.invoke("InitiatePlayers",playerCodinateX ,playerCodinateY ,playerHealth).catch(function (err) {
         return console.error(err.toString());
@@ -360,6 +363,7 @@ function updateGameArea() {
             player.newPosUpdate(); 
            // player.Drawrl();
            player.DrawHealth();
+           player.DrawNamerl();
 
            if(player.health<=0){
             window.location.href = "index.html";
