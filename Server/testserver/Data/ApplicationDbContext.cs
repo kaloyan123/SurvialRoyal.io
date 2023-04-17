@@ -19,7 +19,7 @@ namespace testserver.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(
-                    "Server=localhost;Database=SurvivalRoyale;user=root;password=alabalanica");
+                    "Server=localhost;Database=SurvivalRoyale;user=root;password=091104");
             base.OnConfiguring(optionsBuilder);
         }
     }

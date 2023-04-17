@@ -15,12 +15,25 @@
       <div id="initialScreen" class="h-100">
         <div class="d-flex flex-column align-items-center justify-content-center h-100">
             <h1>SurvivalRoyal.io 
-              <p><font size="+2">SurvialRoyal.io is a survival game where you have to rise up your character and survive the attacks 
-                from your enemies. The resources helps you to upgrade your character.</font></p>
+              
+                <form action="action_page.php" method="post">
+    
+                    <div class="container">
+                        <label for="uname"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="uname" required>
+
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="psw" required>
+                
+                        <input type="checkbox" checked="checked" name="remember"> Remember me
+                      </label>
+                    </div>
+                  
+                 </form>   
             
             </h1>
-            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='login.html';" >
-              Create New Game
+            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='game.html';" >
+              Login
               </button>
               
         </div>
