@@ -33,25 +33,25 @@ function playercomponent(x, y, color, width, height, health) {
         // general up
         if(playerAngle < 0.8 && playerAngle>-0.8){
             ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2), this.height+(playerReach*2) -75);
-            console.log("general up");
+          //  console.log("general up");
         }
 
         // general right
         if(playerAngle > 0.8 && playerAngle<2.2){
             ctx.fillRect(this.centerx, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
-            console.log("general right");
+          //  console.log("general right");
         }
 
         // general down
         if(playerAngle > 2.2 && playerAngle<3.8){
             ctx.fillRect(centerX-playerReach, this.centery, this.width+(playerReach*2), this.height+(playerReach*2)-75);
-            console.log("general down");
+          //  console.log("general down");
         }
 
         // general left
         if(playerAngle>3.8 || playerAngle < -0.8 ){
             ctx.fillRect(centerX-playerReach, centerY-playerReach, this.width+(playerReach*2)-75, this.height+(playerReach*2));
-            console.log("general left");
+          //  console.log("general left");
         }
         
     }  

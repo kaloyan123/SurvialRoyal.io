@@ -5,6 +5,8 @@
   <title>SurvivalRoyal.io</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <style src="style.css"></style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
 </head>
 <body>
   <section class="vh-100">
@@ -13,25 +15,19 @@
       <div id="initialScreen" class="h-100">
         <div class="d-flex flex-column align-items-center justify-content-center h-100">
             <h1>SurvivalRoyal.io 
-              <p><font size="+2">SurvialRoyal.io is a survival game where you have to rise up your character and survive the attacks from your enemies. The resources helps you to upgrade your character.</font></p>
+              <p><font size="+2">SurvialRoyal.io is a survival game where you have to rise up your character and survive the attacks 
+                from your enemies. The resources helps you to upgrade your character.</font></p>
             
             </h1>
-            <button
-              type="submit"
-              class="btn btn-success"
-              id ="btnValue"
-            onclick="window.location.href='game.html';"
-            >
+            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='game.html';" >
               Create New Game
-              
+              </button>
               
         </div>
         
-
-      </div>
       </div>
     </div>
   </section>
-      <script src = "getName.js"></script>
+      <script src = "homeconnection.js"></script>
 </body>
 </html>

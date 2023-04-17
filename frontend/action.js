@@ -67,6 +67,10 @@ connection.on("Attacked", function (id) {
  connection.on("RemoveTools", function (id) {
 });
 
+connection.on("logtest", function (id) {
+    console.log("test");
+});
+
  connection.on("addTools", function (id,type,tier) {
 
     if(playerid==id){
@@ -199,6 +203,10 @@ function startGame() {
         return console.error(err.toString());
     });
     
+    connection.invoke("LogSmt").catch(function (err) {
+        return console.error(err.toString());
+    });
+
     /*
     connection.invoke("CreateTool",playerid ,"pickaxe" ,1, 0, 0).catch(function (err) {
         return console.error(err.toString());
