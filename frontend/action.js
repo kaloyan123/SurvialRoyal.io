@@ -89,17 +89,38 @@ connection.on("logtest", function (id) {
         playertools.push(new toolcomponent(toolid, type, tier));
 
         if(type =="pickaxe"){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/pick_wood.png'}));
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/pick_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/pick_stone.png'}));
+            }
         }
+
         if(type =="axe"){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/axe.png'}));
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/axe_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/axe_stone.webp'}));
+            }
         }
+
         if(type =="sword"){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/sword_wood.png'}));
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/sword_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/sword_stone.png'}));
+            }
         }
+
     }
 
 });
@@ -179,10 +200,11 @@ var playername = sessionStorage.getItem("connectionname");
 var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [],
 background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
-var playerCodinateX = Math.floor(Math.random()*mapHight-100), playerCodinateY = Math.floor(Math.random()*mapWidth-100), 
+var playerCodinateX = Math.floor(Math.random()*mapHight), playerCodinateY = Math.floor(Math.random()*mapWidth), 
 playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0, equipedtool=0;
 var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
-var playerid=-1 , isplayer=false ,numbr=0,trowtoolsdelay=0;
+var playerid=-1 , isplayer=false ,numbr=0,trowtoolsdelay=0,
+islegalmoveX=true,islegalmoveX_=true,islegalmoveY=true,islegalmoveY_=true;
 
 
 function startGame() {
@@ -216,18 +238,32 @@ function startGame() {
     */
 
     craftables.push(new toolcomponent(0, "pickaxe", 1));
-    craftables[0].SetParameters(20+((craftables.length-1)*40),20,30,30,10,10);
+    craftables[0].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
     craftables.push(new toolcomponent(1, "axe", 1));
     craftables[1].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
     craftables.push(new toolcomponent(2, "sword", 1));
     craftables[2].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
 
+    craftables.push(new toolcomponent(3, "pickaxe", 2));
+    craftables[3].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
+    craftables.push(new toolcomponent(4, "axe", 2));
+    craftables[4].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
+    craftables.push(new toolcomponent(5, "sword", 2));
+    craftables[5].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
+
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
-        imgSrc:'./image/pick.png'}));
+        imgSrc:'./image/pick_wood.png'}));
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
-        imgSrc:'./image/axe.png'}));
+        imgSrc:'./image/axe_wood.png'}));
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
         imgSrc:'./image/sword_wood.png'}));
+    
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/pick_stone.png'}));
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/axe_stone.webp'}));
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/sword_stone.png'}));
    
 
     myGameArea.start();
@@ -260,15 +296,21 @@ var myGameArea = {
         window.addEventListener('click', function (e) {
            // console.log(playerAngle);
 
+           console.log(mousex);
+           console.log(mousey);
+
             craftables.forEach(craftable=>{
 
                 if(mousex >= craftable.x && mousex <= craftable.x+craftable.width && mousey >= craftable.y && 
                 mousey <= craftable.y+craftable.height){
 
-                    console.log(players[0].wood);
-                    console.log(craftable.costin_wood);
-                    console.log(players[0].stone);
-                    console.log(craftable.costin_stone);
+                  //  console.log(mousex);
+                  //  console.log(craftable.x);
+                 //   console.log(craftable.width);
+
+                 //   console.log(mousey);
+               //   console.log(craftable.y);
+               //   console.log(craftable.width);
 
                     if(players[0].wood >= craftable.costin_wood && players[0].stone >= craftable.costin_stone){
 
@@ -306,7 +348,7 @@ var myGameArea = {
             })
             numbr=0;
 
-            console.log(equipedharvest);
+           // console.log(equipedharvest);
             connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
             equipedtype, equipedharvest, equipeddamage).catch(function (err) {
                 return console.error(err.toString());
@@ -315,8 +357,8 @@ var myGameArea = {
         })
 
         window.addEventListener("mousemove", function(e) {
-            mousex = e.pageX;
-            mousey = e.pageY;
+            mousex = e.pageX - 8 ;
+            mousey = e.pageY - 8 ;
             //console.log(mousex);
         });
     },
@@ -332,27 +374,75 @@ function updateGameArea() {
 
     players.forEach(player=>{
         if(playerid==player.id){
+            islegalmoveX=true;
+            islegalmoveX_=true ;
+            islegalmoveY=true ;
+            islegalmoveY_=true;
 
             player.speedX = 0;
-            player.speedY = 0;  
+            player.speedY = 0; 
+             
+            if(player.x+50<=mapHight){}
+            else{
+                islegalmoveX = false;
+            }
+            if(player.x>=mapX){}
+            else{
+                islegalmoveX_ = false;
+            }
+            if(player.y+50<=mapWidth){}
+            else{
+                islegalmoveY = false;
+            }
+            if(player.y>=mapY){}
+            else{
+                islegalmoveY_ = false;
+            }
 
-            if(player.x+50<=mapHight){
+            
+            stationObjects.forEach(stationobject=>{
+
+                if(player.x+50 >= stationobject.x && player.x <= stationobject.x + stationobject.width && 
+                    player.y+50 >= stationobject.y && player.y <= stationobject.y + stationobject.height){
+                        console.log("stuck");
+
+                    if(player.x < stationobject.x){
+                        islegalmoveX = false;
+                    }
+
+                    if(player.x+50 > stationobject.x +stationobject.width){
+                        islegalmoveX_ = false;
+                    }
+                    
+                    if(player.y < stationobject.y){
+                        islegalmoveY = false;
+                    }
+
+                    if(player.y+50 > stationobject.y +stationobject.height){
+                        islegalmoveY_ = false;
+                    }
+                }
+
+             })
+             
+            
+            if(islegalmoveX){
                 if (myGameArea.keys && myGameArea.keys[39]) {player.speedX = playerspeed; }
 
                 if (myGameArea.keys && myGameArea.keys[68]) {player.speedX = playerspeed; }
             }
-            if(player.x>=mapX){
+            if(islegalmoveX_){
                 if (myGameArea.keys && myGameArea.keys[37]) {player.speedX = -playerspeed; }
                 
                 if (myGameArea.keys && myGameArea.keys[65]) {player.speedX = -playerspeed; }
             }
 
-            if(player.y>=mapY){
+            if(islegalmoveY_){
                 if (myGameArea.keys && myGameArea.keys[38]) {player.speedY = -playerspeed; }
                 
                 if (myGameArea.keys && myGameArea.keys[87]) {player.speedY = -playerspeed; }
             }
-            if(player.y+50<=mapWidth){
+            if(islegalmoveY){
                 if (myGameArea.keys && myGameArea.keys[40]) {player.speedY = playerspeed; }
 
                 if (myGameArea.keys && myGameArea.keys[83]) {player.speedY = playerspeed; }
@@ -446,11 +536,11 @@ function updateGameArea() {
             entity.DrawHealth();
         }
     })
-    /*
+    
     stationObjects.forEach(object=>{
-       // object.Draw();
+        object.Draw();
     })
-    */
+    
 
     entitySprites.forEach(entitySprite=>{
        // entitySprite.draw();
@@ -478,11 +568,17 @@ function updateGameArea() {
     })
     numbr=0;
 
+    craftables.forEach(craftable=>{
+        craftable.Draw();
+    })
+
     craftablessprites.forEach(craftable=>{
         craftable.backgrounddraw();
 
         craftable.absolutedraw();
     })
+
+    
     
      Drawminimap();
      DrawLeaderboard();

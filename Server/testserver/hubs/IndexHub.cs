@@ -37,8 +37,6 @@ namespace testserver.hubs
 
         public async Task Register(string name, string password)
         {
-            // Player player = new Player() { X = x, Y = y, Hp = health, Id = id }
-
             PlayerAccount player = new PlayerAccount();
             player.Name = name;
             player.Password = password;
@@ -55,7 +53,6 @@ namespace testserver.hubs
 
         public async Task Login(string name, string passowrd)
         {
-            //   List<PlayerAccount> playerNames = this.userservice.GetAllByName(name);
             List<PlayerAccount> playerNames = GetAllByName(name);
 
             PlayerAccount loginPlayer = playerNames.FirstOrDefault(p => p.Password == passowrd);

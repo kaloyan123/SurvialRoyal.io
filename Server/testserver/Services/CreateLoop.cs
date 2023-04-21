@@ -16,16 +16,6 @@ namespace testserver.Services
 
         public CreateLoop(IServiceProvider serviceProvider)
         {
-            // Key - Socket Id (client), Value - Game Session
-            /*
-            this.sessions = new ConcurrentDictionary<string, GameSession>();
-            this.loops = new ConcurrentDictionary<string, GameLoopService>();
-            this.loopCancellationTokens = new ConcurrentDictionary<string, CancellationToken>();
-            this.Waiting = new List<string>();
-            this.PlayerUsernames = new ConcurrentDictionary<string, string>();
-            this.OtherPlayer = new ConcurrentDictionary<string, string>();
-            this.PlayerColor = new ConcurrentDictionary<string, string>();
-            */
             this.serviceProvider = serviceProvider;
         }
 

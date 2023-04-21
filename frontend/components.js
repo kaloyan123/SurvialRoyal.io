@@ -71,6 +71,12 @@ function playercomponent(x, y, color, width, height, health) {
         ctx.fillStyle = "green";
         ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.health/2, 10);
     }  
+    this.Drawformap = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }  
+
     this.newPosUpdate = function() {
         this.x += this.speedX;
         this.y += this.speedY;  
@@ -85,12 +91,7 @@ function playercomponent(x, y, color, width, height, health) {
             return console.error(err.toString());
         });
     }
-    this.Drawformap = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
-    }  
-    
+
 }
 function objectcomponent(x, y, color, width, height, id , type) {
     this.width = width;
@@ -151,15 +152,23 @@ function toolcomponent(id, type, tier) {
     //1 -- wood
     //2 -- stone
     //3 -- iron?
+
     this.specialharvest = 0;
-    if(this.tier=1){
+    if(this.tier==1){
         this.specialharvest = 2;
     }
-    this.extradamage = 0;
-    if(this.tier=1){
-        this.extradamage = 10;
+    if(this.tier==2){
+        this.specialharvest = 4;
     }
 
+    this.extradamage = 0;
+    if(this.tier==1){
+        this.extradamage = 10;
+    }
+    if(this.tier==2){
+        this.extradamage = 20;
+    }
+    
     this.x=0;
     this.y=0;
     this.width = 0;
@@ -177,6 +186,16 @@ function toolcomponent(id, type, tier) {
         this.costin_wood = woodcost;
         this.costin_stone = stonecost;
     }
+
+    this.Draw = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = "black";
+
+        ctx.globalAlpha = 0.2;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.globalAlpha = 1;
+        
+    }  
 }
 
 class Sprite{
