@@ -18,24 +18,27 @@
             <h1>SurvivalRoyal.io 
               <p><font size="+2">SurvialRoyal.io is a survival game where you have to rise up your character and survive the attacks 
                 from your enemies. The resources helps you to upgrade your character.</font></p>
-            </h1>
-
-            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='login.html';" >
-              Login
-            </button>
-            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='register.html';" >
-              Register
-            </button>
-
-            <button type="submit" class="btn btn-success" id ="btnValue" onclick="window.location.href='game.html';" >
+            </h1> 
+            <input type="text" placeholder="s" name="uname" id ="name" disabled>
+            
+            <button style="margin-bottom: 150px;" type="submit" class="btn btn-success" id ="btnValue" onclick="joinGame()" >
               Start Game
             </button>
+
+            <div class="buttonholder">
+              <button style="flex: 90%;" type="submit" class="btn btn-info" id ="btnValue" onclick="window.location.href='login.html';" >
+                Login
+              </button>
+              <button type="submit" class="btn btn-info" id ="btnValue" onclick="window.location.href='register.html';" >
+                Register
+              </button>
+            </div>
 
         </div>
       </div>
 
     </div>
   </section>
-
+  <script src = "indexDisplay.js"></script>
 </body>
 </html>

@@ -75,7 +75,6 @@ connection.on("logtest", function (id) {
 
     if(playerid==id){
 
-        
         var toolid = 0;
         //console.log(toolid);
         if(playertools.length>0){
@@ -366,6 +365,7 @@ function updateGameArea() {
            player.DrawNamerl();
 
            if(player.health<=0){
+            
             window.location.href = "index.html";
            }
         }else{
