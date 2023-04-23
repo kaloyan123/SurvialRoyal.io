@@ -103,11 +103,13 @@ function playercomponent(x, y, color, width, height, health, name) {
     }
 
 }
-function objectcomponent(x, y, color, width, height, id , type) {
+
+function objectcomponent(x, y, color, width, height, hp, id , type) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;   
+    this.hp = hp;
     this.id = id;   
     this.type = type; 
     
@@ -122,6 +124,37 @@ function objectcomponent(x, y, color, width, height, id , type) {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }
+}
+
+function structurecomponent(x, y, color, width, height, hp, id, type, creatorid) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;   
+    this.hp = hp;   
+    this.id = id;   
+    this.type = type; 
+    this.creatorid = creatorid; 
+    
+    this.Draw = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x - cameraX, this.y - cameraY, this.width, this.height);
+    }  
+
+    this.Drawformap = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(canvassezeX-200 + (this.x/ 20), canvassezeY-200 + (this.y/ 12), 5, 5);
+    }
+
+    this.DrawHealth = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.width, 10);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x-cameraX, this.y-cameraY+this.height+10, this.hp/4, 10);
     }
 }
 
@@ -155,10 +188,11 @@ function entitycomponent(x, y, color, width, height, id , type, health) {
     
 }
 
-function toolcomponent(id, type, tier) {
+function toolcomponent(id, type, tier, kind) {
     this.id = id;
     this.type = type; 
     this.tier = tier; 
+    this.kind = kind;
     //1 -- wood
     //2 -- stone
     //3 -- iron?

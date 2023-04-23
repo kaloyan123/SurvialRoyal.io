@@ -14,6 +14,7 @@ namespace testserver.hubs
     public class GameHub : Hub
     {
         static int playernumber = -1;
+        static int structureNumber = -1;
 
         CreateLoop loopCraete;
 
@@ -57,20 +58,25 @@ namespace testserver.hubs
         {
             this.loopCraete.curMap?.CreateTool(id, type, tier, woodcost, stonecost);
 
-            await Clients.All.SendAsync("addTools", id, type, tier);
+            await Clients.Caller.SendAsync("addTools", id, type, tier);
         }
-        public async Task RemoveTool(int id, int toolid)
+        public void RemoveTool(int id, int toolid)
         {
             this.loopCraete.curMap?.RemoveTool(id, toolid);
-
-            await Clients.All.SendAsync("RemoveTools");
         }
 
-        public async Task PlayerAttack(int x, int y, int id, double angle, string tooltype, int toolharvest, int tooldamage)
+        public async Task PlaceStructure(int id, int x, int y, string type, int hp)
+        {
+            structureNumber++;
+
+            this.loopCraete.curMap?.CreateStructure(id, x, y, type, structureNumber, hp);
+
+            await Clients.All.SendAsync("placeStructure", id, x, y, type, structureNumber);
+        }
+
+        public void PlayerAttack(int x, int y, int id, double angle, string tooltype, int toolharvest, int tooldamage)
         {
             this.loopCraete.curMap?.Attack(x, y, "player", id, angle, tooltype, toolharvest, tooldamage);
-
-            await Clients.All.SendAsync("atak", id);
         }
 
         public async Task GetImobileObj()
@@ -103,7 +109,7 @@ namespace testserver.hubs
                 Types.Add(type);
             });
 
-            await Clients.All.SendAsync("drawObjects", Xes, Yes, Ids, Types);
+            await Clients.Caller.SendAsync("drawObjects", Xes, Yes, Ids, Types);
         }
 
         public async Task GetMobileEntity()
@@ -150,7 +156,63 @@ namespace testserver.hubs
                 EntityAngles.Add(agle);
             });
 
-            await Clients.All.SendAsync("drawEnteties", EntityX, EntityY, EntityHp, EntityId, EntityTypes, EntityAngles);
+            await Clients.Caller.SendAsync("drawEnteties", EntityX, EntityY, EntityHp, EntityId, EntityTypes, EntityAngles);
+        }
+        public async Task GetIMobileEntities()
+        {
+            List<double> EntityHp = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double hp = imobileEntity.Hp;
+                EntityHp.Add(hp);
+            });
+
+            await Clients.Caller.SendAsync("updateStructures", EntityHp);
+        }
+        public async Task GetIMobileEntitiesAll(int numbr)
+        {
+            List<double> EntityX = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double x = imobileEntity.X;
+                EntityX.Add(x);
+            });
+
+            List<double> EntityY = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double y = imobileEntity.Y;
+                EntityY.Add(y);
+            });
+
+            List<double> EntityHp = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double hp = imobileEntity.Hp;
+                EntityHp.Add(hp);
+            });
+
+            List<double> EntityId = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double id = imobileEntity.Id;
+                EntityId.Add(id);
+            });
+            List<double> EntityCreatorId = new List<double>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                double id = imobileEntity.Id;
+                EntityId.Add(id);
+            });
+
+            List<string> EntityTypes = new List<string>();
+            this.loopCraete.curMap?.imobileEntities.ForEach(imobileEntity =>
+            {
+                string type = imobileEntity.Type;
+                EntityTypes.Add(type);
+            });
+
+            await Clients.Caller.SendAsync("addStructures", EntityX, EntityY, EntityHp, EntityId, EntityTypes, EntityCreatorId, numbr);
         }
 
     }

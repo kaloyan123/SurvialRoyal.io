@@ -19,12 +19,12 @@ namespace testserver.Objects
 
         public List<StationryObj> imobileObjs { get; set; } = new List<StationryObj>();
 
+        public List<ImobileEntity> imobileEntities { get; set; } = new List<ImobileEntity>();
+
         public List<MobileEntity> mobileEntities { get; set; } = new List<MobileEntity>();
 
         public int objectNumber = -1;
         public int entityNumber = -1;
-
-        public int tiks { get; set; } = 0;
 
         public int mapstartX = 0;
         public int mapstartY = 0;
@@ -56,10 +56,19 @@ namespace testserver.Objects
 
             //  Console.WriteLine(imobileobject.Type);
         }
-        public void CreateEntity(int x, int y, double Hp, string type)
+        public void CreateStructure(int id, int x, int y, string type, int structureid, int hp)
+        {
+            ImobileEntity imobileentity = new ImobileEntity() { X = x, Y = y, Heigth = 50, Width = 50, Hp = hp, Id = structureid,
+                Type = type, CreatorId = id};
+            imobileEntities.Add(imobileentity);
+
+            //  Console.WriteLine(imobileobject.Type);
+        }
+
+        public void CreateEntity(int x, int y, int width, int heigth, double Hp, string type)
         {
             entityNumber++;
-            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y, Hp = Hp, Id = entityNumber, Type = type };
+            MobileEntity mobileEntity = new MobileEntity() { X = x, Y = y,Width = width, Heigth = heigth, Hp = Hp, Id = entityNumber, Type = type };
             mobileEntities.Add(mobileEntity);
 
             // Console.WriteLine(mobileEntity.Type);
@@ -84,7 +93,6 @@ namespace testserver.Objects
                     player.playertools.Add(newtool);
 
                     //Console.WriteLine(newtool.Type);
-                   // Console.WriteLine(newtool.Id);
                 }
             });
         }
@@ -109,14 +117,6 @@ namespace testserver.Objects
                    // Console.WriteLine("end of old list");
 
                     player.playertools.RemoveAt(toolindex);
-
-                    /*
-                    player.playertools.ForEach(tool =>
-                    {
-                        Console.WriteLine(tool.Type);
-                    });
-                    Console.WriteLine("end of new list");
-                    */
                 }
             });
         }
@@ -145,22 +145,22 @@ namespace testserver.Objects
                 if (randm <= 35)
                 {
                     Console.WriteLine("rabit " + randm);
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 60, "rabit");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 30, 30, 60, "rabit");
                 }
                 else if (randm > 35 && randm <= 70)
                 {
                     Console.WriteLine("pig " + randm);
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "pig");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, 50, 100, "pig");
                 }
                 else if (randm > 70 && randm <= 90)
                 {
                     Console.WriteLine("cow " + randm);
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 120, "cow");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 60, 60, 120, "cow");
                 }
                 else if (randm > 90)
                 {
                     Console.WriteLine("wolf " + randm);
-                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 100, "wolf");
+                    CreateEntity(rnd.Next(mapstartX + 100, mapendX - 200), rnd.Next(mapstartY + 100, mapendY - 200), 50, 50, 100, "wolf");
                 }
             }
 
@@ -182,16 +182,11 @@ namespace testserver.Objects
 
             mobileEntities.ForEach(mobileEntity =>
             {
-                islegalmoveX = true;
-                islegalmoveX_ = true;
-                islegalmoveY = true;
-                islegalmoveY_ = true;
-
                 if (mobileEntity.Type == "rabit")
                 {
                     if (mobileEntity.IsAlive)
                     {
-                        if (tiks % 100 == 0)
+                        if (mobileEntity.EntityTiks % 100 == 0)
                         {
 
                             if (rnd.Next(0, 100) <= 50)
@@ -311,80 +306,7 @@ namespace testserver.Objects
 
                         }
 
-                        if (mobileEntity.X + 50 > mapendX)
-                        {
-                            islegalmoveX = false;
-                        }
-                        if (mobileEntity.X < mapstartX)
-                        {
-                            islegalmoveX_ = false;
-                        }
-                        if (mobileEntity.Y + 50 > mapendY)
-                        {
-                            islegalmoveY = false;
-                        }
-                        if (mobileEntity.Y < mapstartY)
-                        {
-                            islegalmoveY_ = false;
-                        }
-                        imobileObjs.ForEach(Object =>
-                        {
-                            if (mobileEntity.X + 30 >= Object.X && mobileEntity.X <= Object.X + 100 &&
-                            mobileEntity.Y + 30 >= Object.Y && mobileEntity.Y <= Object.Y + 100)
-                            {
-                              //  Console.WriteLine("work" + mobileEntity.Id);
-                                if (mobileEntity.X < Object.X)
-                                {
-                                    islegalmoveX = false;
-                                }
-
-                                if (mobileEntity.X + 30 > Object.X + 100)
-                                {
-                                    islegalmoveX_ = false;
-                                }
-
-                                if (mobileEntity.Y < Object.Y)
-                                {
-                                    islegalmoveY = false;
-                                }
-
-                                if (mobileEntity.Y + 30 > Object.Y + 100)
-                                {
-                                    islegalmoveY_ = false;
-                                }
-                               // Console.WriteLine(mobileEntity.X + " " + mobileEntity.Y + " " + Object.X + " " + Object.Y);
-                                //Console.WriteLine(islegalmoveX +""+ islegalmoveX_ + "" + islegalmoveY + "" + islegalmoveY_);
-                            }
-                        });
-
-                        if (mobileEntity.DirectionX > 0)
-                        {
-                            if (islegalmoveX)
-                            {
-                                mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-                            }
-                        }
-                        else
-                        {
-                            if (islegalmoveX_)
-                            {
-                                mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-                            }
-                        }
-                        if (mobileEntity.DirectionY > 0)
-                        {
-                            if (islegalmoveY)
-                            {
-                                mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
-                            }
-                        }
-                        else
-                        {
-                            if (islegalmoveY_)
-                            {
-                                mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
-                            }
-                        }
+                        
 
                     }
                 }
@@ -392,13 +314,13 @@ namespace testserver.Objects
                 {
                     if (mobileEntity.IsAlive)
                     {
-                        if (tiks % 500 == 0)
+                        if (mobileEntity.EntityTiks % 500 == 0)
                         {
                             mobileEntity.DirectionX = 0;
                             mobileEntity.DirectionY = 0;
 
                         }
-                        if (tiks % 1000 == 0)
+                        if (mobileEntity.EntityTiks % 1000 == 0)
                         {
                             if (rnd.Next(0, 100) <= 50)
                             {
@@ -518,27 +440,6 @@ namespace testserver.Objects
                              Console.WriteLine(mobileEntity.Angle);
                             */
                         } 
-
-                        if (mobileEntity.X + 50 > mapendX)
-                        {
-                            mobileEntity.DirectionX = -1;
-                        }
-                        if (mobileEntity.X < mapstartX)
-                        {
-                            mobileEntity.DirectionX = 1;
-                        }
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-
-
-                        if (mobileEntity.Y + 50 > mapendY)
-                        {
-                            mobileEntity.DirectionY = -1;
-                        }
-                        if (mobileEntity.Y < mapstartY)
-                        {
-                            mobileEntity.DirectionY = 1;
-                        }
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
                 }
                 else if (mobileEntity.Type == "cow")
@@ -548,13 +449,13 @@ namespace testserver.Objects
                         
                         if (mobileEntity.AgrivatedById < 0)
                         {
-                            if (tiks % 500 == 0)
+                            if (mobileEntity.EntityTiks % 500 == 0)
                             {
                                 mobileEntity.DirectionX = 0;
                                 mobileEntity.DirectionY = 0;
 
                             }
-                            if (tiks % 1000 == 0)
+                            if (mobileEntity.EntityTiks % 1000 == 0)
                             {
                                 if (rnd.Next(0, 100) <= 50)
                                 {
@@ -675,24 +576,6 @@ namespace testserver.Objects
                                 */
                             }
 
-                            if (mobileEntity.X + 50 > mapendX)
-                            {
-                                mobileEntity.DirectionX = -1;
-                            }
-                            if (mobileEntity.X < mapstartX)
-                            {
-                                mobileEntity.DirectionX = 1;
-                            }
-                            
-
-                            if (mobileEntity.Y + 50 > mapendY)
-                            {
-                                mobileEntity.DirectionY = -1;
-                            }
-                            if (mobileEntity.Y < mapstartY)
-                            {
-                                mobileEntity.DirectionY = 1;
-                            }
                             
                         } 
                         else {
@@ -801,8 +684,6 @@ namespace testserver.Objects
                             }
                         }
 
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
                 }
                 else if (mobileEntity.Type == "wolf")
@@ -812,13 +693,13 @@ namespace testserver.Objects
                        // Console.WriteLine(mobileEntity.AgrivatedById +" " + mobileEntity.Id);
                         if (mobileEntity.AgrivatedById < 0)
                         {
-                            if (tiks % 500 == 0)
+                            if (mobileEntity.EntityTiks % 500 == 0)
                             {
                                 mobileEntity.DirectionX = 0;
                                 mobileEntity.DirectionY = 0;
 
                             }
-                            if (tiks % 1000 == 0)
+                            if (mobileEntity.EntityTiks % 1000 == 0)
                             {
                                 if (rnd.Next(0, 100) <= 50)
                                 {
@@ -932,24 +813,6 @@ namespace testserver.Objects
                                     }
                                 }
 
-                            }
-
-                            if (mobileEntity.X + 50 > mapendX)
-                            {
-                                mobileEntity.DirectionX = -1;
-                            }
-                            if (mobileEntity.X < mapstartX)
-                            {
-                                mobileEntity.DirectionX = 1;
-                            }
-
-                            if (mobileEntity.Y + 50 > mapendY)
-                            {
-                                mobileEntity.DirectionY = -1;
-                            }
-                            if (mobileEntity.Y < mapstartY)
-                            {
-                                mobileEntity.DirectionY = 1;
                             }
 
                             
@@ -1086,16 +949,123 @@ namespace testserver.Objects
                             }
                         }
 
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
                     }
                 }
 
-            });
+                //movement and check for movement
+                if (true)
+                {
+                    islegalmoveX = true;
+                    islegalmoveX_ = true;
+                    islegalmoveY = true;
+                    islegalmoveY_ = true;
 
+                    if (mobileEntity.X + mobileEntity.Width > mapendX)
+                    {
+                        islegalmoveX = false;
+                    }
+                    if (mobileEntity.X < mapstartX)
+                    {
+                        islegalmoveX_ = false;
+                    }
+                    if (mobileEntity.Y + mobileEntity.Heigth > mapendY)
+                    {
+                        islegalmoveY = false;
+                    }
+                    if (mobileEntity.Y < mapstartY)
+                    {
+                        islegalmoveY_ = false;
+                    }
+                    imobileObjs.ForEach(Object =>
+                    {
+                        if (mobileEntity.X + mobileEntity.Width >= Object.X && mobileEntity.X <= Object.X + 100 &&
+                        mobileEntity.Y + mobileEntity.Heigth >= Object.Y && mobileEntity.Y <= Object.Y + 100)
+                        {
 
-            mobileEntities.ForEach(mobileEntity =>
-            {
+                            //  Console.WriteLine("work" + mobileEntity.Id);
+                            if (mobileEntity.X < Object.X)
+                            {
+                                islegalmoveX = false;
+                            }
+                            if (mobileEntity.X + mobileEntity.Width > Object.X + 100)
+                            {
+                                islegalmoveX_ = false;
+                            }
+                            if (mobileEntity.Y < Object.Y)
+                            {
+                                islegalmoveY = false;
+                            }
+                            if (mobileEntity.Y + mobileEntity.Heigth > Object.Y + 100)
+                            {
+                                islegalmoveY_ = false;
+                            }
+                            // Console.WriteLine(mobileEntity.X + " " + mobileEntity.Y + " " + Object.X + " " + Object.Y);
+                            //Console.WriteLine(islegalmoveX +""+ islegalmoveX_ + "" + islegalmoveY + "" + islegalmoveY_);
+                        }
+                    });
+                    imobileEntities.ForEach(imobileEntity =>
+                    {
+                        if (imobileEntity.IsAlive)
+                        {
+                            if (mobileEntity.X + mobileEntity.Width >= imobileEntity.X &&
+                            mobileEntity.X <= imobileEntity.X + imobileEntity.Width &&
+                            mobileEntity.Y + mobileEntity.Heigth >= imobileEntity.Y &&
+                            mobileEntity.Y <= imobileEntity.Y + imobileEntity.Heigth)
+                            {
+
+                                //  Console.WriteLine("work" + mobileEntity.Id);
+                                if (mobileEntity.X < imobileEntity.X)
+                                {
+                                    islegalmoveX = false;
+                                }
+                                if (mobileEntity.X + mobileEntity.Width > imobileEntity.X + imobileEntity.Width)
+                                {
+                                    islegalmoveX_ = false;
+                                }
+                                if (mobileEntity.Y < imobileEntity.Y)
+                                {
+                                    islegalmoveY = false;
+                                }
+                                if (mobileEntity.Y + mobileEntity.Heigth > imobileEntity.Y + imobileEntity.Heigth)
+                                {
+                                    islegalmoveY_ = false;
+                                }
+                                // Console.WriteLine(mobileEntity.X + " " + mobileEntity.Y + " " + Object.X + " " + Object.Y);
+                                //Console.WriteLine(islegalmoveX +""+ islegalmoveX_ + "" + islegalmoveY + "" + islegalmoveY_);
+                            }
+                        }
+                    });
+
+                    if (mobileEntity.DirectionX > 0)
+                    {
+                        if (islegalmoveX)
+                        {
+                            mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        }
+                    }
+                    else
+                    {
+                        if (islegalmoveX_)
+                        {
+                            mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                        }
+                    }
+                    if (mobileEntity.DirectionY > 0)
+                    {
+                        if (islegalmoveY)
+                        {
+                            mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                        }
+                    }
+                    else
+                    {
+                        if (islegalmoveY_)
+                        {
+                            mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                        }
+                    }
+                }
+
                 mobileEntity.EntityTiks++;
             });
 
@@ -1109,9 +1079,7 @@ namespace testserver.Objects
                 addAnimals = 0;
             }
 
-            tiks++;
         }
-
 
         public void MovePlayer(int x, int y, int id)
         {
@@ -1263,7 +1231,33 @@ namespace testserver.Objects
                     }
                 });
 
-                
+                imobileEntities.ForEach(imobileEntity =>
+                {
+                    if (imobileEntity.X + playerSize >= attackboxX && imobileEntity.Y + playerSize >= attackboxY && imobileEntity.X <= attackboxHight &&
+                    imobileEntity.Y <= attackboxWidth)
+                    {
+                        if (imobileEntity.IsAlive)
+                        {
+                            if (tooltype == "axe")
+                            {
+                                imobileEntity.Hp -= tooldamage;
+                            }
+                            else
+                            {
+                                imobileEntity.Hp -= 5;
+                            }
+
+                            if (imobileEntity.Hp <= 0)
+                            {
+                                imobileEntity.IsAlive = false;
+                                Console.WriteLine(imobileEntity.IsAlive);
+                            }
+                            // Console.WriteLine(imobileEntity.Hp);
+                        }
+                    }
+
+                });
+
                 mobileEntities.ForEach(mobileEntity =>
                 {
                     if (mobileEntity.X + playerSize >= attackboxX && mobileEntity.Y + playerSize >= attackboxY && mobileEntity.X <= attackboxHight &&
@@ -1322,6 +1316,9 @@ namespace testserver.Objects
 
                             if (mobileEntity.Hp <= 0)
                             {
+                                mobileEntity.DirectionX = 0;
+                                mobileEntity.DirectionY = 0;
+
                                 addAnimals++;
 
                                 mobileEntity.IsAlive = false;

@@ -61,68 +61,60 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
     }
 });
 
-connection.on("Attacked", function (id) {
- });
-
- connection.on("RemoveTools", function (id) {
-});
-
-connection.on("logtest", function (id) {
-    console.log("test");
-});
-
  connection.on("addTools", function (id,type,tier) {
 
-    if(playerid==id){
-
-        var toolid = 0;
-        //console.log(toolid);
-        if(playertools.length>0){
-            playertools.forEach(tool => {
-                console.log(tool);
-                toolid++;
-            });
-        }
-
-        console.log("new tool " + toolid);
-        
-        playertools.push(new toolcomponent(toolid, type, tier));
-
-        if(type =="pickaxe"){
-            if(tier==1){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/pick_wood.png'}));
-            }
-            if(tier==2){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/pick_stone.png'}));
-            }
-        }
-
-        if(type =="axe"){
-            if(tier==1){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/axe_wood.png'}));
-            }
-            if(tier==2){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/axe_stone.webp'}));
-            }
-        }
-
-        if(type =="sword"){
-            if(tier==1){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/sword_wood.png'}));
-            }
-            if(tier==2){
-                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                    imgSrc:'./image/sword_stone.png'}));
-            }
-        }
-
+    var toolid = 0;
+    //console.log(toolid);
+    if(playertools.length>0){
+        playertools.forEach(tool => {
+            console.log(tool);
+            toolid++;
+        });
     }
 
+    console.log("new tool " + toolid);
+    
+    playertools.push(new toolcomponent(toolid, type, tier, "item"));
+
+    if(type =="pickaxe"){
+        if(tier==1){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/pick_wood.png'}));
+        }
+        if(tier==2){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/pick_stone.png'}));
+        }
+    }
+
+    if(type =="axe"){
+        if(tier==1){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/axe_wood.png'}));
+        }
+        if(tier==2){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/axe_stone.webp'}));
+        }
+    }
+
+    if(type =="sword"){
+        if(tier==1){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/sword_wood.png'}));
+        }
+        if(tier==2){
+            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                imgSrc:'./image/sword_stone.png'}));
+        }
+    }
+
+});
+connection.on("placeStructure", function ( id, x, y, type, structureId) {
+    if(playerid==id){
+        
+        structures.push(new structurecomponent(x, y, "brown", 50, 50, wallhealth, structureId, type, id));
+    }
 });
 
  connection.on("drawObjects", function (Xes,Yes,Ids,Types) {
@@ -191,20 +183,49 @@ connection.on("drawEnteties", function (Xes,Yes,Hps,Ids,Types,Angles) {
     numbr=0;
 });
 
+connection.on("updateStructures", function (Hps) {
+    structures.forEach(structure=>{ 
+        structure.hp = Hps[numbr];   
+       // console.log(Hps[numbr]);
+        numbr++;
+    })
+   // console.log(Hps.length);
+    if(numbr<Hps.length){ 
+     //   console.log("here")
+        connection.invoke("GetIMobileEntitiesAll",numbr).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    numbr=0;
+});
+connection.on("addStructures", function (Xes,Yes,Hps,Ids,Types,CreatorIds,number) {
+
+    for(i=number;i<Xes.length;i++){
+      //  console.log(Types[i]);
+        if(Types[i]=="wall"){
+            structures.push(new structurecomponent(Xes[i], Yes[i], "brown", 50, 50, Hps[i], Ids[i], Types[i], CreatorIds[i]));
+
+        //    entitySprites.push(new Sprite({x:Xes[i]-5,y:Yes[i]-5,width:25,height:25,spriteofsetx:5,spriteofsety:5,
+          //      imgSrc:'./image/bunny.png'}));//bunnycrop.png
+        }
+        console.log("aded struct");
+    }
+
+});
 
 start(connection);
 
 var connectiontid = sessionStorage.getItem("connectionid");    
 var playername = sessionStorage.getItem("connectionname");
 
-var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [],
+var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [], structures = [],
 background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
-var playerCodinateX = Math.floor(Math.random()*mapHight), playerCodinateY = Math.floor(Math.random()*mapWidth), 
-playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0, equipedtool=0;
+var playerCodinateX = Math.floor(Math.random()*mapHight), playerCodinateY = Math.floor(Math.random()*mapWidth), playerid=-1,
+playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0, equipedtool=-1;
+var trowtoolsdelay=0,wallhealth=200;
 var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
-var playerid=-1 , isplayer=false ,numbr=0,trowtoolsdelay=0,
-islegalmoveX=true,islegalmoveX_=true,islegalmoveY=true,islegalmoveY_=true;
+var isplayer=false ,numbr=0, islegalmoveX=true,islegalmoveX_=true,islegalmoveY=true,islegalmoveY_=true;
 
 
 function startGame() {
@@ -237,19 +258,22 @@ function startGame() {
     });
     */
 
-    craftables.push(new toolcomponent(0, "pickaxe", 1));
+    craftables.push(new toolcomponent(0, "pickaxe", 1, "item"));
     craftables[0].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
-    craftables.push(new toolcomponent(1, "axe", 1));
+    craftables.push(new toolcomponent(1, "axe", 1, "item"));
     craftables[1].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
-    craftables.push(new toolcomponent(2, "sword", 1));
+    craftables.push(new toolcomponent(2, "sword", 1, "item"));
     craftables[2].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
 
-    craftables.push(new toolcomponent(3, "pickaxe", 2));
+    craftables.push(new toolcomponent(3, "pickaxe", 2, "item"));
     craftables[3].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
-    craftables.push(new toolcomponent(4, "axe", 2));
+    craftables.push(new toolcomponent(4, "axe", 2, "item"));
     craftables[4].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
-    craftables.push(new toolcomponent(5, "sword", 2));
+    craftables.push(new toolcomponent(5, "sword", 2, "item"));
     craftables[5].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
+
+    craftables.push(new toolcomponent(6, "wall", 2, "structure"));
+    craftables[6].SetParameters(20+((craftables.length-1)*40),60,30,30,30,30);
 
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
         imgSrc:'./image/pick_wood.png'}));
@@ -285,12 +309,6 @@ var myGameArea = {
         })
         window.addEventListener('keyup', function (e) {
             myGameArea.keys[e.keyCode] = (e.type == "keydown");
-
-            /*
-            for(i=0;i<200;i++){
-                console.log(myGameArea.keys[i]);
-            }
-            */
         })
 
         window.addEventListener('click', function (e) {
@@ -304,56 +322,78 @@ var myGameArea = {
                 if(mousex >= craftable.x && mousex <= craftable.x+craftable.width && mousey >= craftable.y && 
                 mousey <= craftable.y+craftable.height){
 
-                  //  console.log(mousex);
-                  //  console.log(craftable.x);
-                 //   console.log(craftable.width);
-
-                 //   console.log(mousey);
-               //   console.log(craftable.y);
-               //   console.log(craftable.width);
-
                     if(players[0].wood >= craftable.costin_wood && players[0].stone >= craftable.costin_stone){
 
                         players[0].wood = players[0].wood - craftable.costin_wood;
                         players[0].stone = players[0].stone - craftable.costin_stone;
                         
-                        connection.invoke("CreateTool",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
-                        craftable.costin_stone).catch(function (err) {
-                            return console.error(err.toString());
-                        });
+                        if(craftable.kind == "item"){
+                            connection.invoke("CreateItemTool",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
+                            craftable.costin_stone).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        }else{
+                            connection.invoke("CreateItemStructure",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
+                            craftable.costin_stone).catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        }
 
                     }
                 }
             })
 
             numbr=1;
-           // var harvest_wood=1,harvest_stone=1;
             var equipedtype="",equipedharvest=1, equipeddamage=1;
             playertools.forEach(tool =>{
                 if(numbr==equipedtool){
                     equipedtype=tool.type;
                     equipedharvest= tool.specialharvest;
                     equipeddamage = tool.extradamage;
-                    /*
-                    if(tool.type == "pickaxe"){
-                        harvest_wood = tool.specialharvest;
-                    }
-                    if(tool.type == "axe"){
-                        harvest_stone = tool.specialharvest;
-                    }
-                    */
-                   // console.log(tool.specialharvest);
                 }
                 numbr++;
             })
             numbr=0;
 
            // console.log(equipedharvest);
-            connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
-            equipedtype, equipedharvest, equipeddamage).catch(function (err) {
-                return console.error(err.toString());
-            });
-            players[0].DrawAttavkBoxrl();
+           if(equipedtool==0){
+                // general up
+                if(playerAngle < 0.8 && playerAngle>-0.8){
+
+                    connection.invoke("PlaceStructure", playerid, playerCodinateX, playerCodinateY - 50, "wall", wallhealth).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                // general right
+                if(playerAngle > 0.8 && playerAngle<2.2){
+                   
+                    connection.invoke("PlaceStructure", playerid, playerCodinateX + 50, playerCodinateY, "wall", wallhealth).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                // general down
+                if(playerAngle > 2.2 && playerAngle<3.8){
+                   
+                    connection.invoke("PlaceStructure", playerid, playerCodinateX, playerCodinateY + 50, "wall", wallhealth).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+                // general left
+                if(playerAngle>3.8 || playerAngle < -0.8 ){
+                    
+                    connection.invoke("PlaceStructure", playerid, playerCodinateX - 50, playerCodinateY, "wall", wallhealth).catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                }
+
+           }else{
+                connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
+                equipedtype, equipedharvest, equipeddamage).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                players[0].DrawAttavkBoxrl();
+           }
+
         })
 
         window.addEventListener("mousemove", function(e) {
@@ -402,7 +442,7 @@ function updateGameArea() {
 
                 if(player.x+50 >= stationobject.x && player.x <= stationobject.x + stationobject.width && 
                     player.y+50 >= stationobject.y && player.y <= stationobject.y + stationobject.height){
-                        console.log("stuck");
+                    //    console.log("stuck");
 
                     if(player.x < stationobject.x){
                         islegalmoveX = false;
@@ -420,7 +460,30 @@ function updateGameArea() {
                         islegalmoveY_ = false;
                     }
                 }
+             })
+             structures.forEach(structure=>{
+                if(structure.hp>0){
+                    if(player.x+50 >= structure.x && player.x <= structure.x + structure.width && 
+                        player.y+50 >= structure.y && player.y <= structure.y + structure.height){
+                        //    console.log("stuck");
 
+                        if(player.x < structure.x){
+                            islegalmoveX = false;
+                        }
+
+                        if(player.x+50 > structure.x +structure.width){
+                            islegalmoveX_ = false;
+                        }
+                        
+                        if(player.y < structure.y){
+                            islegalmoveY = false;
+                        }
+
+                        if(player.y+50 > structure.y +structure.height){
+                            islegalmoveY_ = false;
+                        }
+                    }
+                }
              })
              
             if(islegalmoveX){
@@ -464,6 +527,7 @@ function updateGameArea() {
         }
     })
 
+    if (myGameArea.keys && myGameArea.keys[48]) {equipedtool=0 }
     if (myGameArea.keys && myGameArea.keys[49]) {equipedtool=1 }
     if (myGameArea.keys && myGameArea.keys[50]) {equipedtool=2 }
     if (myGameArea.keys && myGameArea.keys[51]) {equipedtool=3 }
@@ -526,6 +590,9 @@ function updateGameArea() {
     connection.invoke("GetMobileEntity").catch(function (err) {
         return console.error(err.toString());
     });
+    connection.invoke("GetIMobileEntities").catch(function (err) {
+        return console.error(err.toString());
+    });
     
     
     mobileEntities.forEach(entity=>{
@@ -539,6 +606,12 @@ function updateGameArea() {
         object.Draw();
     })
     
+    structures.forEach(structure=>{
+        if(structure.hp>0){
+            structure.Draw();
+            structure.DrawHealth();
+        }
+    })
 
     entitySprites.forEach(entitySprite=>{
        // entitySprite.draw();
