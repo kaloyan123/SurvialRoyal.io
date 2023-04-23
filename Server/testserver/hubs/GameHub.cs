@@ -22,7 +22,7 @@ namespace testserver.hubs
             this.loopCraete = loopCraete;
         }
 
-        public async Task UpdatePlayers(int x, int y, int id, double angle)
+        public async Task UpdatePlayers(int x, int y, int id, double angle, string name)
         {
             this.loopCraete.curMap?.MovePlayer(x, y, id);
 
@@ -35,7 +35,7 @@ namespace testserver.hubs
                 points.Add(id);
             });
 
-            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, points, obj.Wood, obj.Stone, id, angle);
+            await Clients.All.SendAsync("drawCharacters", x, y, obj.Hp, points, obj.Wood, obj.Stone, id, angle, name);
         }
 
         public async Task InitiatePlayers(int x, int y, int health)

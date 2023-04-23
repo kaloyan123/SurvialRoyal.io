@@ -19,7 +19,7 @@ connection.on("startCharacters", function (id) {
     
     console.log('joined');
 });
-connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, angle) { 
+connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, angle, name) { 
     if(playerid==id){
         players[0].health = Hp;
         players[0].points = Points[playerid];
@@ -47,7 +47,7 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
         })
         
         if(!isplayer){
-            players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp));
+            players.push(new playercomponent(X, Y, "red", playerSize, playerSize, Hp, name));
 
             playrsprites.push(new Sprite({x:X,y:Y,width:playerSize,height:playerSize,
                 imgSrc:'./image/Coolplayer.png'}));
@@ -209,7 +209,7 @@ islegalmoveX=true,islegalmoveX_=true,islegalmoveY=true,islegalmoveY_=true;
 
 function startGame() {
 
-    players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth));
+    players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth, playername));
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerSize,height:playerSize,
         imgSrc:'./image/Coolplayer.png'}));
 
@@ -374,11 +374,11 @@ function updateGameArea() {
 
     players.forEach(player=>{
         if(playerid==player.id){
+
             islegalmoveX=true;
             islegalmoveX_=true ;
             islegalmoveY=true ;
             islegalmoveY_=true;
-
             player.speedX = 0;
             player.speedY = 0; 
              
@@ -398,8 +398,6 @@ function updateGameArea() {
             else{
                 islegalmoveY_ = false;
             }
-
-            
             stationObjects.forEach(stationobject=>{
 
                 if(player.x+50 >= stationobject.x && player.x <= stationobject.x + stationobject.width && 
@@ -425,7 +423,6 @@ function updateGameArea() {
 
              })
              
-            
             if(islegalmoveX){
                 if (myGameArea.keys && myGameArea.keys[39]) {player.speedX = playerspeed; }
 
@@ -450,7 +447,7 @@ function updateGameArea() {
            
             
             player.newPosUpdate(); 
-           // player.Drawrl();
+            player.Drawrl();
            player.DrawHealth();
            player.DrawNamerl();
 
@@ -462,6 +459,7 @@ function updateGameArea() {
             if(player.health>0){
                 // player.Draw();
                 player.DrawHealth();
+                player.DrawName();
             }
         }
     })

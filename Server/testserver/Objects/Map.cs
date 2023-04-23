@@ -38,6 +38,11 @@ namespace testserver.Objects
 
         public int addAnimals = 0;
 
+        bool islegalmoveX = true;
+        bool islegalmoveX_ = true;
+        bool islegalmoveY = true;
+        bool islegalmoveY_ = true;
+
         public void CreatePlayer(int x, int y,int health, int id)
         {
             Player player = new Player() { X = x, Y = y, Hp = health, Id = id };
@@ -177,6 +182,11 @@ namespace testserver.Objects
 
             mobileEntities.ForEach(mobileEntity =>
             {
+                islegalmoveX = true;
+                islegalmoveX_ = true;
+                islegalmoveY = true;
+                islegalmoveY_ = true;
+
                 if (mobileEntity.Type == "rabit")
                 {
                     if (mobileEntity.IsAlive)
@@ -303,24 +313,79 @@ namespace testserver.Objects
 
                         if (mobileEntity.X + 50 > mapendX)
                         {
-                            mobileEntity.DirectionX = -1;
+                            islegalmoveX = false;
                         }
                         if (mobileEntity.X < mapstartX)
                         {
-                            mobileEntity.DirectionX = 1;
+                            islegalmoveX_ = false;
                         }
-                        mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
-
-
                         if (mobileEntity.Y + 50 > mapendY)
                         {
-                            mobileEntity.DirectionY = -1;
+                            islegalmoveY = false;
                         }
                         if (mobileEntity.Y < mapstartY)
                         {
-                            mobileEntity.DirectionY = 1;
+                            islegalmoveY_ = false;
                         }
-                        mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                        imobileObjs.ForEach(Object =>
+                        {
+                            if (mobileEntity.X + 30 >= Object.X && mobileEntity.X <= Object.X + 100 &&
+                            mobileEntity.Y + 30 >= Object.Y && mobileEntity.Y <= Object.Y + 100)
+                            {
+                              //  Console.WriteLine("work" + mobileEntity.Id);
+                                if (mobileEntity.X < Object.X)
+                                {
+                                    islegalmoveX = false;
+                                }
+
+                                if (mobileEntity.X + 30 > Object.X + 100)
+                                {
+                                    islegalmoveX_ = false;
+                                }
+
+                                if (mobileEntity.Y < Object.Y)
+                                {
+                                    islegalmoveY = false;
+                                }
+
+                                if (mobileEntity.Y + 30 > Object.Y + 100)
+                                {
+                                    islegalmoveY_ = false;
+                                }
+                               // Console.WriteLine(mobileEntity.X + " " + mobileEntity.Y + " " + Object.X + " " + Object.Y);
+                                //Console.WriteLine(islegalmoveX +""+ islegalmoveX_ + "" + islegalmoveY + "" + islegalmoveY_);
+                            }
+                        });
+
+                        if (mobileEntity.DirectionX > 0)
+                        {
+                            if (islegalmoveX)
+                            {
+                                mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                            }
+                        }
+                        else
+                        {
+                            if (islegalmoveX_)
+                            {
+                                mobileEntity.X = mobileEntity.X + mobileEntity.DirectionX;
+                            }
+                        }
+                        if (mobileEntity.DirectionY > 0)
+                        {
+                            if (islegalmoveY)
+                            {
+                                mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                            }
+                        }
+                        else
+                        {
+                            if (islegalmoveY_)
+                            {
+                                mobileEntity.Y = mobileEntity.Y + mobileEntity.DirectionY;
+                            }
+                        }
+
                     }
                 }
                 else if (mobileEntity.Type == "pig")

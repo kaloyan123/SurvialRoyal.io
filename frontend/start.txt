@@ -6,3 +6,28 @@ test - http://localhost:8000/
 open Vs code -
 Go live
 paste - http://localhost:5500/
+
+
+to do :
+
+I.sprites:
+1. new wolf sprite
+2. new stone sprite 
+3. fix tool sprites 
+ * crop sprites 
+ * make them sqared
+ * remove background
+4. playersprite for each different tool 
+
+II. database comunication
+1. update the database on death 
+2. make playerstat page 
+3. leaderboard 
+
+III. implement mor things
+1. finish hitboxes
+2. implement wall structures
+3. more structures?
+...
+
+4. game balance

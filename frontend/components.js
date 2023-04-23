@@ -1,11 +1,12 @@
-function playercomponent(x, y, color, width, height, health) {
+function playercomponent(x, y, color, width, height, health, name) {
     this.width = width;
     this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;
     this.x = x;
     this.y = y;
-    this.health = health;   
+    this.health = health; 
+    this.name = name;  
+    this.speedX = 0;
+    this.speedY = 0;
     this.wood = 0;
     this.stone = 0;
     this.points = 0;
@@ -33,7 +34,16 @@ function playercomponent(x, y, color, width, height, health) {
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
     
-        ctx.fillText(playername, centerX+25, centerY-5);
+        ctx.fillText(this.name, centerX+25, centerY-5);
+    } 
+    this.DrawName = function() {
+        ctx = myGameArea.context;
+
+        ctx.font = "15px Arial";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+    
+        ctx.fillText(this.name, this.x-cameraX+25, this.y-cameraY-5);
     } 
     this.DrawAttavkBoxrl = function() {
         ctx = myGameArea.context;
@@ -87,7 +97,7 @@ function playercomponent(x, y, color, width, height, health) {
         cameraX = playerCodinateX-centerX;
         cameraY = playerCodinateY-centerY;
 
-        connection.invoke("UpdatePlayers", this.x, this.y, playerid, playerAngle).catch(function (err) {
+        connection.invoke("UpdatePlayers", this.x, this.y, playerid, playerAngle, this.name).catch(function (err) {
             return console.error(err.toString());
         });
     }
