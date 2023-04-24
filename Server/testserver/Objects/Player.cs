@@ -22,7 +22,7 @@ namespace testserver.Models
         public int Stone { get; set; } = 0;
 
 
-        public List<Tool> playertools = new List<Tool>();
+        public List<Item> playertools = new List<Item>();
 
         public bool IsAlive { get; set; } = true;
 

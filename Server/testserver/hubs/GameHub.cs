@@ -54,11 +54,13 @@ namespace testserver.hubs
             await Clients.All.SendAsync("startCharacters", playernumber);
         }
 
-        public async Task CreateTool(int id, string type, int tier, int woodcost, int stonecost)
+        public async Task CreateItem(int id, string type, int tier, int woodcost, int stonecost, string kind)
         {
-            this.loopCraete.curMap?.CreateTool(id, type, tier, woodcost, stonecost);
+            Console.WriteLine("here");
 
-            await Clients.Caller.SendAsync("addTools", id, type, tier);
+            this.loopCraete.curMap?.CreateItem(id, type, tier, woodcost, stonecost, kind);
+
+            await Clients.Caller.SendAsync("addItems", id, type, tier, kind);
         }
         public void RemoveTool(int id, int toolid)
         {

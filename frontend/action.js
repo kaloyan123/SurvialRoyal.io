@@ -61,54 +61,104 @@ connection.on("drawCharacters", function (X, Y, Hp, Points, Wood, Stone, id, ang
     }
 });
 
- connection.on("addTools", function (id,type,tier) {
+ connection.on("addItems", function (id,type,tier, kind) {
+    console.log("here");
 
-    var toolid = 0;
-    //console.log(toolid);
-    if(playertools.length>0){
+    if(kind=="tool"){
+        console.log("here2");
+        var toolid = 0;
+        //console.log(toolid);
+        if(playertools.length>0){
+            playertools.forEach(tool => {
+                console.log(tool);
+                toolid++;
+            });
+        }
+
+        console.log("new tool " + toolid);
+        
+        playertools.push(new itemcomponent(toolid, type, tier, "tool"));
+
+        if(type =="pickaxe"){
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/pick_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/pick_stone.png'}));
+            }
+        }
+
+        if(type =="axe"){
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/axe_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/axe_stone.webp'}));
+            }
+        }
+
+        if(type =="sword"){
+            if(tier==1){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/sword_wood.png'}));
+            }
+            if(tier==2){
+                toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                    imgSrc:'./image/sword_stone.png'}));
+            }
+        }
+    }else{
+        
+        var hasthissructure = false;
+        numbr=0;
         playertools.forEach(tool => {
-            console.log(tool);
-            toolid++;
+            if (tool.type == type)
+            {
+                console.log("here3");
+
+                hasthissructure = true;
+                console.log("new increase " + toolid);
+                tool.copies++;
+                toolsprites[numbr].copies++;
+            }
+            numbr++;
         });
-    }
 
-    console.log("new tool " + toolid);
+        console.log(hasthissructure);
+
+        if(hasthissructure){}else{
+            console.log("here4");
+
+            var toolid = 0;
+            //console.log(toolid);
+            if(playertools.length>0){
+                playertools.forEach(tool => {
+                    console.log(tool);
+                    toolid++;
+                });
+            }
     
-    playertools.push(new toolcomponent(toolid, type, tier, "item"));
+            console.log("new structure " + toolid);
+            
+            playertools.push(new itemcomponent(toolid, type, tier, "structure"));
 
-    if(type =="pickaxe"){
-        if(tier==1){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/pick_wood.png'}));
-        }
-        if(tier==2){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/pick_stone.png'}));
+            if(type =="wall"){
+                if(tier==1){
+                    toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                        imgSrc:'./image/wood.jpg'}));
+                }
+                if(tier==2){
+                    toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
+                        imgSrc:'./image/wood.jpg'}));
+                }
+            }
         }
     }
-
-    if(type =="axe"){
-        if(tier==1){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/axe_wood.png'}));
-        }
-        if(tier==2){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/axe_stone.webp'}));
-        }
-    }
-
-    if(type =="sword"){
-        if(tier==1){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/sword_wood.png'}));
-        }
-        if(tier==2){
-            toolsprites.push(new Sprite({x:20+(playertools.length*40),y:700,width:30,height:30,
-                imgSrc:'./image/sword_stone.png'}));
-        }
-    }
-
+        
 });
 connection.on("placeStructure", function ( id, x, y, type, structureId) {
     if(playerid==id){
@@ -219,11 +269,12 @@ var connectiontid = sessionStorage.getItem("connectionid");
 var playername = sessionStorage.getItem("connectionname");
 
 var players = [], stationObjects= [], mobileEntities = [], playertools = [], craftables = [], structures = [],
-background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [];
+background, backbackground, playrsprites = [], objectSprites=[], entitySprites=[], toolsprites = [], craftablessprites = [],
+structuresprites = [];
 var mapX = 0, mapY = 0, mapHight = 4000, mapWidth = 2400, canvassezeX = 1300, canvassezeY = 800;
 var playerCodinateX = Math.floor(Math.random()*mapHight), playerCodinateY = Math.floor(Math.random()*mapWidth), playerid=-1,
 playerSize = 50, playerspeed = 5, playerHealth = 100, playerReach = 50, playerAngle = 0, equipedtool=-1;
-var trowtoolsdelay=0,wallhealth=200;
+var trowtoolsdelay=0,wallhealth=200, actiondellay = 100;
 var centerX= 600, centerY = 300, cameraX = playerCodinateX-centerX, cameraY = playerCodinateY-centerY;
 var isplayer=false ,numbr=0, islegalmoveX=true,islegalmoveX_=true,islegalmoveY=true,islegalmoveY_=true;
 
@@ -232,7 +283,7 @@ function startGame() {
 
     players.push(new playercomponent(playerCodinateX, playerCodinateY, "blue", playerSize, playerSize, playerHealth, playername));
     playrsprites.push(new Sprite({x:playerCodinateX,y:playerCodinateY,width:playerSize,height:playerSize,
-        imgSrc:'./image/Coolplayer.png'}));
+        imgSrc:'./image/playerhold2.png'}));
 
 
    background = new Sprite({x:mapX, y:mapY, width:mapHight-mapX, height:mapWidth-mapY, imgSrc:'./image/map_grass.png'})
@@ -258,22 +309,22 @@ function startGame() {
     });
     */
 
-    craftables.push(new toolcomponent(0, "pickaxe", 1, "item"));
+    craftables.push(new itemcomponent(0, "pickaxe", 1, "tool"));
     craftables[0].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
-    craftables.push(new toolcomponent(1, "axe", 1, "item"));
+    craftables.push(new itemcomponent(1, "axe", 1, "tool"));
     craftables[1].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
-    craftables.push(new toolcomponent(2, "sword", 1, "item"));
+    craftables.push(new itemcomponent(2, "sword", 1, "tool"));
     craftables[2].SetParameters(20+((craftables.length-1)*40),20,30,30,10,0);
 
-    craftables.push(new toolcomponent(3, "pickaxe", 2, "item"));
+    craftables.push(new itemcomponent(3, "pickaxe", 2, "tool"));
     craftables[3].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
-    craftables.push(new toolcomponent(4, "axe", 2, "item"));
+    craftables.push(new itemcomponent(4, "axe", 2, "tool"));
     craftables[4].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
-    craftables.push(new toolcomponent(5, "sword", 2, "item"));
+    craftables.push(new itemcomponent(5, "sword", 2, "tool"));
     craftables[5].SetParameters(20+((craftables.length-1)*40),20,30,30,30,30);
 
-    craftables.push(new toolcomponent(6, "wall", 2, "structure"));
-    craftables[6].SetParameters(20+((craftables.length-1)*40),60,30,30,30,30);
+    craftables.push(new itemcomponent(6, "wall", 2, "structure"));
+    craftables[6].SetParameters(20+((craftables.length-1)*40),60,30,30,10,0);
 
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
         imgSrc:'./image/pick_wood.png'}));
@@ -288,11 +339,51 @@ function startGame() {
         imgSrc:'./image/axe_stone.webp'}));
     craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
         imgSrc:'./image/sword_stone.png'}));
+
+    craftablessprites.push(new Sprite({x:20+(craftablessprites.length*40),y:20,width:30,height:30,
+        imgSrc:'./image/wood.jpg'}));
    
 
     myGameArea.start();
 }
 
+function PlaceStruct(equipedtype, equipedid, placeX, placeY){
+
+    connection.invoke("PlaceStructure", playerid, placeX, placeY, equipedtype, wallhealth).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    numbr=0;
+    var intsave;
+    playertools.forEach(tool =>{
+        if(tool.type==equipedtype){
+            tool.copies = tool.copies-1;
+            intsave = tool.copies;
+            toolsprites[numbr].copies--;
+            numbr++;
+        }
+    })
+
+    console.log(intsave);
+    if(intsave<=0){
+        console.log(playerid , equipedid);
+        connection.invoke("RemoveTool",playerid, equipedid).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    playertools.splice(equipedtool-1, 1); // 2nd parameter means remove one item only
+    toolsprites.splice(equipedtool-1, 1);
+
+    toolsprites.forEach(toolprite =>{
+        if(numbr>=equipedindex){
+            toolprite.x = toolprite.x - 40;
+         }
+        numbr++;
+    })
+    numbr=0;
+    }
+    
+}
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
@@ -314,8 +405,8 @@ var myGameArea = {
         window.addEventListener('click', function (e) {
            // console.log(playerAngle);
 
-           console.log(mousex);
-           console.log(mousey);
+         //  console.log(mousex);
+          // console.log(mousey);
 
             craftables.forEach(craftable=>{
 
@@ -327,27 +418,23 @@ var myGameArea = {
                         players[0].wood = players[0].wood - craftable.costin_wood;
                         players[0].stone = players[0].stone - craftable.costin_stone;
                         
-                        if(craftable.kind == "item"){
-                            connection.invoke("CreateItemTool",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
-                            craftable.costin_stone).catch(function (err) {
-                                return console.error(err.toString());
-                            });
-                        }else{
-                            connection.invoke("CreateItemStructure",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
-                            craftable.costin_stone).catch(function (err) {
-                                return console.error(err.toString());
-                            });
-                        }
-
+                        
+                        connection.invoke("CreateItem",playerid, craftable.type, craftable.tier, craftable.costin_wood, 
+                        craftable.costin_stone, craftable.kind).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                      
                     }
                 }
             })
 
             numbr=1;
-            var equipedtype="",equipedharvest=1, equipeddamage=1;
+            var equipedkind="", equipedtype="",equipedharvest=1, equipeddamage=1, equipedid=0;
             playertools.forEach(tool =>{
                 if(numbr==equipedtool){
+                    equipedkind=tool.kind;
                     equipedtype=tool.type;
+                    equipedid=tool.id;
                     equipedharvest= tool.specialharvest;
                     equipeddamage = tool.extradamage;
                 }
@@ -355,46 +442,45 @@ var myGameArea = {
             })
             numbr=0;
 
-           // console.log(equipedharvest);
-           if(equipedtool==0){
-                // general up
-                if(playerAngle < 0.8 && playerAngle>-0.8){
+            if(actiondellay>0){
+                 // console.log(equipedharvest);
+                if(equipedkind=="structure"){
+                    // general up
+                    if(playerAngle < 0.8 && playerAngle>-0.8){
 
-                    connection.invoke("PlaceStructure", playerid, playerCodinateX, playerCodinateY - 50, "wall", wallhealth).catch(function (err) {
+                        PlaceStruct(equipedtype, equipedid, playerCodinateX, playerCodinateY - 50);
+                    }
+                    // general right
+                    if(playerAngle > 0.8 && playerAngle<2.2){
+
+                        PlaceStruct(equipedtype, equipedid, playerCodinateX + 50, playerCodinateY);
+
+                    }
+                    // general down
+                    if(playerAngle > 2.2 && playerAngle<3.8){
+
+                        PlaceStruct(equipedtype, equipedid, playerCodinateX, playerCodinateY + 50);
+
+                    }
+                    // general left
+                    if(playerAngle>3.8 || playerAngle < -0.8 ){
+
+                        PlaceStruct(equipedtype, equipedid, playerCodinateX-50, playerCodinateY);
+
+                    }
+
+                }else{
+                    connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
+                    equipedtype, equipedharvest, equipeddamage).catch(function (err) {
                         return console.error(err.toString());
                     });
-                }
-                // general right
-                if(playerAngle > 0.8 && playerAngle<2.2){
-                   
-                    connection.invoke("PlaceStructure", playerid, playerCodinateX + 50, playerCodinateY, "wall", wallhealth).catch(function (err) {
-                        return console.error(err.toString());
-                    });
-                }
-                // general down
-                if(playerAngle > 2.2 && playerAngle<3.8){
-                   
-                    connection.invoke("PlaceStructure", playerid, playerCodinateX, playerCodinateY + 50, "wall", wallhealth).catch(function (err) {
-                        return console.error(err.toString());
-                    });
-                }
-                // general left
-                if(playerAngle>3.8 || playerAngle < -0.8 ){
-                    
-                    connection.invoke("PlaceStructure", playerid, playerCodinateX - 50, playerCodinateY, "wall", wallhealth).catch(function (err) {
-                        return console.error(err.toString());
-                    });
+                    players[0].DrawAttavkBoxrl();
                 }
 
-           }else{
-                connection.invoke("PlayerAttack", playerCodinateX, playerCodinateY, playerid, playerAngle, 
-                equipedtype, equipedharvest, equipeddamage).catch(function (err) {
-                    return console.error(err.toString());
-                });
-                players[0].DrawAttavkBoxrl();
-           }
-
+                actiondellay=0;
+            }
         })
+        
 
         window.addEventListener("mousemove", function(e) {
             mousex = e.pageX - 8 ;
@@ -411,6 +497,7 @@ function updateGameArea() {
     myGameArea.clear();
     backbackground.draw();
     background.draw();
+    actiondellay++;
 
     players.forEach(player=>{
         if(playerid==player.id){
@@ -634,6 +721,10 @@ function updateGameArea() {
             toolsprite.backgrounddraw();
             
             toolsprite.absolutedraw();
+        }
+
+        if(toolsprite.copies>1){
+            toolsprite.displaycopies();
         }
         numbr++;
     })

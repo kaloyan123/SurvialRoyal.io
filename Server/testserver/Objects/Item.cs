@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace testserver.Objects
 {
-    public class Tool
+    public class Item
     {
         public int Id { get; set; }
 
@@ -15,5 +15,8 @@ namespace testserver.Objects
         //1 -- wood
         //2 -- stone
         //3 -- iron?
+        public string Kind { get; set; }
+
+        public int Copies { get; set; } = 1;
     }
 }

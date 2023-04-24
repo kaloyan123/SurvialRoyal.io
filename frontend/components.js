@@ -188,11 +188,12 @@ function entitycomponent(x, y, color, width, height, id , type, health) {
     
 }
 
-function toolcomponent(id, type, tier, kind) {
+function itemcomponent(id, type, tier, kind) {
     this.id = id;
     this.type = type; 
     this.tier = tier; 
     this.kind = kind;
+    this.copies = 1;
     //1 -- wood
     //2 -- stone
     //3 -- iron?
@@ -254,6 +255,7 @@ class Sprite{
         this.angle = 0;
         this.spriteofsetx = spriteofsetx;
         this.spriteofsety = spriteofsety;
+        this.copies=1;
     }
     setId(id){
        // console.log(id);
@@ -318,5 +320,15 @@ class Sprite{
         ctx.translate(-this.centerx, -this.centery);
         myGameArea.context.drawImage(this.image,centerX-15,centerY-10,this.width+30,this.height+20);
         ctx.setTransform(1, 0, 0, 1, 0, 0);   
+   }
+   displaycopies(){
+    console.log("displayes");
+    ctx = myGameArea.context;
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+   // ctx.textAlign = "center";
+
+    ctx.fillText("X" + this.copies, this.x+15, this.y+22);
+
    }
 }

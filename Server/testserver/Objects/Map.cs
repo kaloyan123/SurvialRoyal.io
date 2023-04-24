@@ -73,28 +73,69 @@ namespace testserver.Objects
 
             // Console.WriteLine(mobileEntity.Type);
         }
-        public void CreateTool(int playerid, string type, int tier, int woodcost, int stonecost)
+        public void CreateItem(int playerid, string type, int tier, int woodcost, int stonecost, string kind)
         {
-            players.ForEach(player =>
+            if (kind == "tool")
             {
-                if (player.Id == playerid)
+                players.ForEach(player =>
                 {
-                    player.Wood = player.Wood - woodcost;
-                    player.Stone = player.Stone - stonecost;
+                    if (player.Id == playerid)
+                    {
+                        player.Wood = player.Wood - woodcost;
+                        player.Stone = player.Stone - stonecost;
 
-                    int id = -1;
-                    player.playertools.ForEach(tool => {
+                        int id = -1;
+                        player.playertools.ForEach(tool => {
+                            id++;
+                        });
                         id++;
-                    });
-                    id++;
 
-                    Tool newtool = new Tool() {Id = id, Type = type, Tier = tier};
-                    
-                    player.playertools.Add(newtool);
+                        Item newtool = new Item() { Id = id, Type = type, Tier = tier, Kind = "tool", Copies = 1 };
 
-                    //Console.WriteLine(newtool.Type);
-                }
-            });
+                        player.playertools.Add(newtool);
+
+                        //Console.WriteLine(newtool.Type);
+                    }
+                });
+            }
+            else
+            {
+                Console.WriteLine("here");
+                players.ForEach(player =>
+                {
+                    if (player.Id == playerid)
+                    {
+                        player.Wood = player.Wood - woodcost;
+                        player.Stone = player.Stone - stonecost;
+
+                        bool hasthissructure = false;
+                        player.playertools.ForEach(tool => {
+                            if (tool.Type == type)
+                            {
+                                hasthissructure = true;
+                                tool.Copies++;
+                            }
+                        });
+
+                        if (hasthissructure) {}
+                        else
+                        {
+                            int id = -1;
+                            player.playertools.ForEach(tool => {
+                                id++;
+                            });
+                            id++;
+
+                            Item newtool = new Item() { Id = id, Type = type, Tier = tier, Kind = "tool" };
+
+                            player.playertools.Add(newtool);
+
+                            //Console.WriteLine(newtool.Type);
+                        }
+                    }
+                });
+            }
+            
         }
         public void RemoveTool(int playerid, int toolid)
         {
@@ -120,7 +161,6 @@ namespace testserver.Objects
                 }
             });
         }
-        
 
         public void CreateObjectByNumber(int number)
         {
