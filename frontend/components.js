@@ -256,11 +256,16 @@ class Sprite{
         this.spriteofsetx = spriteofsetx;
         this.spriteofsety = spriteofsety;
         this.copies=1;
+        this.holdtype="nothing";
+        this.forrender=true;
     }
     setId(id){
        // console.log(id);
         this.id = id;   
     }
+    setImage(imgSrc){
+        this.image.src = imgSrc; 
+     }
 
     draw(){
         myGameArea.context.drawImage(this.image,this.x-cameraX,this.y-cameraY,this.width,this.height);

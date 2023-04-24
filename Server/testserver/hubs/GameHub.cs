@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using testserver.Data;
 using testserver.Models;
 using testserver.Objects;
 using testserver.Services;
@@ -17,10 +18,12 @@ namespace testserver.hubs
         static int structureNumber = -1;
 
         CreateLoop loopCraete;
+        private ApplicationDbContext dbContext;
 
-        public GameHub(CreateLoop loopCraete)
+        public GameHub(CreateLoop loopCraete, ApplicationDbContext dbContext)
         {
             this.loopCraete = loopCraete;
+            this.dbContext = dbContext;
         }
 
         public async Task UpdatePlayers(int x, int y, int id, double angle, string name)
@@ -217,5 +220,25 @@ namespace testserver.hubs
             await Clients.Caller.SendAsync("addStructures", EntityX, EntityY, EntityHp, EntityId, EntityTypes, EntityCreatorId, numbr);
         }
 
+
+        public PlayerAccount GetAllById(int id)
+        {
+            return dbContext.Players
+                .FirstOrDefault(p => p.Id == id);
+
+        }
+        public void UpdateDeathCount(int id, int points)
+        {
+
+            PlayerAccount loginPlayer = GetAllById(id);
+
+            loginPlayer.TimesDied++;
+            if (points > loginPlayer.HighestScore)
+            {
+                loginPlayer.HighestScore = points;
+                Console.WriteLine(points);
+            }
+            dbContext.SaveChanges();
+        }
     }
 }

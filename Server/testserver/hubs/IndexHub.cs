@@ -27,7 +27,13 @@ namespace testserver.hubs
                 .ToList();
 
         }
-        
+        public PlayerAccount GetAllById(int id)
+        {
+            return dbContext.Players
+                .FirstOrDefault(p => p.Id == id);
+
+        }
+
         public async Task LogSmt()
         {
 
@@ -61,5 +67,15 @@ namespace testserver.hubs
             await Clients.All.SendAsync("ReciveLogins", loginPlayer.Id, loginPlayer.Name);
         }
 
+        public async Task Account(int id)
+        {
+            PlayerAccount playerId = GetAllById(id);
+            PlayerAccount playerName = GetAllById(id);
+            PlayerAccount playerDied = GetAllById(id);
+            PlayerAccount playerScore = GetAllById(id);
+
+
+            await Clients.All.SendAsync("ReceiveValues", playerId.Id, playerName.Name, playerDied.TimesDied, playerScore.HighestScore);
+        }
     }
 }
